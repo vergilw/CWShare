@@ -8,10 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CWShareSinaProtocol <NSObject>
+@protocol CWShareSinaDelegate <NSObject>
 
 @optional
 - (void)sinaShareAuthorizeFinish;
 - (void)sinaShareAuthorizeFail;
+
+- (void)sinaShareContentFinish;
+- (void)sinaShareContentFail;
+
+- (void)sinaShareContentAndImageFinish;
+- (void)sinaShareContentAndImageFail;
 
 @end

@@ -9,21 +9,34 @@
 #import <Foundation/Foundation.h>
 #import "CWShareSinaAuthorize.h"
 #import "ASIFormDataRequest.h"
-#import "CWShareSinaProtocol.h"
+#import "CWShareSinaDelegate.h"
+
+typedef enum {
+    SinaShareNone,
+    SinaShareContent,
+    SinaShareContentAndImage
+} SinaShareType;
 
 @interface CWShareSina : NSObject <CWShareSinaAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *sinaAccessToken;
     NSDate *sinaExpireDate;
     NSString *sinaUID;
-    id<CWShareSinaProtocol> delegate;
+    id<CWShareSinaDelegate> delegate;
     ASIFormDataRequest *sinaRequest;
+    UIViewController *parentViewController;
+    SinaShareType sinaShareType;
+    NSString *shareContent;
+    UIImage *shareImage;
 }
 
 @property (nonatomic, copy) NSString *sinaAccessToken;
 @property (nonatomic, strong) NSDate *sinaExpireDate;
 @property (nonatomic, copy) NSString *sinaUID;
-@property (weak) id<CWShareSinaProtocol> delegate;
+@property (weak) id<CWShareSinaDelegate> delegate;
 @property (nonatomic, strong) ASIFormDataRequest *sinaRequest;
+@property (weak) UIViewController *parentViewController;
+@property (nonatomic, copy) NSString *shareContent;
+@property (nonatomic, strong) UIImage *shareImage;
 
 - (void)shareWithContent:(NSString *)theContent;
 

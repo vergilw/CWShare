@@ -9,21 +9,38 @@
 #import <Foundation/Foundation.h>
 #import "ASIFormDataRequest.h"
 #import "CWShareTencentAuthorize.h"
-#import "CWShareTencentProtocol.h"
+#import "CWShareTencentDelegate.h"
+
+typedef enum {
+    TencentShareNone,
+    TencentShareContent,
+    TencentShareContentAndImage
+} TencentShareType;
 
 @interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *tencentAccessToken;
-    NSDate *tencentExpireDate;
+    NSString *tencentRefreshToken;
+    NSDate *tencentAccessTokenExpireDate;
     NSString *tencentOpenID;
-    id<CWShareTencentProtocol> delegate;
+    NSDate *tencentRefreshTokenExpireDate;
+    id<CWShareTencentDelegate> delegate;
     ASIFormDataRequest *tencentRequest;
+    UIViewController *parentViewController;
+    TencentShareType tencentShareType;
+    NSString *shareContent;
+    UIImage *shareImage;
 }
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
-@property (nonatomic, strong) NSDate *tencentExpireDate;
+@property (nonatomic, copy) NSString *tencentRefreshToken;
+@property (nonatomic, strong) NSDate *tencentAccessTokenExpireDate;
 @property (nonatomic, copy) NSString *tencentOpenID;
-@property (weak) id<CWShareTencentProtocol> delegate;
+@property (nonatomic, strong) NSDate *tencentRefreshTokenExpireDate;
+@property (weak) id<CWShareTencentDelegate> delegate;
 @property (nonatomic, strong) ASIFormDataRequest *tencentRequest;
+@property (weak) UIViewController *parentViewController;
+@property (nonatomic, copy) NSString *shareContent;
+@property (nonatomic, strong) UIImage *shareImage;
 
 - (void)shareWithContent:(NSString *)theContent;
 

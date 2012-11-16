@@ -16,13 +16,14 @@
 
 @implementation CWShareSinaAuthorize
 
-@synthesize webView,authorizeRequest,delegate;
+@synthesize webView,authorizeRequest,delegate,activityIndicator;
 
 - (void)dealloc
 {
     [self setWebView:nil];
     [authorizeRequest clearDelegatesAndCancel];
     [self setAuthorizeRequest:nil];
+    [self setActivityIndicator:nil];
     [super dealloc];
 }
 
@@ -44,6 +45,11 @@
     NSString *requestURL = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/authorize?client_id=%@&redirect_uri=%@&display=mobile", SINA_APP_KEY, SINA_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
+    
+    self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+    [activityIndicator setFrame:CGRectMake(150, 198, 20, 20)];
+    [activityIndicator startAnimating];
+    [self.view addSubview:activityIndicator];
 }
 
 - (void)viewDidUnload
@@ -76,6 +82,11 @@
         return NO;
     }
     return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [activityIndicator stopAnimating];
 }
 
 #pragma mark - ASIHttpRequest Delegate

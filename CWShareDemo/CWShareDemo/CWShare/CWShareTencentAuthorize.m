@@ -17,8 +17,8 @@
 
 @implementation CWShareTencentAuthorize
 
-@synthesize webView,authorizeRequest,delegate,accessToken,expiredTime,
-openID;
+@synthesize webView,authorizeRequest,delegate,accessToken,
+refreshToken,expiredTime,openID;
 
 - (void)dealloc
 {
@@ -26,6 +26,7 @@ openID;
     [authorizeRequest clearDelegatesAndCancel];
     [self setAuthorizeRequest:nil];
     [self setAccessToken:nil];
+    [self setRefreshToken:nil];
     [self setExpiredTime:nil];
     [self setOpenID:nil];
     [super dealloc];
@@ -69,53 +70,14 @@ openID;
             self.accessToken = [[[redirectURL objectAtIndex:0] componentsSeparatedByString:@"="] objectAtIndex:1];
             self.expiredTime = [[[redirectURL objectAtIndex:1] componentsSeparatedByString:@"="] objectAtIndex:1];
             self.openID = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
+            self.refreshToken = [[[redirectURL objectAtIndex:4] componentsSeparatedByString:@"="] objectAtIndex:1];
             
-            NSString *requestURL = [NSString stringWithFormat:@"https://open.t.qq.com/api/user/info"];
-            self.authorizeRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:requestURL]];
-            [authorizeRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
-            [authorizeRequest setPostValue:accessToken forKey:@"access_token"];
-            [authorizeRequest setPostValue:openID forKey:@"openid"];
-            [authorizeRequest setPostValue:@"2.a" forKey:@"oauth_version"];
-            [authorizeRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
-            [authorizeRequest setPostValue:@"json" forKey:@"format"];
-            [authorizeRequest setPostValue:@"all" forKey:@"scope"];
-            [authorizeRequest setDidFinishSelector:@selector(requestUserInfoFinish:)];
-            [authorizeRequest setDidFailSelector:@selector(requestUserInfoFail:)];
-            [authorizeRequest setDelegate:self];
-            [authorizeRequest startAsynchronous];
-            
+            [self.navigationController popViewControllerAnimated:YES];
+            [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID withRefreshToken:refreshToken];
             return NO;
         }
     }
     return YES;
 }
-
-#pragma mark - ASIHttpRequest Delegate
-
-- (void)requestUserInfoFinish:(ASIHTTPRequest *)request
-{
-    NSString *responseString = [request responseString];
-    SBJsonParser *parser = [[[SBJsonParser alloc] init] autorelease];
-    NSError *error = nil;
-    NSDictionary *data = [parser objectWithString:responseString error:&error];
-    if (error != nil) {
-        [delegate tencentAuthorizeFail];
-        return;
-    }
-    if ([[data objectForKey:@"ret"] integerValue] == 0) {
-        [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID withUserInfo:[data objectForKey:@"data"]];
-        [self.navigationController popViewControllerAnimated:YES];
-    } else {
-        [delegate tencentAuthorizeFail];
-    }
-}
-
-- (void)requestUserInfoFail:(ASIHTTPRequest *)request
-{
-    [delegate tencentAuthorizeFail];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-
 
 @end

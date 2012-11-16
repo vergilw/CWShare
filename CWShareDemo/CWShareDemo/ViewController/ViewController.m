@@ -14,12 +14,11 @@
 
 @implementation ViewController
 
-@synthesize sinaShare,tencentShare;
+@synthesize cwShare;
 
 - (void)dealloc
 {
-    [self setSinaShare:nil];
-    [self setTencentShare:nil];
+    [self setCwShare:nil];
     [super dealloc];
 }
 
@@ -27,7 +26,9 @@
 {
     [super viewDidLoad];
 
-	// Do any additional setup after loading the view, typically from a nib.
+	self.cwShare = [[[CWShare alloc] init] autorelease];
+    [cwShare setDelegate:self];
+    [cwShare setParentViewController:self];
 }
 
 - (void)viewDidUnload
@@ -45,62 +46,90 @@
 
 - (IBAction)sinaAuthorizeAction:(id)sender
 {
-    self.sinaShare = [[[CWShareSina alloc] init] autorelease];
-    [sinaShare setDelegate:self];
-    [sinaShare startAuthorize];
+    [cwShare startSinaAuthorize];
 }
 
 - (IBAction)sinaShareContent:(id)sender
 {
-    [sinaShare shareWithContent:@"it's a debug test from my app, you can ignore this message."];
+    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
 }
 
 - (IBAction)sinaShareContentAndImage:(id)sender
 {
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
-    [sinaShare shareWithContent:@"it's a debug test from my app, you can ignore this message." withImage:uploadImage];
+    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
 }
 
 - (IBAction)tencentAuthorizeAction:(id)sender
 {
-    self.tencentShare = [[[CWShareTencent alloc] init] autorelease];
-    [tencentShare setDelegate:self];
-    [tencentShare startAuthorize];
+    [cwShare startTencentAuthorize];
 }
 
 - (IBAction)tencentShareContent:(id)sender
 {
-    [tencentShare shareWithContent:@"it's a debug test from my app, you can ignore this message."];
+    [cwShare tencentShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
 }
 
 - (IBAction)tencentShareContentAndImage:(id)sender
 {
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
-    [tencentShare shareWithContent:@"it's a debug test from my app, you can ignore this message." withImage:uploadImage];
+    [cwShare tencentShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
 }
 
-#pragma mark - CWShareSina Delegate
+#pragma mark - CWShare Delegate
 
-- (void)sinaShareAuthorizeFinish
+- (void)authorizeFailForShareType:(CWShareType)shareType
 {
-    
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪授权失败");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯授权失败");
+    }
 }
 
-- (void)sinaShareAuthorizeFail
+- (void)authorizeFinishForShareType:(CWShareType)shareType
 {
-    
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪授权成功");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯授权成功");
+    }
 }
 
-#pragma mark - CWShareTencent Delegate
-
-- (void)tencentShareAuthorizeFinish
+- (void)shareContentFailForShareType:(CWShareType)shareType
 {
-    
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪分享内容失败");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯分享内容失败");
+    }
 }
 
-- (void)tencentShareAuthorizeFail
+- (void)shareContentFinishForShareType:(CWShareType)shareType
 {
-    
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪分享内容成功");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯分享内容成功");
+    }
+}
+
+- (void)shareContentAndImageFailForShareType:(CWShareType)shareType
+{
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪分享图片失败");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯分享图片失败");
+    }
+}
+
+- (void)shareContentAndImageFinishForShareType:(CWShareType)shareType
+{
+    if (shareType == CWShareTypeSina) {
+        NSLog(@"新浪分享图片成功");
+    } else if (shareType == CWShareTypeTencent) {
+        NSLog(@"腾讯分享图片成功");
+    }
 }
 
 @end

@@ -8,10 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CWShareTencentProtocol <NSObject>
+@protocol CWShareTencentDelegate <NSObject>
 
 @optional
 - (void)tencentShareAuthorizeFinish;
 - (void)tencentShareAuthorizeFail;
+
+- (void)tencentShareContentFinish;
+- (void)tencentShareContentFail;
+
+- (void)tencentShareContentAndImageFinish;
+- (void)tencentShareContentAndImageFail;
 
 @end

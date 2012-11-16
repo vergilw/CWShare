@@ -21,10 +21,12 @@
     UIWebView *webView;
     ASIFormDataRequest *authorizeRequest;
     id<CWShareSinaAuthorizeDelegate> delegate;
+    UIActivityIndicatorView *activityIndicator;
 }
 
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) ASIFormDataRequest *authorizeRequest;
 @property (weak) id<CWShareSinaAuthorizeDelegate> delegate;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 @end

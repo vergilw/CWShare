@@ -12,7 +12,7 @@
 @protocol CWShareTencentAuthorizeDelegate <NSObject>
 
 @optional
-- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withUserInfo:(NSDictionary *)userInfo;
+- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withRefreshToken:(NSString *)refreshToken;
 - (void)tencentAuthorizeFail;
 
 @end
@@ -22,6 +22,7 @@
     ASIFormDataRequest *authorizeRequest;
     id<CWShareTencentAuthorizeDelegate> delegate;
     NSString *accessToken;
+    NSString *refreshToken;
     NSString *expiredTime;
     NSString *openID;
 }
@@ -30,6 +31,7 @@
 @property (nonatomic, strong) ASIFormDataRequest *authorizeRequest;
 @property (weak) id<CWShareTencentAuthorizeDelegate> delegate;
 @property (nonatomic, copy) NSString *accessToken;
+@property (nonatomic, copy) NSString *refreshToken;
 @property (nonatomic, copy) NSString *expiredTime;
 @property (nonatomic, copy) NSString *openID;
 

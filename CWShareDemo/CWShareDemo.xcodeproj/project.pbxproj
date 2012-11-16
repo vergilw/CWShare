@@ -78,8 +78,9 @@
 		328F74A1162521EA00E50C85 /* CWShareTencentAuthorize.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareTencentAuthorize.m; sourceTree = "<group>"; };
 		328F74A7162549BB00E50C85 /* CWShareTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareTools.h; sourceTree = "<group>"; };
 		328F74A8162549BB00E50C85 /* CWShareTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareTools.m; sourceTree = "<group>"; };
-		32938AC8162BDD91002893F2 /* CWShareSinaProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWShareSinaProtocol.h; sourceTree = "<group>"; };
-		32938ACA162BDE4A002893F2 /* CWShareTencentProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWShareTencentProtocol.h; sourceTree = "<group>"; };
+		32938AC8162BDD91002893F2 /* CWShareSinaDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWShareSinaDelegate.h; sourceTree = "<group>"; };
+		32938ACA162BDE4A002893F2 /* CWShareTencentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWShareTencentDelegate.h; sourceTree = "<group>"; };
+		32A5BAB416537EB3009F7619 /* CWShareDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWShareDelegate.h; sourceTree = "<group>"; };
 		32CE6A1A15FD128C00F3B523 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		32CE6A1B15FD128C00F3B523 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
 		32CE6A1C15FD128C00F3B523 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
@@ -229,18 +230,19 @@
 				3280AE8315DF181000CAFBE3 /* CWShareConfig.h */,
 				3280AE7F15DF163800CAFBE3 /* CWShare.h */,
 				3280AE8015DF163800CAFBE3 /* CWShare.m */,
+				32A5BAB416537EB3009F7619 /* CWShareDelegate.h */,
 				328F74A7162549BB00E50C85 /* CWShareTools.h */,
 				328F74A8162549BB00E50C85 /* CWShareTools.m */,
 				3280AE8715DF1CC300CAFBE3 /* CWShareStorage.h */,
 				3280AE8815DF1CC300CAFBE3 /* CWShareStorage.m */,
 				3280AE8415DF18A300CAFBE3 /* CWShareSina.h */,
 				3280AE8515DF18A300CAFBE3 /* CWShareSina.m */,
-				32938AC8162BDD91002893F2 /* CWShareSinaProtocol.h */,
+				32938AC8162BDD91002893F2 /* CWShareSinaDelegate.h */,
 				327F8BFF1608660600CD10FF /* CWShareSinaAuthorize.h */,
 				327F8C001608660600CD10FF /* CWShareSinaAuthorize.m */,
 				32D7A142162431E800AA5940 /* CWShareTencent.h */,
 				32D7A143162431E900AA5940 /* CWShareTencent.m */,
-				32938ACA162BDE4A002893F2 /* CWShareTencentProtocol.h */,
+				32938ACA162BDE4A002893F2 /* CWShareTencentDelegate.h */,
 				328F74A0162521EA00E50C85 /* CWShareTencentAuthorize.h */,
 				328F74A1162521EA00E50C85 /* CWShareTencentAuthorize.m */,
 			);
@@ -490,6 +492,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CWShareDemo/CWShareDemo-Prefix.pch";
 				INFOPLIST_FILE = "CWShareDemo/CWShareDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -501,6 +504,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CWShareDemo/CWShareDemo-Prefix.pch";
 				INFOPLIST_FILE = "CWShareDemo/CWShareDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

@@ -14,15 +14,21 @@
 
 @implementation CWShareTencent
 
-@synthesize tencentAccessToken,tencentExpireDate,tencentOpenID,delegate,tencentRequest;
+@synthesize tencentAccessToken,tencentRefreshToken,tencentAccessTokenExpireDate,
+tencentOpenID,tencentRefreshTokenExpireDate,delegate,tencentRequest,
+parentViewController,shareContent,shareImage;
 
 - (void)dealloc
 {
     [self setTencentAccessToken:nil];
-    [self setTencentExpireDate:nil];
+    [self setTencentRefreshToken:nil];
+    [self setTencentAccessTokenExpireDate:nil];
     [self setTencentOpenID:nil];
+    [self setTencentRefreshTokenExpireDate:nil];
     [tencentRequest clearDelegatesAndCancel];
     [self setTencentRequest:nil];
+    [self setShareContent:nil];
+    [self setShareImage:nil];
     [super dealloc];
 }
 
@@ -31,8 +37,10 @@
     self = [super init];
     if (self) {
         self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
-        self.tencentExpireDate = [CWShareStorage getTencentExpiredDate];
+        self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
         self.tencentOpenID = [CWShareStorage getTencentUserID];
+        self.tencentRefreshToken = [CWShareStorage getTencentRefreshToken];
+        self.tencentRefreshTokenExpireDate = [CWShareStorage getTencentRefreshTokenExpireDate];
     }
     return self;
 }
@@ -42,7 +50,30 @@
 - (void)shareWithContent:(NSString *)theContent
 {
     if ([self isAuthorizeExpired]) {
-        NSLog(@"授权Token过期，需要重新授权");
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+        } else {
+            tencentShareType = TencentShareContent;
+            self.shareContent = theContent;
+            
+            if (tencentAccessTokenExpireDate == nil || [tencentRefreshTokenExpireDate compare:[NSDate date]] == NSOrderedAscending) {
+                CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
+                [tencentAuthorize setDelegate:self];
+                [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
+                [tencentAuthorize release];
+            } else {
+                self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/cgi-bin/oauth2/access_token"]];
+                [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"client_id"];
+                [tencentRequest setPostValue:@"refresh_token" forKey:@"grant_type"];
+                [tencentRequest setPostValue:tencentAccessToken forKey:@"refresh_token"];
+                [tencentRequest setDidFinishSelector:@selector(refreshTokenFinish:)];
+                [tencentRequest setDidFailSelector:@selector(refreshTokenFail:)];
+                [tencentRequest setDelegate:self];
+                [tencentRequest startAsynchronous];
+            }
+        }
     } else {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
@@ -64,7 +95,31 @@
 - (void)shareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
 {
     if ([self isAuthorizeExpired]) {
-        NSLog(@"授权Token过期，需要重新授权");
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+        } else {
+            tencentShareType = TencentShareContentAndImage;
+            self.shareContent = theContent;
+            self.shareImage = theImage;
+            
+            if (tencentAccessTokenExpireDate == nil || [tencentRefreshTokenExpireDate compare:[NSDate date]] == NSOrderedAscending) {
+                CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
+                [tencentAuthorize setDelegate:self];
+                [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
+                [tencentAuthorize release];
+            } else {
+                self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/cgi-bin/oauth2/access_token"]];
+                [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"client_id"];
+                [tencentRequest setPostValue:@"refresh_token" forKey:@"grant_type"];
+                [tencentRequest setPostValue:tencentAccessToken forKey:@"refresh_token"];
+                [tencentRequest setDidFinishSelector:@selector(refreshTokenFinish:)];
+                [tencentRequest setDidFailSelector:@selector(refreshTokenFail:)];
+                [tencentRequest setDelegate:self];
+                [tencentRequest startAsynchronous];
+            }
+        }
     } else {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add_pic"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
@@ -78,7 +133,7 @@
         [tencentRequest setData:UIImageJPEGRepresentation(theImage, 1) forKey:@"pic"];
         [tencentRequest setPostValue:@"1" forKey:@"syncflag"];
         [tencentRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
-        [tencentRequest setDidFailSelector:@selector(shareContentFail:)];
+        [tencentRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
         [tencentRequest setDelegate:self];
         [tencentRequest startAsynchronous];
     }
@@ -89,23 +144,23 @@
 
 - (void)startAuthorize
 {
-    if (delegate == nil) {
-        NSLog(@"tencent没有设置代理");
+    if (parentViewController == nil) {
+        NSLog(@"CWShare没有设置parentViewController");
+    } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+        NSLog(@"CWShare代理应该属于UIViewController");
     } else {
-        if ([delegate isKindOfClass:[UIViewController class]]) {
-            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-            [tencentAuthorize setDelegate:self];
-            [[(UIViewController *)delegate navigationController] pushViewController:tencentAuthorize animated:YES];
-            [tencentAuthorize release];
-        } else {
-            NSLog(@"CWShare代理应该属于UIViewController");
-        }
+        tencentShareType = TencentShareNone;
+        
+        CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
+        [tencentAuthorize setDelegate:self];
+        [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
+        [tencentAuthorize release];
     }
 }
 
 - (BOOL)isAuthorizeExpired
 {
-    if ([tencentExpireDate compare:[NSDate date]] == NSOrderedDescending) {
+    if ([tencentAccessTokenExpireDate compare:[NSDate date]] == NSOrderedDescending) {
         return NO;
     } else {
         return YES;
@@ -114,16 +169,58 @@
 
 #pragma mark - CWShareSinaAuthorize Delegate
 
-- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withUserInfo:(NSDictionary *)userInfo
+- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withRefreshToken:(NSString *)refreshToken
 {
     self.tencentAccessToken = accessToken;
-    self.tencentExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
+    self.tencentAccessTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
     self.tencentOpenID = theOpenID;
-    [delegate tencentShareAuthorizeFinish];
+    self.tencentRefreshToken = refreshToken;
+    self.tencentRefreshTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:3600*24*90];
+    [CWShareStorage setTencentAccessToken:tencentAccessToken];
+    [CWShareStorage setTencentExpiredDate:tencentAccessTokenExpireDate];
+    [CWShareStorage setTencentUserID:tencentOpenID];
+    [CWShareStorage setTencentRefreshToken:tencentRefreshToken];
+    [CWShareStorage setTencentRefreshTokenExpireDate:tencentRefreshTokenExpireDate];
+    
+    if (tencentShareType == TencentShareNone) {
+        [delegate tencentShareAuthorizeFinish];
+    } else if (tencentShareType == TencentShareContent) {
+        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add"]];
+        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
+        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
+        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
+        [tencentRequest setPostValue:@"2.a" forKey:@"oauth_version"];
+        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
+        [tencentRequest setPostValue:@"json" forKey:@"format"];
+        [tencentRequest setPostValue:@"all" forKey:@"scope"];
+        [tencentRequest setPostValue:shareContent forKey:@"content"];
+        [tencentRequest setPostValue:@"1" forKey:@"syncflag"];
+        [tencentRequest setDidFinishSelector:@selector(shareContentFinish:)];
+        [tencentRequest setDidFailSelector:@selector(shareContentFail:)];
+        [tencentRequest setDelegate:self];
+        [tencentRequest startAsynchronous];
+    } else if (tencentShareType == TencentShareContentAndImage) {
+        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add_pic"]];
+        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
+        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
+        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
+        [tencentRequest setPostValue:@"2.a" forKey:@"oauth_version"];
+        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
+        [tencentRequest setPostValue:@"json" forKey:@"format"];
+        [tencentRequest setPostValue:@"all" forKey:@"scope"];
+        [tencentRequest setPostValue:shareContent forKey:@"content"];
+        [tencentRequest setData:UIImageJPEGRepresentation(shareImage, 1) forKey:@"pic"];
+        [tencentRequest setPostValue:@"1" forKey:@"syncflag"];
+        [tencentRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
+        [tencentRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
+        [tencentRequest setDelegate:self];
+        [tencentRequest startAsynchronous];
+    }
 }
 
 - (void)tencentAuthorizeFail
 {
+    NSLog(@"tencent authorize 没有网络连接");
     [delegate tencentShareAuthorizeFail];
 }
 
@@ -131,7 +228,8 @@
 
 - (void)shareContentFail:(ASIFormDataRequest *)request
 {
-    NSLog(@"%@", [[request error] localizedDescription]);
+    NSLog(@"tencent shareContent 没有网络连接");
+    [delegate tencentShareAuthorizeFail];
 }
 
 - (void)shareContentFinish:(ASIFormDataRequest *)request
@@ -141,13 +239,30 @@
     NSError *error = nil;
     NSDictionary *data = [parser objectWithString:responseString error:&error];
     if (error != nil) {
+        NSLog(@"tencent shareContent 返回Json格式错误");
+        [delegate tencentShareContentFail];
         return;
     }
     if ([[data objectForKey:@"ret"] integerValue] == 0) {
-        
+        [delegate tencentShareContentFinish];
     } else {
-        NSLog(@"errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
+        if ([[data objectForKey:@"errcode"] integerValue] == 36) {
+            [CWShareStorage clearTencentStoreInfo];
+            self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
+            self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+            self.tencentOpenID = [CWShareStorage getTencentUserID];
+            self.tencentRefreshToken = [CWShareStorage getTencentRefreshToken];
+            self.tencentRefreshTokenExpireDate = [CWShareStorage getTencentRefreshTokenExpireDate];
+        }
+        NSLog(@"tencent shareContent errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
+        [delegate tencentShareContentFail];
     }
+}
+
+- (void)shareContentAndImageFail:(ASIFormDataRequest *)request
+{
+    NSLog(@"tencent shareContentAndImage 没有网络连接");
+    [delegate tencentShareContentAndImageFail];
 }
 
 - (void)shareContentAndImageFinish:(ASIFormDataRequest *)request
@@ -157,13 +272,44 @@
     NSError *error = nil;
     NSDictionary *data = [parser objectWithString:responseString error:&error];
     if (error != nil) {
+        NSLog(@"tencent shareContentAndImage 返回Json格式错误");
+        [delegate tencentShareContentAndImageFail];
         return;
     }
     if ([[data objectForKey:@"ret"] integerValue] == 0) {
-        
+        [delegate tencentShareContentAndImageFinish];
     } else {
-        NSLog(@"errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
+        if ([[data objectForKey:@"errcode"] integerValue] == 36) {
+            [CWShareStorage clearTencentStoreInfo];
+            self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
+            self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+            self.tencentOpenID = [CWShareStorage getTencentUserID];
+            self.tencentRefreshToken = [CWShareStorage getTencentRefreshToken];
+            self.tencentRefreshTokenExpireDate = [CWShareStorage getTencentRefreshTokenExpireDate];
+        }
+        NSLog(@"tencent shareContentAndImage errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
+        [delegate tencentShareContentAndImageFail];
     }
+}
+
+- (void)refreshTokenFail:(ASIFormDataRequest *)request
+{
+    NSLog(@"tencent refreshToken 没有网络连接");
+    [delegate tencentShareAuthorizeFail];
+}
+
+- (void)refreshTokenFinish:(ASIFormDataRequest *)request
+{
+    NSString *responseString = [request responseString];
+    
+    NSArray *redirectURL = [responseString componentsSeparatedByString:@"&"];
+    
+    NSString *accessToken = [[[redirectURL objectAtIndex:0] componentsSeparatedByString:@"="] objectAtIndex:1];
+    NSString *expiresTime = [[[redirectURL objectAtIndex:1] componentsSeparatedByString:@"="] objectAtIndex:1];
+    NSString *openID = [[[redirectURL objectAtIndex:3] componentsSeparatedByString:@"="] objectAtIndex:1];
+    NSString *refreshToken = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
+    
+    [self tencentAuthorizeFinish:accessToken withExpireTime:expiresTime withOpenID:openID withRefreshToken:refreshToken];
 }
 
 @end

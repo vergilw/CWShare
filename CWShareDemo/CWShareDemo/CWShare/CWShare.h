@@ -9,24 +9,19 @@
 #import <Foundation/Foundation.h>
 #import "CWShareSina.h"
 #import "CWShareTencent.h"
+#import "CWShareDelegate.h"
 
-@protocol CWShareDelegate <NSObject>
-
-@optional
-- (void)sinaAuthorizeFail;
-
-@end
-
-@interface CWShare : NSObject {
+@interface CWShare : NSObject <CWShareSinaDelegate,CWShareTencentDelegate> {
     CWShareSina *sinaShare;
     CWShareTencent *tencentShare;
     id<CWShareDelegate> delegate;
+    UIViewController *parentViewController;
 }
 
 @property (nonatomic, strong) CWShareSina *sinaShare;
 @property (nonatomic, strong) CWShareTencent *tencentShare;
 @property (weak) id<CWShareDelegate> delegate;
-
+@property (weak) UIViewController *parentViewController;
 
 - (void)startSinaAuthorize;
 - (void)sinaShareWithContent:(NSString *)theContent;

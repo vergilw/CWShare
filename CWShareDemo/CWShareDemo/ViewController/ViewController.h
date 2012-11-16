@@ -7,14 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CWShareSina.h"
-#import "CWShareTencent.h"
+#import "CWShare.h"
 
-@interface ViewController : UIViewController <CWShareSinaDelegate,CWShareTencentDelegate>
+@interface ViewController : UIViewController <CWShareDelegate>
 
-@property (nonatomic, strong) CWShareSina *sinaShare;
-@property (nonatomic, strong) CWShareTencent *tencentShare;
-
-- (IBAction)sinaAuthorizeAction:(id)sender;
+@property (nonatomic, strong) CWShare *cwShare;
 
 @end
