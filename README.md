@@ -1,4 +1,4 @@
-CWShare
+CWShare 1.0
 =======
 
 ### 关于CWShare:
@@ -50,7 +50,7 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 }
 ```
 
-在分享的时候只需要调用如果一句代码。
+在分享的时候你只需要调用如下的一句代码。
 ```objective-c
 #import "ViewController.h"
 
