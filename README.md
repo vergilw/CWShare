@@ -22,7 +22,7 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 - QuartzCore.framework
 - libz.dylib
 
-使用的时候先在你要调用CWShare的头文件里申明它。
+使用的时候先在你要调用CWShare的.h头文件里申明它。
 ```objective-c
 #import <UIKit/UIKit.h>
 #import "CWShare.h"
@@ -34,8 +34,12 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 @end
 ```
 
-然后在你要调用CWShare的类里初始化它。
+然后在你要调用CWShare的.m源文件里初始化它。
 ```objective-c
+#import "ViewController.h"
+
+...
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -48,6 +52,10 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 
 在分享的时候只需要调用如果一句代码。
 ```objective-c
+#import "ViewController.h"
+
+...
+
 - (IBAction)sinaShareContent:(id)sender
 {
     [cwShare sinaShareWithContent:@"test cwshare"];
@@ -56,6 +64,10 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 
 在你的类里实现如下代理，可以处理分享之后的操作。
 ```objective-c
+#import "ViewController.h"
+
+...
+
 - (void)shareContentFailForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
