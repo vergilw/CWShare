@@ -73,9 +73,9 @@
     [delegate authorizeFailForShareType:CWShareTypeSina];
 }
 
-- (void)sinaShareAuthorizeFinish
+- (void)sinaShareAuthorizeFinish:(NSDictionary *)userInfo
 {
-    [delegate authorizeFinishForShareType:CWShareTypeSina];
+    [delegate authorizeFinishForShareType:CWShareTypeSina withData:userInfo];
 }
 
 #pragma mark - CWShare Tencent Authorize Delegate Method
@@ -85,9 +85,9 @@
     [delegate authorizeFailForShareType:CWShareTypeTencent];
 }
 
-- (void)tencentShareAuthorizeFinish
+- (void)tencentShareAuthorizeFinish:(NSDictionary *)userInfo
 {
-    [delegate authorizeFinishForShareType:CWShareTypeTencent];
+    [delegate authorizeFinishForShareType:CWShareTypeTencent withData:userInfo];
 }
 
 #pragma mark - CWShare Sina Share Delegate Method

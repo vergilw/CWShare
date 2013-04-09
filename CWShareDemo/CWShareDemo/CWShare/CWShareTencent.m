@@ -169,21 +169,26 @@ parentViewController,shareContent,shareImage;
 
 #pragma mark - CWShareSinaAuthorize Delegate
 
-- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withRefreshToken:(NSString *)refreshToken
+- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID
 {
     self.tencentAccessToken = accessToken;
     self.tencentAccessTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
     self.tencentOpenID = theOpenID;
-    self.tencentRefreshToken = refreshToken;
-    self.tencentRefreshTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:3600*24*90];
+
     [CWShareStorage setTencentAccessToken:tencentAccessToken];
     [CWShareStorage setTencentExpiredDate:tencentAccessTokenExpireDate];
     [CWShareStorage setTencentUserID:tencentOpenID];
-    [CWShareStorage setTencentRefreshToken:tencentRefreshToken];
-    [CWShareStorage setTencentRefreshTokenExpireDate:tencentRefreshTokenExpireDate];
     
     if (tencentShareType == TencentShareNone) {
-        [delegate tencentShareAuthorizeFinish];
+        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://openmobile.qq.com/user/get_simple_userinfo"]];
+        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
+        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
+        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
+
+        [tencentRequest setDidFinishSelector:@selector(authorizeFinish:)];
+        [tencentRequest setDidFailSelector:@selector(authorizeFail:)];
+        [tencentRequest setDelegate:self];
+        [tencentRequest startAsynchronous];
     } else if (tencentShareType == TencentShareContent) {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
@@ -225,6 +230,28 @@ parentViewController,shareContent,shareImage;
 }
 
 #pragma mark - ASIHttpRequest Share Content Delegate
+
+- (void)authorizeFinish:(ASIFormDataRequest *)request
+{
+    NSString *responseString = [request responseString];
+    SBJsonParser *parser = [[[SBJsonParser alloc] init] autorelease];
+    NSError *error = nil;
+    NSDictionary *data = [parser objectWithString:responseString error:&error];
+    if (error != nil) {
+        NSLog(@"tencent authorize get user info 返回Json格式错误");
+        [delegate tencentShareContentFail];
+        return;
+    }
+    if ([[data objectForKey:@"ret"] integerValue] == 0) {
+        [delegate tencentShareAuthorizeFinish:data];
+    }
+}
+
+- (void)authorizeFail:(ASIFormDataRequest *)request
+{
+    NSLog(@"tencent shareContent get user info 没有网络连接");
+    [delegate tencentShareAuthorizeFail];
+}
 
 - (void)shareContentFail:(ASIFormDataRequest *)request
 {
@@ -290,26 +317,6 @@ parentViewController,shareContent,shareImage;
         NSLog(@"tencent shareContentAndImage errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
         [delegate tencentShareContentAndImageFail];
     }
-}
-
-- (void)refreshTokenFail:(ASIFormDataRequest *)request
-{
-    NSLog(@"tencent refreshToken 没有网络连接");
-    [delegate tencentShareAuthorizeFail];
-}
-
-- (void)refreshTokenFinish:(ASIFormDataRequest *)request
-{
-    NSString *responseString = [request responseString];
-    
-    NSArray *redirectURL = [responseString componentsSeparatedByString:@"&"];
-    
-    NSString *accessToken = [[[redirectURL objectAtIndex:0] componentsSeparatedByString:@"="] objectAtIndex:1];
-    NSString *expiresTime = [[[redirectURL objectAtIndex:1] componentsSeparatedByString:@"="] objectAtIndex:1];
-    NSString *openID = [[[redirectURL objectAtIndex:3] componentsSeparatedByString:@"="] objectAtIndex:1];
-    NSString *refreshToken = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
-    
-    [self tencentAuthorizeFinish:accessToken withExpireTime:expiresTime withOpenID:openID withRefreshToken:refreshToken];
 }
 
 @end

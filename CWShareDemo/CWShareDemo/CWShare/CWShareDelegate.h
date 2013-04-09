@@ -16,7 +16,7 @@ typedef enum {
 @protocol CWShareDelegate <NSObject>
 
 @optional
-- (void)authorizeFinishForShareType:(CWShareType)shareType;
+- (void)authorizeFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo;
 - (void)authorizeFailForShareType:(CWShareType)shareType;
 
 - (void)shareContentFinishForShareType:(CWShareType)shareType;

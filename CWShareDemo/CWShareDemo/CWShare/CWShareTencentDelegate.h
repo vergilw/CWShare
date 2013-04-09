@@ -11,7 +11,7 @@
 @protocol CWShareTencentDelegate <NSObject>
 
 @optional
-- (void)tencentShareAuthorizeFinish;
+- (void)tencentShareAuthorizeFinish:(NSDictionary *)userInfo;
 - (void)tencentShareAuthorizeFail;
 
 - (void)tencentShareContentFinish;

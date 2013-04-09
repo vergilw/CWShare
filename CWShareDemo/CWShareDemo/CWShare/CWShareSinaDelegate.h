@@ -11,7 +11,7 @@
 @protocol CWShareSinaDelegate <NSObject>
 
 @optional
-- (void)sinaShareAuthorizeFinish;
+- (void)sinaShareAuthorizeFinish:(NSDictionary *)userInfo;
 - (void)sinaShareAuthorizeFail;
 
 - (void)sinaShareContentFinish;

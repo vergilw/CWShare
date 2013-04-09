@@ -42,7 +42,7 @@
 	
     self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)] autorelease];
     [webView setDelegate:self];
-    NSString *requestURL = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/authorize?client_id=%@&redirect_uri=%@&display=mobile", SINA_APP_KEY, SINA_REDIRECT_URL];
+    NSString *requestURL = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/authorize?client_id=%@&redirect_uri=%@&display=mobile&scope=follow_app_official_microblog,friendships_groups_read", SINA_APP_KEY, SINA_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
     

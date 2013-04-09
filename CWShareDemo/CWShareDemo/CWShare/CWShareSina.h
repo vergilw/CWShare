@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CWShareSinaAuthorize.h"
-#import "ASIFormDataRequest.h"
+#import "ASIHTTPRequest.h"
 #import "CWShareSinaDelegate.h"
 
 typedef enum {
@@ -22,7 +22,8 @@ typedef enum {
     NSDate *sinaExpireDate;
     NSString *sinaUID;
     id<CWShareSinaDelegate> delegate;
-    ASIFormDataRequest *sinaRequest;
+    ASIHTTPRequest *sinaGetRequest;
+    ASIFormDataRequest *sinaPostRequest;
     UIViewController *parentViewController;
     SinaShareType sinaShareType;
     NSString *shareContent;
@@ -33,7 +34,8 @@ typedef enum {
 @property (nonatomic, strong) NSDate *sinaExpireDate;
 @property (nonatomic, copy) NSString *sinaUID;
 @property (weak) id<CWShareSinaDelegate> delegate;
-@property (nonatomic, strong) ASIFormDataRequest *sinaRequest;
+@property (nonatomic, strong) ASIHTTPRequest *sinaGetRequest;
+@property (nonatomic, strong) ASIFormDataRequest *sinaPostRequest;
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, copy) NSString *shareContent;
 @property (nonatomic, strong) UIImage *shareImage;

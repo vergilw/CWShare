@@ -12,7 +12,7 @@
 @protocol CWShareTencentAuthorizeDelegate <NSObject>
 
 @optional
-- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID withRefreshToken:(NSString *)refreshToken;
+- (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID;
 - (void)tencentAuthorizeFail;
 
 @end

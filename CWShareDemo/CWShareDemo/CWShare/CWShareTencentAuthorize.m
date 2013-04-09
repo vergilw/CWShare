@@ -47,7 +47,7 @@ refreshToken,expiredTime,openID;
 	
     self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)] autorelease];
     [webView setDelegate:self];
-    NSString *requestURL = [NSString stringWithFormat:@"https://open.t.qq.com/cgi-bin/oauth2/authorize?client_id=%@&response_type=token&redirect_uri=%@&wap=2", TENCENT_APP_KEY, TENCENT_REDIRECT_URL];
+    NSString *requestURL = [NSString stringWithFormat:@"https://openmobile.qq.com/oauth2.0/m_authorize?client_id=%@&response_type=token&redirect_uri=%@&scope=get_simple_userinfo,add_share,add_t,add_pic_t,get_fanslist", TENCENT_APP_KEY, TENCENT_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
 }
@@ -69,15 +69,38 @@ refreshToken,expiredTime,openID;
             
             self.accessToken = [[[redirectURL objectAtIndex:0] componentsSeparatedByString:@"="] objectAtIndex:1];
             self.expiredTime = [[[redirectURL objectAtIndex:1] componentsSeparatedByString:@"="] objectAtIndex:1];
-            self.openID = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
-            self.refreshToken = [[[redirectURL objectAtIndex:4] componentsSeparatedByString:@"="] objectAtIndex:1];
+//            self.openID = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
+//            self.refreshToken = [[[redirectURL objectAtIndex:4] componentsSeparatedByString:@"="] objectAtIndex:1];
             
-            [self.navigationController popViewControllerAnimated:YES];
-            [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID withRefreshToken:refreshToken];
+            self.authorizeRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.z.qq.com/moc2/me"]];
+            [authorizeRequest setPostValue:accessToken forKey:@"access_token"];
+            [authorizeRequest setDelegate:self];
+            [authorizeRequest startAsynchronous];
+            
+//            [self.navigationController popViewControllerAnimated:YES];
+//            [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID withRefreshToken:refreshToken];
             return NO;
         }
     }
     return YES;
+}
+
+#pragma mark - ASIHttpRequest Delegate
+
+- (void)requestFinished:(ASIHTTPRequest *)request
+{
+    NSString *responseString = [request responseString];
+    
+    self.openID = [[responseString componentsSeparatedByString:@"&"] objectAtIndex:1];
+    self.openID = [[openID componentsSeparatedByString:@"="] objectAtIndex:1];
+    [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)requestFailed:(ASIHTTPRequest *)request
+{
+    [delegate tencentAuthorizeFail];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

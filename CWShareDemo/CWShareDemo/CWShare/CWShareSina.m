@@ -12,8 +12,8 @@
 
 @implementation CWShareSina
 
-@synthesize sinaAccessToken,sinaExpireDate,sinaUID,delegate,sinaRequest,
-parentViewController,shareContent,shareImage;
+@synthesize sinaAccessToken,sinaExpireDate,sinaUID,delegate,sinaGetRequest,
+sinaPostRequest,parentViewController,shareContent,shareImage;
 
 #pragma mark - Memory Management Method
 
@@ -22,8 +22,10 @@ parentViewController,shareContent,shareImage;
     [self setSinaAccessToken:nil];
     [self setSinaExpireDate:nil];
     [self setSinaUID:nil];
-    [sinaRequest clearDelegatesAndCancel];
-    [self setSinaRequest:nil];
+    [sinaGetRequest clearDelegatesAndCancel];
+    [self setSinaGetRequest:nil];
+    [sinaPostRequest clearDelegatesAndCancel];
+    [self setSinaPostRequest:nil];
     [self setShareContent:nil];
     [self setShareImage:nil];
     [super dealloc];
@@ -59,13 +61,13 @@ parentViewController,shareContent,shareImage;
             [sinaAuthorize release];
         }
     } else {
-        self.sinaRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
-        [sinaRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaRequest setPostValue:theContent forKey:@"status"];
-        [sinaRequest setDidFinishSelector:@selector(shareContentFinish:)];
-        [sinaRequest setDidFailSelector:@selector(shareContentFail:)];
-        [sinaRequest setDelegate:self];
-        [sinaRequest startAsynchronous];
+        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
+        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
+        [sinaPostRequest setPostValue:theContent forKey:@"status"];
+        [sinaPostRequest setDidFinishSelector:@selector(shareContentFinish:)];
+        [sinaPostRequest setDidFailSelector:@selector(shareContentFail:)];
+        [sinaPostRequest setDelegate:self];
+        [sinaPostRequest startAsynchronous];
     }
 }
 
@@ -87,15 +89,15 @@ parentViewController,shareContent,shareImage;
             [sinaAuthorize release];
         }
     } else {
-        self.sinaRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
-        [sinaRequest setPostFormat:ASIMultipartFormDataPostFormat];
-        [sinaRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaRequest setPostValue:theContent forKey:@"status"];
-        [sinaRequest setData:UIImageJPEGRepresentation(theImage, 1) forKey:@"pic"];
-        [sinaRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
-        [sinaRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
-        [sinaRequest setDelegate:self];
-        [sinaRequest startAsynchronous];
+        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
+        [sinaPostRequest setPostFormat:ASIMultipartFormDataPostFormat];
+        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
+        [sinaPostRequest setPostValue:theContent forKey:@"status"];
+        [sinaPostRequest setData:UIImageJPEGRepresentation(theImage, 1) forKey:@"pic"];
+        [sinaPostRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
+        [sinaPostRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
+        [sinaPostRequest setDelegate:self];
+        [sinaPostRequest startAsynchronous];
     }
 }
 
@@ -138,25 +140,29 @@ parentViewController,shareContent,shareImage;
     [CWShareStorage setSinaUserID:sinaUID];
     
     if (sinaShareType == SinaShareNone) {
-        [delegate sinaShareAuthorizeFinish];
+        self.sinaGetRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", sinaUID, sinaAccessToken]]];
+        [sinaGetRequest setDidFinishSelector:@selector(authorizeFinish:)];
+        [sinaGetRequest setDidFailSelector:@selector(authorizeFail:)];
+        [sinaGetRequest setDelegate:self];
+        [sinaGetRequest startAsynchronous];
     } else if (sinaShareType == SinaShareContent) {
-        self.sinaRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
-        [sinaRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaRequest setPostValue:shareContent forKey:@"status"];
-        [sinaRequest setDidFinishSelector:@selector(shareContentFinish:)];
-        [sinaRequest setDidFailSelector:@selector(shareContentFail:)];
-        [sinaRequest setDelegate:self];
-        [sinaRequest startAsynchronous];
+        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
+        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
+        [sinaPostRequest setPostValue:shareContent forKey:@"status"];
+        [sinaPostRequest setDidFinishSelector:@selector(shareContentFinish:)];
+        [sinaPostRequest setDidFailSelector:@selector(shareContentFail:)];
+        [sinaPostRequest setDelegate:self];
+        [sinaPostRequest startAsynchronous];
     } else if (sinaShareType == SinaShareContentAndImage) {
-        self.sinaRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
-        [sinaRequest setPostFormat:ASIMultipartFormDataPostFormat];
-        [sinaRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaRequest setPostValue:shareContent forKey:@"status"];
-        [sinaRequest setData:UIImageJPEGRepresentation(shareImage, 1) forKey:@"pic"];
-        [sinaRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
-        [sinaRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
-        [sinaRequest setDelegate:self];
-        [sinaRequest startAsynchronous];
+        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
+        [sinaPostRequest setPostFormat:ASIMultipartFormDataPostFormat];
+        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
+        [sinaPostRequest setPostValue:shareContent forKey:@"status"];
+        [sinaPostRequest setData:UIImageJPEGRepresentation(shareImage, 1) forKey:@"pic"];
+        [sinaPostRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
+        [sinaPostRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
+        [sinaPostRequest setDelegate:self];
+        [sinaPostRequest startAsynchronous];
     }
     
 }
@@ -168,6 +174,37 @@ parentViewController,shareContent,shareImage;
 }
 
 #pragma mark - ASIHttpRequest Share Content Delegate
+
+- (void)authorizeFail:(ASIFormDataRequest *)request
+{
+    NSLog(@"sina authorize get user info 没有网络连接");
+    [delegate sinaShareAuthorizeFail];
+}
+
+- (void)authorizeFinish:(ASIFormDataRequest *)request
+{
+    NSString *responseString = [request responseString];
+    SBJsonParser *parser = [[[SBJsonParser alloc] init] autorelease];
+    NSError *error = nil;
+    NSDictionary *data = [parser objectWithString:responseString error:&error];
+    if (error != nil) {
+        NSLog(@"sina authorize get user info 返回Json格式错误");
+        [delegate sinaShareAuthorizeFail];
+        return;
+    }
+    if ([[data objectForKey:@"error"] length] == 0) {
+        [delegate sinaShareAuthorizeFinish:data];
+    } else {
+        if ([[data objectForKey:@"error_code"] integerValue] == 21332) {
+            [CWShareStorage clearTencentStoreInfo];
+            self.sinaAccessToken = [CWShareStorage getSinaAccessToken];
+            self.sinaExpireDate = [CWShareStorage getSinaExpiredDate];
+            self.sinaUID = [CWShareStorage getSinaUserID];
+        }
+        NSLog(@"sina authorize get user info error_code:%@,error:%@", [data objectForKey:@"error_code"], [data objectForKey:@"error"]);
+        [delegate sinaShareContentFail];
+    }
+}
 
 - (void)shareContentFail:(ASIFormDataRequest *)request
 {
