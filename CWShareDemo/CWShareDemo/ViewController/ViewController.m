@@ -65,15 +65,20 @@
     [cwShare startTencentAuthorize];
 }
 
-- (IBAction)tencentShareContent:(id)sender
+- (IBAction)tencentShareToQQZone:(id)sender
 {
-    [cwShare tencentShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
+    [cwShare tencentShareToQQZoneWithDescription:@"share description" withTitle:[NSString stringWithFormat:@"share title. %d", arc4random()] Content:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withSynchronizeWeibo:NO];
 }
 
-- (IBAction)tencentShareContentAndImage:(id)sender
+- (IBAction)tencentShareContentToWeiBo:(id)sender
+{
+    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
+}
+
+- (IBAction)tencentShareContentAndImageToWeiBo:(id)sender
 {
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
-    [cwShare tencentShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
+    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
 }
 
 #pragma mark - CWShare Delegate
@@ -87,12 +92,14 @@
     }
 }
 
-- (void)authorizeFinishForShareType:(CWShareType)shareType
+- (void)authorizeFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo
 {
     if (shareType == CWShareTypeSina) {
         NSLog(@"新浪授权成功");
+        NSLog(@"%@", userInfo);
     } else if (shareType == CWShareTypeTencent) {
         NSLog(@"腾讯授权成功");
+        NSLog(@"%@", userInfo);
     }
 }
 

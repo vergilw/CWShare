@@ -24,7 +24,7 @@
 
 
 
-//腾讯微博信息存储
+//腾讯QQ信息存储
 + (void)clearTencentStoreInfo;
 
 + (NSString *)getTencentAccessToken;
@@ -35,11 +35,5 @@
 
 + (NSString *)getTencentUserID;
 + (void)setTencentUserID:(NSString *)userID;
-
-+ (NSString *)getTencentRefreshToken;
-+ (void)setTencentRefreshToken:(NSString *)refreshToken;
-
-+ (NSDate *)getTencentRefreshTokenExpireDate;
-+ (void)setTencentRefreshTokenExpireDate:(NSDate *)expireDate;
 
 @end

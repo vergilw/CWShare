@@ -56,14 +56,19 @@
     [tencentShare startAuthorize];
 }
 
-- (void)tencentShareWithContent:(NSString *)theContent
+- (void)tencentShareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool
 {
-    [tencentShare shareWithContent:theContent];
+    [tencentShare shareToQQZoneWithDescription:theDesc withTitle:theTitle Content:theContent withSynchronizeWeibo:theBool];
 }
 
-- (void)tencentShareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
+- (void)tencentShareToWeiBoWithContent:(NSString *)theContent
 {
-    [tencentShare shareWithContent:theContent withImage:theImage];
+    [tencentShare shareToWeiBoWithContent:theContent];
+}
+
+- (void)tencentShareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage
+{
+    [tencentShare shareToWeiBoWithContent:theContent withImage:theImage];
 }
 
 #pragma mark - CWShare Sina Authorize Delegate Method

@@ -19,10 +19,8 @@ typedef enum {
 
 @interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *tencentAccessToken;
-    NSString *tencentRefreshToken;
     NSDate *tencentAccessTokenExpireDate;
     NSString *tencentOpenID;
-    NSDate *tencentRefreshTokenExpireDate;
     id<CWShareTencentDelegate> delegate;
     ASIFormDataRequest *tencentRequest;
     UIViewController *parentViewController;
@@ -32,19 +30,19 @@ typedef enum {
 }
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
-@property (nonatomic, copy) NSString *tencentRefreshToken;
 @property (nonatomic, strong) NSDate *tencentAccessTokenExpireDate;
 @property (nonatomic, copy) NSString *tencentOpenID;
-@property (nonatomic, strong) NSDate *tencentRefreshTokenExpireDate;
 @property (weak) id<CWShareTencentDelegate> delegate;
 @property (nonatomic, strong) ASIFormDataRequest *tencentRequest;
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, copy) NSString *shareContent;
 @property (nonatomic, strong) UIImage *shareImage;
 
-- (void)shareWithContent:(NSString *)theContent;
+- (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool;
 
-- (void)shareWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
+- (void)shareToWeiBoWithContent:(NSString *)theContent;
+
+- (void)shareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
 
 - (void)startAuthorize;
 

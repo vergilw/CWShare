@@ -29,7 +29,11 @@
 
 
 - (void)startTencentAuthorize;
-- (void)tencentShareWithContent:(NSString *)theContent;
-- (void)tencentShareWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
+
+- (void)tencentShareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool;
+
+- (void)tencentShareToWeiBoWithContent:(NSString *)theContent;
+
+- (void)tencentShareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
 
 @end

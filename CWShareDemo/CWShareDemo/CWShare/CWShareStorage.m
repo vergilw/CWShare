@@ -15,8 +15,6 @@
 #define CW_TENCENT_ACCESS_TOKEN @"CWShareTencentAccessToken"
 #define CW_TENCENT_ACCESS_TOKEN_EXPIRED_DATE @"CWShareTencentAccessTokenExpiredDate"
 #define CW_TENCENT_USER_ID @"CWShareTencentUserID"
-#define CW_TENCENT_REFRESH_TOKEN @"CWShareTencentRefreshToken"
-#define CW_TENCENT_REFRESH_TOKEN_EXPIRED_DATE @"CWShareTencentRefreshTokenExpiredDate"
 
 @implementation CWShareStorage
 
@@ -70,8 +68,6 @@
     [userDefaulst removeObjectForKey:CW_TENCENT_ACCESS_TOKEN];
     [userDefaulst removeObjectForKey:CW_TENCENT_ACCESS_TOKEN_EXPIRED_DATE];
     [userDefaulst removeObjectForKey:CW_TENCENT_USER_ID];
-    [userDefaulst removeObjectForKey:CW_TENCENT_REFRESH_TOKEN];
-    [userDefaulst removeObjectForKey:CW_TENCENT_REFRESH_TOKEN_EXPIRED_DATE];
 }
 
 + (NSString *)getTencentAccessToken
@@ -108,30 +104,6 @@
 {
     NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
     [userDefauls setObject:userID forKey:CW_TENCENT_USER_ID];
-}
-
-+ (NSString *)getTencentRefreshToken
-{
-    NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
-    return [userDefauls objectForKey:CW_TENCENT_REFRESH_TOKEN];
-}
-
-+ (void)setTencentRefreshToken:(NSString *)refreshToken
-{
-    NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
-    [userDefauls setObject:refreshToken forKey:CW_TENCENT_REFRESH_TOKEN];
-}
-
-+ (NSDate *)getTencentRefreshTokenExpireDate
-{
-    NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
-    return [userDefauls objectForKey:CW_TENCENT_REFRESH_TOKEN_EXPIRED_DATE];
-}
-
-+ (void)setTencentRefreshTokenExpireDate:(NSDate *)expireDate
-{
-    NSUserDefaults *userDefauls = [NSUserDefaults standardUserDefaults];
-    [userDefauls setObject:expireDate forKey:CW_TENCENT_REFRESH_TOKEN_EXPIRED_DATE];
 }
 
 @end
