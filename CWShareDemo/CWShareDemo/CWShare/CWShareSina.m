@@ -13,7 +13,7 @@
 @implementation CWShareSina
 
 @synthesize sinaAccessToken,sinaExpireDate,sinaUID,delegate,sinaGetRequest,
-sinaPostRequest,parentViewController,shareContent,shareImage;
+sinaPostRequest,parentViewController,authorizeBlock;
 
 #pragma mark - Memory Management Method
 
@@ -26,8 +26,7 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
     [self setSinaGetRequest:nil];
     [sinaPostRequest clearDelegatesAndCancel];
     [self setSinaPostRequest:nil];
-    [self setShareContent:nil];
-    [self setShareImage:nil];
+    [self setAuthorizeBlock:nil];
     [super dealloc];
 }
 
@@ -46,21 +45,7 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
 
 - (void)shareWithContent:(NSString *)theContent
 {
-    if ([self isAuthorizeExpired]) {
-        if (parentViewController == nil) {
-            NSLog(@"CWShare没有设置parentViewController");
-        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-            NSLog(@"CWShare代理应该属于UIViewController");
-        } else {
-            sinaShareType = SinaShareContent;
-            self.shareContent = theContent;
-            
-            CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
-            [sinaAuthorize setDelegate:self];
-            [parentViewController.navigationController pushViewController:sinaAuthorize animated:YES];
-            [sinaAuthorize release];
-        }
-    } else {
+    self.authorizeBlock = ^(void) {
         self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
         [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
         [sinaPostRequest setPostValue:theContent forKey:@"status"];
@@ -68,27 +53,28 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
         [sinaPostRequest setDidFailSelector:@selector(shareContentFail:)];
         [sinaPostRequest setDelegate:self];
         [sinaPostRequest startAsynchronous];
-    }
-}
-
-- (void)shareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
-{
+    };
+    
     if ([self isAuthorizeExpired]) {
         if (parentViewController == nil) {
             NSLog(@"CWShare没有设置parentViewController");
         } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
             NSLog(@"CWShare代理应该属于UIViewController");
         } else {
-            sinaShareType = SinaShareContentAndImage;
-            self.shareContent = theContent;
-            self.shareImage = theImage;
-            
             CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
             [sinaAuthorize setDelegate:self];
             [parentViewController.navigationController pushViewController:sinaAuthorize animated:YES];
             [sinaAuthorize release];
         }
     } else {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
+    }
+}
+
+- (void)shareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
+{
+    self.authorizeBlock = ^(void) {
         self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
         [sinaPostRequest setPostFormat:ASIMultipartFormDataPostFormat];
         [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
@@ -98,6 +84,23 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
         [sinaPostRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
         [sinaPostRequest setDelegate:self];
         [sinaPostRequest startAsynchronous];
+    };
+    
+    if ([self isAuthorizeExpired]) {
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+        } else {
+            
+            CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
+            [sinaAuthorize setDelegate:self];
+            [parentViewController.navigationController pushViewController:sinaAuthorize animated:YES];
+            [sinaAuthorize release];
+        }
+    } else {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
     }
 }
 
@@ -110,7 +113,13 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
     } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
         NSLog(@"CWShare代理应该属于UIViewController");
     } else {
-        sinaShareType = SinaShareNone;
+        self.authorizeBlock = ^(void) {
+            self.sinaGetRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", sinaUID, sinaAccessToken]]];
+            [sinaGetRequest setDidFinishSelector:@selector(authorizeFinish:)];
+            [sinaGetRequest setDidFailSelector:@selector(authorizeFail:)];
+            [sinaGetRequest setDelegate:self];
+            [sinaGetRequest startAsynchronous];
+        };
         
         CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
         [sinaAuthorize setDelegate:self];
@@ -139,32 +148,10 @@ sinaPostRequest,parentViewController,shareContent,shareImage;
     [CWShareStorage setSinaExpiredDate:sinaExpireDate];
     [CWShareStorage setSinaUserID:sinaUID];
     
-    if (sinaShareType == SinaShareNone) {
-        self.sinaGetRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", sinaUID, sinaAccessToken]]];
-        [sinaGetRequest setDidFinishSelector:@selector(authorizeFinish:)];
-        [sinaGetRequest setDidFailSelector:@selector(authorizeFail:)];
-        [sinaGetRequest setDelegate:self];
-        [sinaGetRequest startAsynchronous];
-    } else if (sinaShareType == SinaShareContent) {
-        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://api.weibo.com/2/statuses/update.json"]];
-        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaPostRequest setPostValue:shareContent forKey:@"status"];
-        [sinaPostRequest setDidFinishSelector:@selector(shareContentFinish:)];
-        [sinaPostRequest setDidFailSelector:@selector(shareContentFail:)];
-        [sinaPostRequest setDelegate:self];
-        [sinaPostRequest startAsynchronous];
-    } else if (sinaShareType == SinaShareContentAndImage) {
-        self.sinaPostRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://upload.api.weibo.com/2/statuses/upload.json"]];
-        [sinaPostRequest setPostFormat:ASIMultipartFormDataPostFormat];
-        [sinaPostRequest setPostValue:sinaAccessToken forKey:@"access_token"];
-        [sinaPostRequest setPostValue:shareContent forKey:@"status"];
-        [sinaPostRequest setData:UIImageJPEGRepresentation(shareImage, 1) forKey:@"pic"];
-        [sinaPostRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
-        [sinaPostRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
-        [sinaPostRequest setDelegate:self];
-        [sinaPostRequest startAsynchronous];
+    if (authorizeBlock) {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
     }
-    
 }
 
 - (void)sinaAuthorizeFail

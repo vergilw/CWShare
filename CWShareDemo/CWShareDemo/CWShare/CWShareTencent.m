@@ -16,7 +16,7 @@
 
 @synthesize tencentAccessToken,tencentAccessTokenExpireDate,
 tencentOpenID,delegate,tencentRequest,
-parentViewController,shareContent,shareImage;
+parentViewController,authorizeBlock;
 
 - (void)dealloc
 {
@@ -25,8 +25,7 @@ parentViewController,shareContent,shareImage;
     [self setTencentOpenID:nil];
     [tencentRequest clearDelegatesAndCancel];
     [self setTencentRequest:nil];
-    [self setShareContent:nil];
-    [self setShareImage:nil];
+    [self setAuthorizeBlock:nil];
     [super dealloc];
 }
 
@@ -45,21 +44,7 @@ parentViewController,shareContent,shareImage;
 
 - (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool
 {
-    if ([self isAuthorizeExpired]) {
-        if (parentViewController == nil) {
-            NSLog(@"CWShare没有设置parentViewController");
-        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-            NSLog(@"CWShare代理应该属于UIViewController");
-        } else {
-            tencentShareType = TencentShareContent;
-            self.shareContent = theContent;
-            
-            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-            [tencentAuthorize setDelegate:self];
-            [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
-            [tencentAuthorize release];
-        }
-    } else {
+    self.authorizeBlock = ^(void) {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.qq.com/share/add_share"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
         [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
@@ -79,73 +64,89 @@ parentViewController,shareContent,shareImage;
         [tencentRequest setDidFailSelector:@selector(shareContentFail:)];
         [tencentRequest setDelegate:self];
         [tencentRequest startAsynchronous];
+    };
+    
+    if ([self isAuthorizeExpired]) {
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+        } else {
+            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
+            [tencentAuthorize setDelegate:self];
+            [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
+            [tencentAuthorize release];
+        }
+    } else {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
     }
 }
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent
 {
-    if ([self isAuthorizeExpired]) {
-        if (parentViewController == nil) {
-            NSLog(@"CWShare没有设置parentViewController");
-        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-            NSLog(@"CWShare代理应该属于UIViewController");
-        } else {
-            tencentShareType = TencentShareContentAndImage;
-            self.shareContent = theContent;
-            
-            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-            [tencentAuthorize setDelegate:self];
-            [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
-            [tencentAuthorize release];
-        }
-    } else {
+    self.authorizeBlock = ^(void) {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.qq.com/t/add_t"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
         [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
         [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
-//        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
         [tencentRequest setPostValue:theContent forKey:@"content"];
         [tencentRequest setDidFinishSelector:@selector(shareContentFinish:)];
         [tencentRequest setDidFailSelector:@selector(shareContentFail:)];
         [tencentRequest setDelegate:self];
         [tencentRequest startAsynchronous];
-    }
-}
-
-- (void)shareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage
-{
+    };
+    
     if ([self isAuthorizeExpired]) {
         if (parentViewController == nil) {
             NSLog(@"CWShare没有设置parentViewController");
         } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
             NSLog(@"CWShare代理应该属于UIViewController");
         } else {
-            tencentShareType = TencentShareContentAndImage;
-            self.shareContent = theContent;
-            self.shareImage = theImage;
-            
             CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
             [tencentAuthorize setDelegate:self];
             [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
             [tencentAuthorize release];
         }
     } else {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
+    }
+}
+
+- (void)shareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage
+{
+    self.authorizeBlock = ^(void) {
         self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.qq.com/t/add_pic_t"]];
         [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
         [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
         [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
-//        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
         [tencentRequest setPostValue:theContent forKey:@"content"];
         [tencentRequest setData:UIImageJPEGRepresentation(theImage, 1) forKey:@"pic"];
         [tencentRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
         [tencentRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
         [tencentRequest setDelegate:self];
         [tencentRequest startAsynchronous];
+    };
+    
+    if ([self isAuthorizeExpired]) {
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+        } else {
+            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
+            [tencentAuthorize setDelegate:self];
+            [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
+            [tencentAuthorize release];
+        }
+    } else {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
     }
 }
 
 #pragma mark - Authorize Method
-
 
 - (void)startAuthorize
 {
@@ -154,7 +155,17 @@ parentViewController,shareContent,shareImage;
     } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
         NSLog(@"CWShare代理应该属于UIViewController");
     } else {
-        tencentShareType = TencentShareNone;
+        self.authorizeBlock = ^(void) {
+            self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://openmobile.qq.com/user/get_simple_userinfo"]];
+            [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
+            [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
+            [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
+            
+            [tencentRequest setDidFinishSelector:@selector(authorizeFinish:)];
+            [tencentRequest setDidFailSelector:@selector(authorizeFail:)];
+            [tencentRequest setDelegate:self];
+            [tencentRequest startAsynchronous];
+        };
         
         CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
         [tencentAuthorize setDelegate:self];
@@ -183,48 +194,10 @@ parentViewController,shareContent,shareImage;
     [CWShareStorage setTencentAccessToken:tencentAccessToken];
     [CWShareStorage setTencentExpiredDate:tencentAccessTokenExpireDate];
     [CWShareStorage setTencentUserID:tencentOpenID];
-    
-    if (tencentShareType == TencentShareNone) {
-        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://openmobile.qq.com/user/get_simple_userinfo"]];
-        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
-        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
-        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
 
-        [tencentRequest setDidFinishSelector:@selector(authorizeFinish:)];
-        [tencentRequest setDidFailSelector:@selector(authorizeFail:)];
-        [tencentRequest setDelegate:self];
-        [tencentRequest startAsynchronous];
-    } else if (tencentShareType == TencentShareContent) {
-        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.qq.com/t/add_t"]];
-        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
-        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
-        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
-        [tencentRequest setPostValue:@"2.a" forKey:@"oauth_version"];
-        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
-        [tencentRequest setPostValue:@"json" forKey:@"format"];
-        [tencentRequest setPostValue:@"all" forKey:@"scope"];
-        [tencentRequest setPostValue:shareContent forKey:@"content"];
-        [tencentRequest setPostValue:@"1" forKey:@"syncflag"];
-        [tencentRequest setDidFinishSelector:@selector(shareContentFinish:)];
-        [tencentRequest setDidFailSelector:@selector(shareContentFail:)];
-        [tencentRequest setDelegate:self];
-        [tencentRequest startAsynchronous];
-    } else if (tencentShareType == TencentShareContentAndImage) {
-        self.tencentRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://open.t.qq.com/api/t/add_pic"]];
-        [tencentRequest setPostValue:TENCENT_APP_KEY forKey:@"oauth_consumer_key"];
-        [tencentRequest setPostValue:tencentAccessToken forKey:@"access_token"];
-        [tencentRequest setPostValue:tencentOpenID forKey:@"openid"];
-        [tencentRequest setPostValue:@"2.a" forKey:@"oauth_version"];
-        [tencentRequest setPostValue:[CWShareTools getClientIp] forKey:@"clientip"];
-        [tencentRequest setPostValue:@"json" forKey:@"format"];
-        [tencentRequest setPostValue:@"all" forKey:@"scope"];
-        [tencentRequest setPostValue:shareContent forKey:@"content"];
-        [tencentRequest setData:UIImageJPEGRepresentation(shareImage, 1) forKey:@"pic"];
-        [tencentRequest setPostValue:@"1" forKey:@"syncflag"];
-        [tencentRequest setDidFinishSelector:@selector(shareContentAndImageFinish:)];
-        [tencentRequest setDidFailSelector:@selector(shareContentAndImageFail:)];
-        [tencentRequest setDelegate:self];
-        [tencentRequest startAsynchronous];
+    if (authorizeBlock) {
+        authorizeBlock();
+        [self setAuthorizeBlock:nil];
     }
 }
 

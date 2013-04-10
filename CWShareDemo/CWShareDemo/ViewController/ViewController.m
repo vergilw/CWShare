@@ -51,13 +51,13 @@
 
 - (IBAction)sinaShareContent:(id)sender
 {
-    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
+    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
 }
 
 - (IBAction)sinaShareContentAndImage:(id)sender
 {
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
-    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
+    [cwShare sinaShareWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage];
 }
 
 - (IBAction)tencentAuthorizeAction:(id)sender
@@ -67,18 +67,18 @@
 
 - (IBAction)tencentShareToQQZone:(id)sender
 {
-    [cwShare tencentShareToQQZoneWithDescription:@"share description" withTitle:[NSString stringWithFormat:@"share title. %d", arc4random()] Content:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withSynchronizeWeibo:NO];
+    [cwShare tencentShareToQQZoneWithDescription:[NSString stringWithFormat:@"%d share description", arc4random()] withTitle:[NSString stringWithFormat:@"%d share title", arc4random()] Content:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withSynchronizeWeibo:NO];
 }
 
 - (IBAction)tencentShareContentToWeiBo:(id)sender
 {
-    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()]];
+    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
 }
 
 - (IBAction)tencentShareContentAndImageToWeiBo:(id)sender
 {
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
-    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"it's a debug test from my app, you can ignore this message. %d", arc4random()] withImage:uploadImage];
+    [cwShare tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage];
 }
 
 #pragma mark - CWShare Delegate

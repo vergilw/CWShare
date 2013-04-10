@@ -11,11 +11,7 @@
 #import "CWShareTencentAuthorize.h"
 #import "CWShareTencentDelegate.h"
 
-typedef enum {
-    TencentShareNone,
-    TencentShareContent,
-    TencentShareContentAndImage
-} TencentShareType;
+typedef void(^TencentAuthorizeBlock)(void);
 
 @interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *tencentAccessToken;
@@ -24,10 +20,8 @@ typedef enum {
     id<CWShareTencentDelegate> delegate;
     ASIFormDataRequest *tencentRequest;
     UIViewController *parentViewController;
-    TencentShareType tencentShareType;
-    NSString *shareContent;
-    UIImage *shareImage;
-}
+    TencentAuthorizeBlock authorizeBlock;
+} 
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
 @property (nonatomic, strong) NSDate *tencentAccessTokenExpireDate;
@@ -35,8 +29,7 @@ typedef enum {
 @property (weak) id<CWShareTencentDelegate> delegate;
 @property (nonatomic, strong) ASIFormDataRequest *tencentRequest;
 @property (weak) UIViewController *parentViewController;
-@property (nonatomic, copy) NSString *shareContent;
-@property (nonatomic, strong) UIImage *shareImage;
+@property (nonatomic, strong) TencentAuthorizeBlock authorizeBlock;
 
 - (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool;
 

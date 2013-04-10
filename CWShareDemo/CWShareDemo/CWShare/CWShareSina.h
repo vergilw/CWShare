@@ -11,11 +11,7 @@
 #import "ASIHTTPRequest.h"
 #import "CWShareSinaDelegate.h"
 
-typedef enum {
-    SinaShareNone,
-    SinaShareContent,
-    SinaShareContentAndImage
-} SinaShareType;
+typedef void(^SinaAuthorizeBlock)(void);
 
 @interface CWShareSina : NSObject <CWShareSinaAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *sinaAccessToken;
@@ -25,9 +21,7 @@ typedef enum {
     ASIHTTPRequest *sinaGetRequest;
     ASIFormDataRequest *sinaPostRequest;
     UIViewController *parentViewController;
-    SinaShareType sinaShareType;
-    NSString *shareContent;
-    UIImage *shareImage;
+    SinaAuthorizeBlock authorizeBlock;
 }
 
 @property (nonatomic, copy) NSString *sinaAccessToken;
@@ -37,8 +31,7 @@ typedef enum {
 @property (nonatomic, strong) ASIHTTPRequest *sinaGetRequest;
 @property (nonatomic, strong) ASIFormDataRequest *sinaPostRequest;
 @property (weak) UIViewController *parentViewController;
-@property (nonatomic, copy) NSString *shareContent;
-@property (nonatomic, strong) UIImage *shareImage;
+@property (nonatomic, strong) SinaAuthorizeBlock authorizeBlock;
 
 - (void)shareWithContent:(NSString *)theContent;
 
