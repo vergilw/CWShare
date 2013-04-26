@@ -41,6 +41,7 @@
 		32CE6A6615FD15C500F3B523 /* SBJsonTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 32CE6A5815FD15C500F3B523 /* SBJsonTokeniser.m */; };
 		32CE6A6715FD15C500F3B523 /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = 32CE6A5A15FD15C500F3B523 /* SBJsonUTF8Stream.m */; };
 		32CE6A6815FD15C500F3B523 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 32CE6A5C15FD15C500F3B523 /* SBJsonWriter.m */; };
+		32D1F2AB172A2D5800A877F8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 32D1F2AA172A2D5800A877F8 /* Default-568h@2x.png */; };
 		32D7A12A16240A3D00AA5940 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D7A12916240A3D00AA5940 /* CFNetwork.framework */; };
 		32D7A12C16240A4300AA5940 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D7A12B16240A4300AA5940 /* SystemConfiguration.framework */; };
 		32D7A12E16240A5800AA5940 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32D7A12D16240A5700AA5940 /* MobileCoreServices.framework */; };
@@ -126,6 +127,7 @@
 		32CE6A5A15FD15C500F3B523 /* SBJsonUTF8Stream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonUTF8Stream.m; sourceTree = "<group>"; };
 		32CE6A5B15FD15C500F3B523 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
 		32CE6A5C15FD15C500F3B523 /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
+		32D1F2AA172A2D5800A877F8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		32D7A1261624096C00AA5940 /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		32D7A1271624096C00AA5940 /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		32D7A12916240A3D00AA5940 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -203,6 +205,7 @@
 		322C82A915DE21B200093AF9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				32D1F2AA172A2D5800A877F8 /* Default-568h@2x.png */,
 				32D7A1401624282300AA5940 /* blackArrow@2x.png */,
 				322C82AA15DE21B200093AF9 /* CWShareDemo-Info.plist */,
 				322C82AB15DE21B200093AF9 /* InfoPlist.strings */,
@@ -228,9 +231,9 @@
 			isa = PBXGroup;
 			children = (
 				3280AE8315DF181000CAFBE3 /* CWShareConfig.h */,
+				32A5BAB416537EB3009F7619 /* CWShareDelegate.h */,
 				3280AE7F15DF163800CAFBE3 /* CWShare.h */,
 				3280AE8015DF163800CAFBE3 /* CWShare.m */,
-				32A5BAB416537EB3009F7619 /* CWShareDelegate.h */,
 				328F74A7162549BB00E50C85 /* CWShareTools.h */,
 				328F74A8162549BB00E50C85 /* CWShareTools.m */,
 				3280AE8715DF1CC300CAFBE3 /* CWShareStorage.h */,
@@ -372,6 +375,7 @@
 				322C82AD15DE21B200093AF9 /* InfoPlist.strings in Resources */,
 				322C82B915DE21B200093AF9 /* ViewController.xib in Resources */,
 				32D7A1411624282300AA5940 /* blackArrow@2x.png in Resources */,
+				32D1F2AB172A2D5800A877F8 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

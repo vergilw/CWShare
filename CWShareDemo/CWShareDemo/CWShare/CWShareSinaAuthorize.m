@@ -40,14 +40,14 @@
 {
     [super viewDidLoad];
 	
-    self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)] autorelease];
+    self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height-64)] autorelease];
     [webView setDelegate:self];
     NSString *requestURL = [NSString stringWithFormat:@"https://api.weibo.com/oauth2/authorize?client_id=%@&redirect_uri=%@&display=mobile&scope=follow_app_official_microblog,friendships_groups_read", SINA_APP_KEY, SINA_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
     
     self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
-    [activityIndicator setFrame:CGRectMake(150, 198, 20, 20)];
+    [activityIndicator setFrame:CGRectMake(150, self.view.frame.size.height/2-20, 20, 20)];
     [activityIndicator startAnimating];
     [self.view addSubview:activityIndicator];
 }

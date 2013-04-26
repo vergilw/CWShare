@@ -7,6 +7,9 @@
 //
 
 #import "CWShare.h"
+#import "CWShareStorage.h"
+
+static CWShare *cwShare = nil;
 
 @implementation CWShare
 
@@ -19,22 +22,22 @@
     [super dealloc];
 }
 
-- (id)init
++ (id)shareObject
 {
-    self = [super init];
-    if (self) {
-        self.sinaShare = [[[CWShareSina alloc] init] autorelease];
-        [sinaShare setDelegate:self];
-
-        self.tencentShare = [[[CWShareTencent alloc] init] autorelease];
-        [tencentShare setDelegate:self];
+    if (!cwShare) {
+        cwShare = [[CWShare alloc] init];
+        cwShare.sinaShare = [[[CWShareSina alloc] init] autorelease];
+        [cwShare.sinaShare setDelegate:cwShare];
+        
+        cwShare.tencentShare = [[[CWShareTencent alloc] init] autorelease];
+        [cwShare.tencentShare setDelegate:cwShare];
     }
-    return self;
+    return cwShare;
 }
 
 #pragma mark - CWShare Sina Operate Method
 
-- (void)startSinaAuthorize
+- (void)startSinaAuthorizeLogin
 {
     [sinaShare startAuthorize];
 }
@@ -51,7 +54,7 @@
 
 #pragma mark - CWShare Tencent Operate Method
 
-- (void)startTencentAuthorize
+- (void)startTencentAuthorizeLogin
 {
     [tencentShare startAuthorize];
 }
@@ -71,28 +74,46 @@
     [tencentShare shareToWeiBoWithContent:theContent withImage:theImage];
 }
 
+#pragma mark - CWShare Management Authorize Info
+
+- (void)clearSinaAuthorizeInfo
+{
+    [CWShareStorage clearSinaStoreInfo];
+    [sinaShare setSinaAccessToken:nil];
+    [sinaShare setSinaTokenExpireDate:nil];
+    [sinaShare setSinaUID:nil];
+}
+
+- (void)clearTencentAuthorizeInfo
+{
+    [CWShareStorage clearTencentStoreInfo];
+    [tencentShare setTencentAccessToken:nil];
+    [tencentShare setTencentTokenExpireDate:nil];
+    [tencentShare setTencentOpenID:nil];
+}
+
 #pragma mark - CWShare Sina Authorize Delegate Method
 
 - (void)sinaShareAuthorizeFail
 {
-    [delegate authorizeFailForShareType:CWShareTypeSina];
+    [delegate loginFailForShareType:CWShareTypeSina];
 }
 
 - (void)sinaShareAuthorizeFinish:(NSDictionary *)userInfo
 {
-    [delegate authorizeFinishForShareType:CWShareTypeSina withData:userInfo];
+    [delegate loginFinishForShareType:CWShareTypeSina withData:userInfo];
 }
 
 #pragma mark - CWShare Tencent Authorize Delegate Method
 
 - (void)tencentShareAuthorizeFail
 {
-    [delegate authorizeFailForShareType:CWShareTypeTencent];
+    [delegate loginFailForShareType:CWShareTypeTencent];
 }
 
 - (void)tencentShareAuthorizeFinish:(NSDictionary *)userInfo
 {
-    [delegate authorizeFinishForShareType:CWShareTypeTencent withData:userInfo];
+    [delegate loginFinishForShareType:CWShareTypeTencent withData:userInfo];
 }
 
 #pragma mark - CWShare Sina Share Delegate Method
@@ -150,6 +171,16 @@
 - (UIViewController *)parentViewController
 {
     return parentViewController;
+}
+
+- (void)applicationDidBecomeActive
+{
+    [sinaShare applicationDidBecomeActive];
+}
+
+- (BOOL)handleOpenURL:(NSURL *)url
+{
+    return [sinaShare handleOpenURL:url];
 }
 
 @end

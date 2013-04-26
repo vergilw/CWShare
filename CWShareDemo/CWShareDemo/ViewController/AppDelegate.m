@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-
+#import "CWShare.h"
 #import "ViewController.h"
 #import "CWShareStorage.h"
 
@@ -31,6 +31,7 @@
     self.window.rootViewController = naviController;
     [naviController release];
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
@@ -53,12 +54,22 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[CWShare shareObject] applicationDidBecomeActive];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [[CWShare shareObject] handleOpenURL:url];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [[CWShare shareObject] handleOpenURL:url];
 }
 
 @end

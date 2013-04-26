@@ -11,6 +11,4 @@
 
 @interface ViewController : UIViewController <CWShareDelegate>
 
-@property (nonatomic, strong) CWShare *cwShare;
-
 @end

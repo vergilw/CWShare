@@ -9,18 +9,19 @@
 #import "CWShareSina.h"
 #import "CWShareStorage.h"
 #import "SBJson.h"
+#import "CWShareConfig.h"
 
 @implementation CWShareSina
 
-@synthesize sinaAccessToken,sinaExpireDate,sinaUID,delegate,sinaGetRequest,
-sinaPostRequest,parentViewController,authorizeBlock;
+@synthesize sinaAccessToken,sinaTokenExpireDate,sinaUID,delegate,sinaGetRequest,
+sinaPostRequest,parentViewController,authorizeBlock,isSSOAuth;
 
 #pragma mark - Memory Management Method
 
 - (void)dealloc
 {
     [self setSinaAccessToken:nil];
-    [self setSinaExpireDate:nil];
+    [self setSinaTokenExpireDate:nil];
     [self setSinaUID:nil];
     [sinaGetRequest clearDelegatesAndCancel];
     [self setSinaGetRequest:nil];
@@ -35,7 +36,7 @@ sinaPostRequest,parentViewController,authorizeBlock;
     self = [super init];
     if (self) {
         self.sinaAccessToken = [CWShareStorage getSinaAccessToken];
-        self.sinaExpireDate = [CWShareStorage getSinaExpiredDate];
+        self.sinaTokenExpireDate = [CWShareStorage getSinaExpiredDate];
         self.sinaUID = [CWShareStorage getSinaUserID];
     }
     return self;
@@ -108,33 +109,117 @@ sinaPostRequest,parentViewController,authorizeBlock;
 
 - (void)startAuthorize
 {
-    if (parentViewController == nil) {
-        NSLog(@"CWShare没有设置parentViewController");
-    } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-        NSLog(@"CWShare代理应该属于UIViewController");
-    } else {
-        self.authorizeBlock = ^(void) {
-            self.sinaGetRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", sinaUID, sinaAccessToken]]];
-            [sinaGetRequest setDidFinishSelector:@selector(authorizeFinish:)];
-            [sinaGetRequest setDidFailSelector:@selector(authorizeFail:)];
-            [sinaGetRequest setDelegate:self];
-            [sinaGetRequest startAsynchronous];
-        };
-        
-        CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
-        [sinaAuthorize setDelegate:self];
-        [parentViewController.navigationController pushViewController:sinaAuthorize animated:YES];
-        [sinaAuthorize release];
+    self.authorizeBlock = ^(void) {
+        self.sinaGetRequest = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", sinaUID, sinaAccessToken]]];
+        [sinaGetRequest setDidFinishSelector:@selector(authorizeFinish:)];
+        [sinaGetRequest setDidFailSelector:@selector(authorizeFail:)];
+        [sinaGetRequest setDelegate:self];
+        [sinaGetRequest startAsynchronous];
+    };
+    
+    //先尝试SSO授权
+    NSString *ssoURL = [NSString stringWithFormat:@"sinaweibosso://login?redirect_uri=%@&callback_uri=sinaweibosso.%@://&client_id=%@", SINA_REDIRECT_URL, SINA_APP_KEY, SINA_APP_KEY];
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        ssoURL = [NSString stringWithFormat:@"sinaweibohdsso://login?redirect_uri=%@&callback_uri=sinaweibosso.%@://&client_id=%@", SINA_REDIRECT_URL, SINA_APP_KEY, SINA_APP_KEY];
+    }
+    isSSOAuth = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:ssoURL]];
+    
+    //SSO授权失败，再进行OAuth2.0直接授权
+    if (!isSSOAuth) {
+        if (parentViewController == nil) {
+            NSLog(@"CWShare没有设置parentViewController");
+            [self setAuthorizeBlock:nil];
+        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
+            NSLog(@"CWShare代理应该属于UIViewController");
+            [self setAuthorizeBlock:nil];
+        } else {
+            CWShareSinaAuthorize *sinaAuthorize = [[CWShareSinaAuthorize alloc] init];
+            [sinaAuthorize setDelegate:self];
+            [parentViewController.navigationController pushViewController:sinaAuthorize animated:YES];
+            [sinaAuthorize release];
+        }
     }
 }
 
 - (BOOL)isAuthorizeExpired
 {
-    if ([sinaExpireDate compare:[NSDate date]] == NSOrderedDescending) {
+    if ([sinaTokenExpireDate compare:[NSDate date]] == NSOrderedDescending) {
         return NO;
     } else {
         return YES;
     }
+}
+
+#pragma mark - UIApplicationDeleagte Method
+
+- (void)applicationDidBecomeActive
+{
+    if (isSSOAuth)
+    {
+        isSSOAuth = NO;
+        NSLog(@"sina sso authorize 用户取消了授权");
+        [delegate sinaShareAuthorizeFail];
+    }
+}
+
+- (BOOL)handleOpenURL:(NSURL *)url
+{
+    NSString *urlString = [url absoluteString];
+    if ([urlString hasPrefix:[NSString stringWithFormat:@"sinaweibosso.%@://", SINA_APP_KEY]])
+    {
+        if (!isSSOAuth) {
+
+        } else {
+            isSSOAuth = NO;
+            
+            if ([self getParamValueFromUrl:urlString paramName:@"sso_error_user_cancelled"]) {
+                [delegate sinaShareAuthorizeFail];
+            } else if ([self getParamValueFromUrl:urlString paramName:@"sso_error_invalid_params"]) {
+                [delegate sinaShareAuthorizeFail];
+            } else if ([self getParamValueFromUrl:urlString paramName:@"error_code"]) {
+                [delegate sinaShareAuthorizeFail];
+            } else {
+                NSString *access_token = [self getParamValueFromUrl:urlString paramName:@"access_token"];
+                NSString *expires_in = [self getParamValueFromUrl:urlString paramName:@"expires_in"];
+//                NSString *remind_in = [self getParamValueFromUrl:urlString paramName:@"remind_in"];
+                NSString *uid = [self getParamValueFromUrl:urlString paramName:@"uid"];
+//                NSString *refresh_token = [self getParamValueFromUrl:urlString paramName:@"refresh_token"];
+                
+                [self sinaAuthorizeFinish:access_token withExpireTime:expires_in withUID:uid];
+            }
+        }
+    }
+    return YES;
+}
+
+- (NSString *)getParamValueFromUrl:(NSString*)url paramName:(NSString *)paramName
+{
+    if (![paramName hasSuffix:@"="])
+    {
+        paramName = [NSString stringWithFormat:@"%@=", paramName];
+    }
+    
+    NSString * str = nil;
+    NSRange start = [url rangeOfString:paramName];
+    if (start.location != NSNotFound)
+    {
+        // confirm that the parameter is not a partial name match
+        unichar c = '?';
+        if (start.location != 0)
+        {
+            c = [url characterAtIndex:start.location - 1];
+        }
+        if (c == '?' || c == '&' || c == '#')
+        {
+            NSRange end = [[url substringFromIndex:start.location+start.length] rangeOfString:@"&"];
+            NSUInteger offset = start.location+start.length;
+            str = end.location == NSNotFound ?
+            [url substringFromIndex:offset] :
+            [url substringWithRange:NSMakeRange(offset, end.location)];
+            str = [str stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        }
+    }
+    return str;
 }
 
 #pragma mark - CWShareSinaAuthorize Delegate
@@ -142,10 +227,10 @@ sinaPostRequest,parentViewController,authorizeBlock;
 - (void)sinaAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withUID:(NSString *)theUID
 {
     self.sinaAccessToken = accessToken;
-    self.sinaExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
+    self.sinaTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
     self.sinaUID = theUID;
     [CWShareStorage setSinaAccessToken:sinaAccessToken];
-    [CWShareStorage setSinaExpiredDate:sinaExpireDate];
+    [CWShareStorage setSinaExpiredDate:sinaTokenExpireDate];
     [CWShareStorage setSinaUserID:sinaUID];
     
     if (authorizeBlock) {
@@ -185,7 +270,7 @@ sinaPostRequest,parentViewController,authorizeBlock;
         if ([[data objectForKey:@"error_code"] integerValue] == 21332) {
             [CWShareStorage clearTencentStoreInfo];
             self.sinaAccessToken = [CWShareStorage getSinaAccessToken];
-            self.sinaExpireDate = [CWShareStorage getSinaExpiredDate];
+            self.sinaTokenExpireDate = [CWShareStorage getSinaExpiredDate];
             self.sinaUID = [CWShareStorage getSinaUserID];
         }
         NSLog(@"sina authorize get user info error_code:%@,error:%@", [data objectForKey:@"error_code"], [data objectForKey:@"error"]);
@@ -216,7 +301,7 @@ sinaPostRequest,parentViewController,authorizeBlock;
         if ([[data objectForKey:@"error_code"] integerValue] == 21332) {
             [CWShareStorage clearTencentStoreInfo];
             self.sinaAccessToken = [CWShareStorage getSinaAccessToken];
-            self.sinaExpireDate = [CWShareStorage getSinaExpiredDate];
+            self.sinaTokenExpireDate = [CWShareStorage getSinaExpiredDate];
             self.sinaUID = [CWShareStorage getSinaUserID];
         }
         NSLog(@"sina shareContent error_code:%@,error:%@", [data objectForKey:@"error_code"], [data objectForKey:@"error"]);
@@ -247,7 +332,7 @@ sinaPostRequest,parentViewController,authorizeBlock;
         if ([[data objectForKey:@"error_code"] integerValue] == 21332) {
             [CWShareStorage clearTencentStoreInfo];
             self.sinaAccessToken = [CWShareStorage getSinaAccessToken];
-            self.sinaExpireDate = [CWShareStorage getSinaExpiredDate];
+            self.sinaTokenExpireDate = [CWShareStorage getSinaExpiredDate];
             self.sinaUID = [CWShareStorage getSinaUserID];
         }
         NSLog(@"sina shareContentAndImage error_code:%@,error:%@", [data objectForKey:@"error_code"], [data objectForKey:@"error"]);

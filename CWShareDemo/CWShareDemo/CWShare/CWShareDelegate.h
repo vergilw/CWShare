@@ -16,13 +16,19 @@ typedef enum {
 @protocol CWShareDelegate <NSObject>
 
 @optional
-- (void)authorizeFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo;
-- (void)authorizeFailForShareType:(CWShareType)shareType;
+//登录授权成功
+- (void)loginFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo;
+//登录授权失败
+- (void)loginFailForShareType:(CWShareType)shareType;
 
+//分享内容成功
 - (void)shareContentFinishForShareType:(CWShareType)shareType;
+//分享内容失败
 - (void)shareContentFailForShareType:(CWShareType)shareType;
 
+//分享图片和内容成功
 - (void)shareContentAndImageFinishForShareType:(CWShareType)shareType;
+//分享图片和内容失败
 - (void)shareContentAndImageFailForShareType:(CWShareType)shareType;
 
 @end

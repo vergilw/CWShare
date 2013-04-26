@@ -15,7 +15,7 @@ typedef void(^SinaAuthorizeBlock)(void);
 
 @interface CWShareSina : NSObject <CWShareSinaAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *sinaAccessToken;
-    NSDate *sinaExpireDate;
+    NSDate *sinaTokenExpireDate;
     NSString *sinaUID;
     id<CWShareSinaDelegate> delegate;
     ASIHTTPRequest *sinaGetRequest;
@@ -25,13 +25,14 @@ typedef void(^SinaAuthorizeBlock)(void);
 }
 
 @property (nonatomic, copy) NSString *sinaAccessToken;
-@property (nonatomic, strong) NSDate *sinaExpireDate;
+@property (nonatomic, strong) NSDate *sinaTokenExpireDate;
 @property (nonatomic, copy) NSString *sinaUID;
 @property (weak) id<CWShareSinaDelegate> delegate;
 @property (nonatomic, strong) ASIHTTPRequest *sinaGetRequest;
 @property (nonatomic, strong) ASIFormDataRequest *sinaPostRequest;
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, strong) SinaAuthorizeBlock authorizeBlock;
+@property (assign) BOOL isSSOAuth;
 
 - (void)shareWithContent:(NSString *)theContent;
 
@@ -41,6 +42,7 @@ typedef void(^SinaAuthorizeBlock)(void);
 
 - (BOOL)isAuthorizeExpired;
 
-
+- (void)applicationDidBecomeActive;
+- (BOOL)handleOpenURL:(NSURL *)url;
 
 @end

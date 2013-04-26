@@ -15,7 +15,7 @@ typedef void(^TencentAuthorizeBlock)(void);
 
 @interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,ASIHTTPRequestDelegate> {
     NSString *tencentAccessToken;
-    NSDate *tencentAccessTokenExpireDate;
+    NSDate *tencentTokenExpireDate;
     NSString *tencentOpenID;
     id<CWShareTencentDelegate> delegate;
     ASIFormDataRequest *tencentRequest;
@@ -24,7 +24,7 @@ typedef void(^TencentAuthorizeBlock)(void);
 } 
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
-@property (nonatomic, strong) NSDate *tencentAccessTokenExpireDate;
+@property (nonatomic, strong) NSDate *tencentTokenExpireDate;
 @property (nonatomic, copy) NSString *tencentOpenID;
 @property (weak) id<CWShareTencentDelegate> delegate;
 @property (nonatomic, strong) ASIFormDataRequest *tencentRequest;

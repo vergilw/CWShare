@@ -14,14 +14,14 @@
 
 @implementation CWShareTencent
 
-@synthesize tencentAccessToken,tencentAccessTokenExpireDate,
+@synthesize tencentAccessToken,tencentTokenExpireDate,
 tencentOpenID,delegate,tencentRequest,
 parentViewController,authorizeBlock;
 
 - (void)dealloc
 {
     [self setTencentAccessToken:nil];
-    [self setTencentAccessTokenExpireDate:nil];
+    [self setTencentTokenExpireDate:nil];
     [self setTencentOpenID:nil];
     [tencentRequest clearDelegatesAndCancel];
     [self setTencentRequest:nil];
@@ -34,7 +34,7 @@ parentViewController,authorizeBlock;
     self = [super init];
     if (self) {
         self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
-        self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+        self.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
         self.tencentOpenID = [CWShareStorage getTencentUserID];
     }
     return self;
@@ -176,7 +176,7 @@ parentViewController,authorizeBlock;
 
 - (BOOL)isAuthorizeExpired
 {
-    if ([tencentAccessTokenExpireDate compare:[NSDate date]] == NSOrderedDescending) {
+    if ([tencentTokenExpireDate compare:[NSDate date]] == NSOrderedDescending) {
         return NO;
     } else {
         return YES;
@@ -188,11 +188,11 @@ parentViewController,authorizeBlock;
 - (void)tencentAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withOpenID:(NSString *)theOpenID
 {
     self.tencentAccessToken = accessToken;
-    self.tencentAccessTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
+    self.tencentTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[expireTime doubleValue]];
     self.tencentOpenID = theOpenID;
 
     [CWShareStorage setTencentAccessToken:tencentAccessToken];
-    [CWShareStorage setTencentExpiredDate:tencentAccessTokenExpireDate];
+    [CWShareStorage setTencentExpiredDate:tencentTokenExpireDate];
     [CWShareStorage setTencentUserID:tencentOpenID];
 
     if (authorizeBlock) {
@@ -254,7 +254,7 @@ parentViewController,authorizeBlock;
         if ([[data objectForKey:@"errcode"] integerValue] == 36) {
             [CWShareStorage clearTencentStoreInfo];
             self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
-            self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+            self.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
             self.tencentOpenID = [CWShareStorage getTencentUserID];
         }
         NSLog(@"tencent shareContent errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);
@@ -285,7 +285,7 @@ parentViewController,authorizeBlock;
         if ([[data objectForKey:@"errcode"] integerValue] == 36) {
             [CWShareStorage clearTencentStoreInfo];
             self.tencentAccessToken = [CWShareStorage getTencentAccessToken];
-            self.tencentAccessTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+            self.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
             self.tencentOpenID = [CWShareStorage getTencentUserID];
         }
         NSLog(@"tencent shareContentAndImage errcode:%@,error:%@", [data objectForKey:@"errcode"], [data objectForKey:@"msg"]);

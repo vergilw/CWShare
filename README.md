@@ -1,6 +1,10 @@
-CWShare 1.1
+CWShare 1.2
 =======
 ### 更新说明
+1.2版本更新（2013-04-26）
+- 增加新浪微博SSO授权方式。
+- 修改CWShare为单例模式。
+- 完善了部分细节。
 1.1版本更新（2013-04-10）
 - 将腾讯微博更换为腾讯QQ互联，能同时分享到QQ空间，腾讯微博。
 - 授权后自动获取用户第三方个人资料，方便填充账号信息。
@@ -30,39 +34,18 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 - QuartzCore.framework
 - libz.dylib
 
-使用的时候先在你要调用CWShare的.h头文件里申明它，并且指定CWShareDelegate代理。
+新浪微博使用了SSO授权方式，所以需要修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加一个新的URL Types，Indentifier填写weibo，URL Schemes填写sinaweibosso."your app key"，其他信息可以留空。可以参考Demo里的配置设置。
+
+使用的时候先在你要调用CWShare的.h头文件里申明要实现CWShareDelegate代理。
 ```objective-c
 #import <UIKit/UIKit.h>
 #import "CWShare.h"
 
 @interface ViewController : UIViewController <CWShareDelegate>
 
-...
-@property (nonatomic, strong) CWShare *cwShare;
-...
-
 @end
 ```
-
-然后在你要调用CWShare的.m源文件里初始化它，设置它的父视图。
-```objective-c
-#import "ViewController.h"
-
-...
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-
-	self.cwShare = [[[CWShare alloc] init] autorelease];
-    [cwShare setDelegate:self];
-    [cwShare setParentViewController:self];
-}
-
-...
-```
-
-在分享的时候你只需要调用如下的一句代码。
+在分享的时候你需要设置它的代理和父视图控制器，调用如下代码。
 ```objective-c
 #import "ViewController.h"
 
@@ -70,7 +53,9 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 
 - (IBAction)sinaShareContent:(id)sender
 {
-    [cwShare sinaShareWithContent:@"test cwshare"];
+	[[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] setParentViewController:self];
+    [[CWShare shareObject] sinaShareWithContent:@"test cwshare"];
 }
 
 ...
@@ -102,6 +87,7 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 
 ...
 ```
+更多使用方式可以参考Demo。
 
 ### 联系作者
 QQ 1749520

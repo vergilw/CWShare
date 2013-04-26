@@ -17,14 +17,15 @@
 
 @implementation CWShareTencentAuthorize
 
-@synthesize webView,authorizeRequest,delegate,accessToken,
-refreshToken,expiredTime,openID;
+@synthesize webView,authorizeRequest,delegate,activityIndicator,
+accessToken,refreshToken,expiredTime,openID;
 
 - (void)dealloc
 {
     [self setWebView:nil];
     [authorizeRequest clearDelegatesAndCancel];
     [self setAuthorizeRequest:nil];
+    [self setActivityIndicator:nil];
     [self setAccessToken:nil];
     [self setRefreshToken:nil];
     [self setExpiredTime:nil];
@@ -45,11 +46,16 @@ refreshToken,expiredTime,openID;
 {
     [super viewDidLoad];
 	
-    self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, 416)] autorelease];
+    self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height-64)] autorelease];
     [webView setDelegate:self];
     NSString *requestURL = [NSString stringWithFormat:@"https://openmobile.qq.com/oauth2.0/m_authorize?client_id=%@&response_type=token&redirect_uri=%@&scope=get_simple_userinfo,add_share,add_t,add_pic_t,get_fanslist", TENCENT_APP_KEY, TENCENT_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
+    
+    self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+    [activityIndicator setFrame:CGRectMake(150, self.view.frame.size.height/2-20, 20, 20)];
+    [activityIndicator startAnimating];
+    [self.view addSubview:activityIndicator];
 }
 
 - (void)didReceiveMemoryWarning
@@ -83,6 +89,11 @@ refreshToken,expiredTime,openID;
         }
     }
     return YES;
+}
+
+- (void)webViewDidFinishLoad:(UIWebView *)webView
+{
+    [activityIndicator stopAnimating];
 }
 
 #pragma mark - ASIHttpRequest Delegate

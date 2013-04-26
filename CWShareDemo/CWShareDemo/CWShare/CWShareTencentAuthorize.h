@@ -21,6 +21,7 @@
     UIWebView *webView;
     ASIFormDataRequest *authorizeRequest;
     id<CWShareTencentAuthorizeDelegate> delegate;
+    UIActivityIndicatorView *activityIndicator;
     NSString *accessToken;
     NSString *refreshToken;
     NSString *expiredTime;
@@ -30,6 +31,7 @@
 @property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) ASIFormDataRequest *authorizeRequest;
 @property (weak) id<CWShareTencentAuthorizeDelegate> delegate;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, copy) NSString *accessToken;
 @property (nonatomic, copy) NSString *refreshToken;
 @property (nonatomic, copy) NSString *expiredTime;
