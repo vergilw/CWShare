@@ -1,6 +1,10 @@
 CWShare 1.2
 =======
 ### 更新说明
+1.3版本更新（2013-11-07）
+- 增加了腾讯微博SSO授权方式。
+- 更新所有支持库到最新版本，支持IOS7。
+
 1.2版本更新（2013-04-26）
 - 增加新浪微博SSO授权方式。
 - 修改CWShare为单例模式。
@@ -34,8 +38,35 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 - MobileCoreServices.framework
 - QuartzCore.framework
 - libz.dylib
+由于腾讯SSO授权不公开API接口，所以项目中为了引用腾讯的封包的接口，需要添加如下framework:
+- CoreTelephony.framework
+- Security.framework
+- libstdc++.dylib
+- libsqlite3.dylib
+- libiconv.dylib
+- TencentOpenAPI.framework（腾讯自己的封包接口）
 
-由于新浪微博增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加一个新的URL Types，Indentifier填写weibo，URL Schemes填写sinaweibosso."your app key"，其他信息可以留空。可以参考Demo里的配置设置。
+由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types：
+新浪的URL Schemes填写sinaweibosso."your app key"。
+腾讯的URL Schemes填写tencent"your app key"。
+其他信息可以任意填写。可以参考Demo里的配置设置。
+
+配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法：
+```objective-c
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
+        [[CWShare shareObject] handleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
+        [TencentOAuth HandleOpenURL:url];
+    }
+    return YES;
+}
+
+```
+
+下面是使用CWShare的方法，非常简单。
 
 使用的时候先在你要调用CWShare的.h头文件里申明要实现CWShareDelegate代理。
 ```objective-c
