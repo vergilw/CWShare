@@ -1,8 +1,8 @@
-CWShare 1.2
+CWShare 1.3
 =======
 ### 更新说明
 1.3版本更新（2013-11-07）
-- 增加了腾讯微博SSO授权方式。
+- 增加了QQ互联SSO授权方式。
 - 更新所有支持库到最新版本，支持IOS7。
 
 1.2版本更新（2013-04-26）
@@ -38,15 +38,16 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 - MobileCoreServices.framework
 - QuartzCore.framework
 - libz.dylib
+
 由于腾讯SSO授权不公开API接口，所以项目中为了引用腾讯的封包的接口，需要添加如下framework:
 - CoreTelephony.framework
 - Security.framework
 - libstdc++.dylib
 - libsqlite3.dylib
 - libiconv.dylib
-- TencentOpenAPI.framework（腾讯自己的封包接口）
+- TencentOpenAPI.framework（腾讯自己的封包接口，请从Demo内拷贝到自己的项目里）
 
-由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types：
+由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types。
 新浪的URL Schemes填写sinaweibosso."your app key"。
 腾讯的URL Schemes填写tencent"your app key"。
 其他信息可以任意填写。可以参考Demo里的配置设置。
