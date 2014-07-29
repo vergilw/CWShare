@@ -6,14 +6,17 @@
 //
 //
 
-//新浪微博配置
-#define SINA_APP_KEY                @"1936683069"
-#define SINA_APP_SECRET             @"a8dae659c4ddbe0bbee0a01b4b110c5d"
-#define SINA_REDIRECT_URL           @"http://www.lolipop.cn/callback"
+//新浪微博配置 2014.03更新
+#define SINA_APP_KEY                @"3898659293"
+#define SINA_APP_SECRET             @"1290a49dd0a4f6f3de2b50e66a482b34"
+#define SINA_REDIRECT_URL           @"https://api.weibo.com/oauth2/default.html"
 
-//腾讯QQ配置
-#define TENCENT_APP_KEY             @"100415840"
-#define TENCENT_APP_SECRET          @"94ee21ddea7d7cdc7ad0ae88864700ba"
-#define TENCENT_REDIRECT_URL        @"http://www.qq.com/callback"
+//腾讯QQ配置 V2.2版本 2014.03更新
+#define TENCENT_APP_KEY             @"100450909"
+#define TENCENT_APP_SECRET          @"45ed0f6524d87210dc11e450bc27499d"
+
+#define TENCENT_REDIRECT_URL        @"www.lolipop.cn/public"
 #define QQZONE_DISPLAY_NAME         [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]
-#define QQZONE_DISPLAY_APP_URL      @"http://www.appstore.com"
+#define QQZONE_DISPLAY_APP_URL      @"http://itunes.apple.com/us/app/id647802558"
+
+#define WeChatAppID                 @"wx07e8b9dae786b338"

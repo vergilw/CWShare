@@ -1,8 +1,14 @@
-CWShare 1.3
+CWShare 1.4
 =======
 ### 更新说明
+1.4版本更新（2014-07-29）
+- 增加了微信分享。
+- 增加了一键分享菜单。
+- 更新所有支持库到最新版本。
+- 去掉了Json解析库，将ASIHttpRequest更换为AFNetworking。
+
 1.3版本更新（2013-11-07）
-- 增加了QQ互联SSO授权方式。
+- 增加了腾讯微博SSO授权方式。
 - 更新所有支持库到最新版本，支持IOS7。
 
 1.2版本更新（2013-04-26）
@@ -21,6 +27,7 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 目前CWShare支持以下平台:
 - 新浪微博
 - 腾讯QQ
+- 微信
 
 ### 谁适合使用它
 仅使用第三方登录和简单分享，降低用户注册账号的门槛。
@@ -30,26 +37,27 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey，否则授权不通过。
 
 ### 如何使用:
-CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramework。
-在Demo里大家可以将这两个第三方库一起拷贝到自己的项目里，当然引用这两个第三方库需要在项目里添加相应的Frameworks。
+CWShare里使用了第三方库AFNetworking。
+在Demo里大家可以将这个第三方库一起拷贝到自己的项目里，当然引用这两个第三方库需要在项目里添加相应的Frameworks。
 你需要添加如下framwork:
-- CFNetwork.framework
 - SystemConfiguration.framework
 - MobileCoreServices.framework
 - QuartzCore.framework
 - libz.dylib
-
-由于腾讯SSO授权不公开API接口，所以项目中为了引用腾讯的封包的接口，需要添加如下framework:
+由于腾讯SSO授权不公开API接口，所以项目中为了引用QQ的私有库文件，还需要添加如下framework:
 - CoreTelephony.framework
 - Security.framework
 - libstdc++.dylib
 - libsqlite3.dylib
 - libiconv.dylib
-- TencentOpenAPI.framework（腾讯自己的封包接口，请从Demo内拷贝到自己的项目里）
+另外CWShare文件里含有如下文件，别漏掉。
+- TencentOpenAPI.framework（QQ自己的私有库）
+- libWeChatSDK.a (微信自己的私有库)
 
-由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types。
+由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types：
 新浪的URL Schemes填写sinaweibosso."your app key"。
-腾讯的URL Schemes填写tencent"your app key"。
+QQ的URL Schemes填写tencent"your app key"。
+微信的URL Schemes填写weixin”your app key”
 其他信息可以任意填写。可以参考Demo里的配置设置。
 
 配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法：
@@ -58,9 +66,11 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-        [[CWShare shareObject] handleOpenURL:url];
+        [[CWShare shareObject] shareHandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
         [TencentOAuth HandleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
+        [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
     }
     return YES;
 }
@@ -86,7 +96,7 @@ CWShare里使用了两个很常用的第三方库，ASIHttpRequest和JsonFramewo
 
 - (IBAction)sinaShareContent:(id)sender
 {
-	[[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] setDelegate:self];
     [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] sinaShareWithContent:@"test cwshare"];
 }
