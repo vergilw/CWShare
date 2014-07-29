@@ -9,8 +9,12 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    CWShareTypeSina,
-    CWShareTypeTencent
+    CWShareTypeSina,            //新浪微博分享
+    CWShareTypeTencent,         //腾讯微博分享
+    CWShareTypeWechatSession,   //微信好友分享
+    CWShareTypeWechatTimeline,  //微信朋友圈分享
+    CWShareTypeMessage,         //短信分享
+    CWShareTypeMail             //邮件分享
 } CWShareType;
 
 @protocol CWShareDelegate <NSObject>
@@ -30,5 +34,7 @@ typedef enum {
 - (void)shareContentAndImageFinishForShareType:(CWShareType)shareType;
 //分享图片和内容失败
 - (void)shareContentAndImageFailForShareType:(CWShareType)shareType;
+
+- (void)shareMenuDidSelect:(CWShareType)shareType;
 
 @end

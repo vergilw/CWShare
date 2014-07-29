@@ -7,31 +7,26 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ASIFormDataRequest.h"
+#import "AFHTTPRequestOperationManager.h"
 #import "CWShareTencentAuthorize.h"
 #import "CWShareTencentDelegate.h"
+#import <TencentOpenAPI/TencentOAuth.h>
 
 typedef void(^TencentAuthorizeBlock)(void);
 
-@interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,ASIHTTPRequestDelegate> {
-    NSString *tencentAccessToken;
-    NSDate *tencentTokenExpireDate;
-    NSString *tencentOpenID;
-    id<CWShareTencentDelegate> delegate;
-    ASIFormDataRequest *tencentRequest;
-    UIViewController *parentViewController;
-    TencentAuthorizeBlock authorizeBlock;
-} 
+@interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,TencentSessionDelegate>
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
 @property (nonatomic, strong) NSDate *tencentTokenExpireDate;
 @property (nonatomic, copy) NSString *tencentOpenID;
 @property (weak) id<CWShareTencentDelegate> delegate;
-@property (nonatomic, strong) ASIFormDataRequest *tencentRequest;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *tencentRequest;
 @property (weak) UIViewController *parentViewController;
-@property (nonatomic, strong) TencentAuthorizeBlock authorizeBlock;
+@property (nonatomic, strong) TencentAuthorizeBlock authorizeFinishBlock;
+@property (nonatomic, strong) TencentAuthorizeBlock authorizeFailBlock;
+@property (nonatomic, strong) TencentOAuth *tencentOAuth;
 
-- (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent withSynchronizeWeibo:(BOOL)theBool;
+- (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent contentUrl:(NSString *)contentUrl withSynchronizeWeibo:(BOOL)theBool;
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent;
 

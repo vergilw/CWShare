@@ -9,28 +9,22 @@
 #import "AppDelegate.h"
 #import "CWShare.h"
 #import "ViewController.h"
-#import "CWShareStorage.h"
 
 @implementation AppDelegate
 
-- (void)dealloc
-{
-    [_window release];
-    [_viewController release];
-    [super dealloc];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [CWShareStorage clearSinaStoreInfo];
-    
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController" bundle:nil] autorelease];
+    self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     UINavigationController *naviController = [[UINavigationController alloc] initWithRootViewController:self.viewController];
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        [naviController.navigationBar setTranslucent:NO];
+    }
     self.window.rootViewController = naviController;
-    [naviController release];
     [self.window makeKeyAndVisible];
+    
+    [WXApi registerApp:WeChatAppID];
     
     return YES;
 }
@@ -54,7 +48,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    [[CWShare shareObject] applicationDidBecomeActive];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -62,14 +56,18 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
-{
-    return [[CWShare shareObject] handleOpenURL:url];
-}
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    return [[CWShare shareObject] handleOpenURL:url];
+    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
+        [[CWShare shareObject] shareHandleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
+        [TencentOAuth HandleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
+        [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
+    }
+    return YES;
 }
+
+
 
 @end

@@ -8,30 +8,18 @@
 
 #import "CWShareTencentAuthorize.h"
 #import "CWShareConfig.h"
-#import "SBJson.h"
 #import "CWShareTools.h"
 
 @interface CWShareTencentAuthorize ()
+
+@property (assign) BOOL needRestoreNav;
 
 @end
 
 @implementation CWShareTencentAuthorize
 
 @synthesize webView,authorizeRequest,delegate,activityIndicator,
-accessToken,refreshToken,expiredTime,openID;
-
-- (void)dealloc
-{
-    [self setWebView:nil];
-    [authorizeRequest clearDelegatesAndCancel];
-    [self setAuthorizeRequest:nil];
-    [self setActivityIndicator:nil];
-    [self setAccessToken:nil];
-    [self setRefreshToken:nil];
-    [self setExpiredTime:nil];
-    [self setOpenID:nil];
-    [super dealloc];
-}
+accessToken,refreshToken,expiredTime,openID,needRestoreNav;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -46,22 +34,60 @@ accessToken,refreshToken,expiredTime,openID;
 {
     [super viewDidLoad];
 	
-    self.webView = [[[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height-64)] autorelease];
+    if (self.navigationController.navigationBarHidden == YES) {
+        needRestoreNav = YES;
+        [self.navigationController setNavigationBarHidden:NO];
+    }
+    
+    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [backButton setImage:[UIImage imageNamed:@"backItemIcon"] forState:UIControlStateNormal];
+    [backButton setFrame:CGRectMake(0, 0, 44, 44)];
+    [backButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, 17)];
+    [backButton addTarget:self action:@selector(backBarButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIBarButtonItem *backBarButton = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+    [self.navigationItem setLeftBarButtonItem:backBarButton];
+    
+    UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 160, 30)];
+    [titleLabel setBackgroundColor:[UIColor clearColor]];
+    [titleLabel setTextColor:[UIColor whiteColor]];
+    [titleLabel setText:@"腾讯QQ授权"];
+    [titleLabel setFont:[UIFont boldSystemFontOfSize:20]];
+    [titleLabel setTextAlignment:NSTextAlignmentCenter];
+    [self.navigationItem setTitleView:titleLabel];
+    
+    self.webView = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height-64)];
     [webView setDelegate:self];
     NSString *requestURL = [NSString stringWithFormat:@"https://openmobile.qq.com/oauth2.0/m_authorize?client_id=%@&response_type=token&redirect_uri=%@&scope=get_simple_userinfo,add_share,add_t,add_pic_t,get_fanslist", TENCENT_APP_KEY, TENCENT_REDIRECT_URL];
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]]];
     [self.view addSubview:webView];
     
-    self.activityIndicator = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray] autorelease];
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [activityIndicator setFrame:CGRectMake(150, self.view.frame.size.height/2-20, 20, 20)];
     [activityIndicator startAnimating];
     [self.view addSubview:activityIndicator];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if (needRestoreNav == YES) {
+        [self.navigationController setNavigationBarHidden:NO];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - UIControl Event
+
+- (IBAction)backBarButtonAction:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 #pragma mark - UIWebView Delegate
@@ -78,10 +104,21 @@ accessToken,refreshToken,expiredTime,openID;
 //            self.openID = [[[redirectURL objectAtIndex:2] componentsSeparatedByString:@"="] objectAtIndex:1];
 //            self.refreshToken = [[[redirectURL objectAtIndex:4] componentsSeparatedByString:@"="] objectAtIndex:1];
             
-            self.authorizeRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:@"https://graph.z.qq.com/moc2/me"]];
-            [authorizeRequest setPostValue:accessToken forKey:@"access_token"];
-            [authorizeRequest setDelegate:self];
-            [authorizeRequest startAsynchronous];
+            __weak typeof(self) weakSelf = self;
+            
+            self.authorizeRequest = [AFHTTPRequestOperationManager manager];
+            [self.authorizeRequest POST:@"https://graph.z.qq.com/moc2/me" parameters:@{@"access_token":accessToken} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+                weakSelf.openID = [[responseObject componentsSeparatedByString:@"&"] objectAtIndex:1];
+                weakSelf.openID = [[openID componentsSeparatedByString:@"="] objectAtIndex:1];
+                
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+                
+                [weakSelf.delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID];
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                [weakSelf.delegate tencentAuthorizeFail];
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+            }];
             
 //            [self.navigationController popViewControllerAnimated:YES];
 //            [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID withRefreshToken:refreshToken];
@@ -94,24 +131,6 @@ accessToken,refreshToken,expiredTime,openID;
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [activityIndicator stopAnimating];
-}
-
-#pragma mark - ASIHttpRequest Delegate
-
-- (void)requestFinished:(ASIHTTPRequest *)request
-{
-    NSString *responseString = [request responseString];
-    
-    self.openID = [[responseString componentsSeparatedByString:@"&"] objectAtIndex:1];
-    self.openID = [[openID componentsSeparatedByString:@"="] objectAtIndex:1];
-    [delegate tencentAuthorizeFinish:accessToken withExpireTime:expiredTime withOpenID:openID];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (void)requestFailed:(ASIHTTPRequest *)request
-{
-    [delegate tencentAuthorizeFail];
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ASIFormDataRequest.h"
+#import "AFHTTPRequestOperationManager.h"
 
 @protocol CWShareSinaAuthorizeDelegate <NSObject>
 
@@ -17,15 +17,10 @@
 
 @end
 
-@interface CWShareSinaAuthorize : UIViewController <UIWebViewDelegate,ASIHTTPRequestDelegate> {
-    UIWebView *webView;
-    ASIFormDataRequest *authorizeRequest;
-    id<CWShareSinaAuthorizeDelegate> delegate;
-    UIActivityIndicatorView *activityIndicator;
-}
+@interface CWShareSinaAuthorize : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) ASIFormDataRequest *authorizeRequest;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *authorizeRequest;
 @property (weak) id<CWShareSinaAuthorizeDelegate> delegate;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 

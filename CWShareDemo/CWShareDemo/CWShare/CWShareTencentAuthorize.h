@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ASIFormDataRequest.h"
+#import "AFHTTPRequestOperationManager.h"
 
 @protocol CWShareTencentAuthorizeDelegate <NSObject>
 
@@ -17,19 +17,10 @@
 
 @end
 
-@interface CWShareTencentAuthorize : UIViewController <UIWebViewDelegate,ASIHTTPRequestDelegate> {
-    UIWebView *webView;
-    ASIFormDataRequest *authorizeRequest;
-    id<CWShareTencentAuthorizeDelegate> delegate;
-    UIActivityIndicatorView *activityIndicator;
-    NSString *accessToken;
-    NSString *refreshToken;
-    NSString *expiredTime;
-    NSString *openID;
-}
+@interface CWShareTencentAuthorize : UIViewController <UIWebViewDelegate>
 
 @property (nonatomic, strong) UIWebView *webView;
-@property (nonatomic, strong) ASIFormDataRequest *authorizeRequest;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *authorizeRequest;
 @property (weak) id<CWShareTencentAuthorizeDelegate> delegate;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, copy) NSString *accessToken;

@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "CWShare.h"
+#import <MessageUI/MFMailComposeViewController.h>
+#import <MessageUI/MFMessageComposeViewController.h>
 
-@interface ViewController : UIViewController <CWShareDelegate>
+@interface ViewController : UIViewController <CWShareDelegate,MFMailComposeViewControllerDelegate,MFMessageComposeViewControllerDelegate>
 
 @end

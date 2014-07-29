@@ -14,11 +14,6 @@
 
 @implementation ViewController
 
-- (void)dealloc
-{
-    [super dealloc];
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -46,6 +41,9 @@
 
 - (IBAction)sinaLogoutAction:(id)sender
 {
+    NSLog(@"新浪退出成功");
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪退出成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alertView show];
     [[CWShare shareObject] clearSinaAuthorizeInfo];
 }
 
@@ -73,6 +71,9 @@
 
 - (IBAction)tencentLogoutAction:(id)sender
 {
+    NSLog(@"QQ退出成功");
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ退出成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alertView show];
     [[CWShare shareObject] clearTencentAuthorizeInfo];
 }
 
@@ -80,7 +81,7 @@
 {
     [[CWShare shareObject] setDelegate:self];
     [[CWShare shareObject] setParentViewController:self];
-    [[CWShare shareObject] tencentShareToQQZoneWithDescription:[NSString stringWithFormat:@"%d share description", arc4random()] withTitle:[NSString stringWithFormat:@"%d share title", arc4random()] Content:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withSynchronizeWeibo:NO];
+    [[CWShare shareObject] tencentShareToQQZoneWithDescription:[NSString stringWithFormat:@"%d share description", arc4random()] withTitle:[NSString stringWithFormat:@"%d share title", arc4random()] Content:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] contentUrl:@"http://www.11186.com" withSynchronizeWeibo:NO];
 }
 
 - (IBAction)tencentShareContentToWeiBo:(id)sender
@@ -98,17 +99,51 @@
     [[CWShare shareObject] tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage];
 }
 
+- (IBAction)wechatShareContentToSession:(id)sender
+{
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] wechatSessionShareWithTitle:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+}
+
+- (IBAction)wechatShareImageToSession:(id)sender
+{
+    UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
+    
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] wechatSessionShareWithTitle:[NSString stringWithFormat:@"%d share title", arc4random()] withContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage withWebUrl:@"www.11186.com"];
+}
+
+- (IBAction)wechatShareContentToTimeline:(id)sender
+{
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] wechatTimelineShareWithTitle:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+}
+
+- (IBAction)wechatShareImageToTimeline:(id)sender
+{
+    UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
+    
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] wechatTimelineShareWithTitle:[NSString stringWithFormat:@"%d share title", arc4random()] withContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage withWebUrl:@"www.11186.com"];
+}
+
+- (IBAction)shareMenuAction:(id)sender
+{
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] showShareMenu];
+}
+
 #pragma mark - CWShare Delegate
 
 - (void)loginFailForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
         NSLog(@"新浪授权失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯授权失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"QQ授权失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -118,12 +153,12 @@
     if (shareType == CWShareTypeSina) {
         NSLog(@"新浪授权成功");
         NSLog(@"%@", userInfo);
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯授权成功");
+        NSLog(@"QQ授权成功");
         NSLog(@"%@", userInfo);
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -131,12 +166,16 @@
 - (void)shareContentFailForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享内容失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪分享内容失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"新浪微博分享内容失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享内容失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享内容失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯分享内容失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"腾讯微博分享内容失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯微博分享内容失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
+        NSLog(@"微信分享内容失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信分享内容失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -144,12 +183,16 @@
 - (void)shareContentFinishForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享内容成功");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪分享内容成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"新浪微博分享内容成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享内容成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享内容成功");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯分享内容成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"腾讯微博分享内容成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯微博分享内容成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
+        NSLog(@"微信分享内容成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信分享内容成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -157,12 +200,16 @@
 - (void)shareContentAndImageFailForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享图片失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪分享图片失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"新浪微博分享图片失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享图片失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享图片失败");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯分享图片失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"腾讯微博分享图片失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯微博分享图片失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
+        NSLog(@"微信分享图片失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信分享图片失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
@@ -170,13 +217,78 @@
 - (void)shareContentAndImageFinishForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享图片成功");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"新浪分享图片成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"新浪微博分享图片成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪微博分享图片成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享图片成功");
-        UIAlertView *alertView = [[[UIAlertView alloc] initWithTitle:@"腾讯分享图片成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil] autorelease];
+        NSLog(@"腾讯微博分享图片成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯微博分享图片成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
+    } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
+        NSLog(@"微信分享图片成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信分享图片成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    }
+}
+
+- (void)shareMenuDidSelect:(CWShareType)shareType
+{
+    if (shareType == CWShareTypeSina) {
+        [[CWShare shareObject] setParentViewController:self];
+        [[CWShare shareObject] sinaShareWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+    } else if (shareType == CWShareTypeWechatSession) {
+        [[CWShare shareObject] wechatSessionShareWithTitle:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+    } else if (shareType == CWShareTypeWechatTimeline) {
+        [[CWShare shareObject] wechatTimelineShareWithTitle:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+    } else if (shareType == CWShareTypeTencent) {
+        [[CWShare shareObject] setParentViewController:self];
+        [[CWShare shareObject] tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
+    } else if (shareType == CWShareTypeMessage) {
+        if ([MFMessageComposeViewController canSendText]) {
+            MFMessageComposeViewController *messageCompose = [[MFMessageComposeViewController alloc] init];
+            [messageCompose setMessageComposeDelegate:self];
+            [messageCompose setRecipients:[NSArray arrayWithObject:@"10086"]];
+            [messageCompose setSubject:@"My Subject"];
+            [messageCompose setBody:@"Hello there"];
+            [self presentViewController:messageCompose animated:YES completion:nil];
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您的设备不支持短信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        }
+    } else if (shareType == CWShareTypeMail) {
+        if ([MFMailComposeViewController canSendMail]) {
+            MFMailComposeViewController *mailCompose = [[MFMailComposeViewController alloc] init];
+            [mailCompose setMailComposeDelegate:self];
+            [mailCompose setToRecipients:[NSArray arrayWithObject:@"sina@sina.com"]];
+            [mailCompose setSubject:@"My Subject"];
+            [mailCompose setMessageBody:@"Hello there." isHTML:NO];
+            [self presentViewController:mailCompose animated:YES completion:nil];
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您的设备不支持邮件" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
+        }
+    }
+}
+
+#pragma mark - MFMessageComposeViewController Delegate
+
+- (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result
+{
+    if (result == MessageComposeResultCancelled) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else if (result == MessageComposeResultSent) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+#pragma mark - MFMailComposeViewController Delegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    if (result == MFMailComposeResultCancelled) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else if (result == MFMailComposeResultSent) {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 

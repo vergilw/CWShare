@@ -38,18 +38,20 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 
 ### 如何使用:
 CWShare里使用了第三方库AFNetworking。
-在Demo里大家可以将这个第三方库一起拷贝到自己的项目里，当然引用这两个第三方库需要在项目里添加相应的Frameworks。
+在Demo里大家可以将这个第三方库一起拷贝到自己的项目里，当然引用这个第三方库需要在项目里添加相应的Frameworks。
 你需要添加如下framwork:
 - SystemConfiguration.framework
 - MobileCoreServices.framework
 - QuartzCore.framework
 - libz.dylib
+ 
 由于腾讯SSO授权不公开API接口，所以项目中为了引用QQ的私有库文件，还需要添加如下framework:
 - CoreTelephony.framework
 - Security.framework
 - libstdc++.dylib
 - libsqlite3.dylib
 - libiconv.dylib
+
 另外CWShare文件里含有如下文件，别漏掉。
 - TencentOpenAPI.framework（QQ自己的私有库）
 - libWeChatSDK.a (微信自己的私有库)
