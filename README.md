@@ -75,6 +75,7 @@ QQ的URL Schemes填写tencent"your app key"。
     if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
         [[CWShare shareObject] shareHandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
+        [QQApiInterface handleOpenURL:url delegate:[CWShare shareObject]];
         [TencentOAuth HandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
         [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
@@ -117,21 +118,17 @@ QQ的URL Schemes填写tencent"your app key"。
 
 ...
 
-- (void)shareContentFailForShareType:(CWShareType)shareType
+- (void)shareFailForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享内容失败");
-    } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享内容失败");
+        NSLog(@"新浪微博分享失败");
     }
 }
 
-- (void)shareContentFinishForShareType:(CWShareType)shareType
+- (void)shareFinishForShareType:(CWShareType)shareType
 {
     if (shareType == CWShareTypeSina) {
-        NSLog(@"新浪分享内容成功");
-    } else if (shareType == CWShareTypeTencent) {
-        NSLog(@"腾讯分享内容成功");
+        NSLog(@"新浪微博分享成功");
     }
 }
 
