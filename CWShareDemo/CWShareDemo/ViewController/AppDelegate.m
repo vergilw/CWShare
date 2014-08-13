@@ -61,6 +61,7 @@
     if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
         [[CWShare shareObject] shareHandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
+        [QQApiInterface handleOpenURL:url delegate:[CWShare shareObject]];
         [TencentOAuth HandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
         [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];

@@ -26,11 +26,17 @@ typedef void(^TencentAuthorizeBlock)(void);
 @property (nonatomic, strong) TencentAuthorizeBlock authorizeFailBlock;
 @property (nonatomic, strong) TencentOAuth *tencentOAuth;
 
-- (void)shareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent contentUrl:(NSString *)contentUrl withSynchronizeWeibo:(BOOL)theBool;
+- (void)shareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl;
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent;
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
+
+- (void)shareToQQWithContent:(NSString *)theContent;
+
+- (void)shareToQQWithImage:(UIImage *)theImage;
+
+- (void)shareToQQWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withTargetUrl:(NSString *)theUrl;
 
 - (void)startAuthorize;
 

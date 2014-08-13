@@ -9,6 +9,7 @@
 #import "CWShare.h"
 #import "CWShareStorage.h"
 #import <QuartzCore/QuartzCore.h>
+#import <TencentOpenAPI/TencentOpenSDK.h>
 
 #define kButtonTag_Sina 3
 #define kButtonTag_WechatSession 4
@@ -292,7 +293,7 @@ static CWShare *cwShare = nil;
     }
 }
 
-#pragma mark - CWShare Sina Operate Method
+#pragma mark - Sina Operate Method
 
 - (void)startSinaAuthorizeLogin
 {
@@ -301,37 +302,88 @@ static CWShare *cwShare = nil;
 
 - (void)sinaShareWithContent:(NSString *)theContent
 {
-    [sinaShare shareWithContent:theContent];
+    if ([theContent length] != 0) {
+        [sinaShare shareWithContent:theContent];
+    } else {
+        NSLog(@"sina shareContent 分享文字不可为空");
+    }
 }
 
 - (void)sinaShareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
 {
-    [sinaShare shareWithContent:theContent withImage:theImage];
+    if ([theContent length] != 0 && theImage != nil) {
+        [sinaShare shareWithContent:theContent withImage:theImage];
+    } else if (theImage != nil) {
+        NSLog(@"sina shareContentAndImage 分享文字不可为空");
+    } else {
+        NSLog(@"sina shareContentAndImage 分享图片不可为空");
+    }
 }
 
-#pragma mark - CWShare Tencent Operate Method
+#pragma mark - Tencent Operate Method
 
 - (void)startTencentAuthorizeLogin
 {
     [tencentShare startAuthorize];
 }
 
-- (void)tencentShareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent contentUrl:(NSString *)contentUrl withSynchronizeWeibo:(BOOL)theBool
-{
-    [tencentShare shareToQQZoneWithDescription:theDesc withTitle:theTitle Content:theContent contentUrl:contentUrl withSynchronizeWeibo:theBool];
-}
-
 - (void)tencentShareToWeiBoWithContent:(NSString *)theContent
 {
-    [tencentShare shareToWeiBoWithContent:theContent];
+    if ([theContent length] != 0) {
+        [tencentShare shareToWeiBoWithContent:theContent];
+    } else {
+        NSLog(@"tencentWeibo shareContent 分享文字不可为空");
+    }
 }
 
 - (void)tencentShareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage
 {
-    [tencentShare shareToWeiBoWithContent:theContent withImage:theImage];
+    if ([theContent length] != 0 && theImage != nil) {
+        [tencentShare shareToWeiBoWithContent:theContent withImage:theImage];
+    } else if (theImage != nil) {
+        NSLog(@"tencentWeibo shareContentAndImage 分享文字不可为空");
+    } else {
+        NSLog(@"tencentWeibo shareContentAndImage 分享图片不可为空");
+    }
 }
 
-#pragma mark - CWShare Management Authorize Info
+- (void)tencentShareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl
+{
+    if ([theUrl length] != 0) {
+        [tencentShare shareToQQZoneWithTitle:theTitle withDescription:theDesc withImage:theImage targetUrl:theUrl];
+    } else {
+        NSLog(@"tencentQQZone shareNews 分享URL不可为空");
+    }
+}
+
+- (void)tencentShareToQQWithContent:(NSString *)theContent
+{
+    if ([theContent length] != 0) {
+        [tencentShare shareToQQWithContent:theContent];
+    } else {
+        NSLog(@"tencentQQ shareContent 分享文字不可为空");
+    }
+}
+
+- (void)tencentShareToQQWithImage:(UIImage *)theImage
+{
+    if (theImage != nil) {
+        [tencentShare shareToQQWithImage:theImage];
+    } else {
+        NSLog(@"tencentQQ shareImage 分享图片不可为空");
+    }
+}
+
+- (void)tencentShareToQQWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withTargetUrl:(NSString *)theUrl
+{
+    if ([theUrl length] != 0) {
+        [tencentShare shareToQQWithTitle:theTitle withContent:theContent withImage:theImage withTargetUrl:theUrl];
+    } else {
+        NSLog(@"tencentQQ shareNews 分享URL不可为空");
+    }
+}
+
+#pragma mark - Management Authorize Info
 
 - (void)clearSinaAuthorizeInfo
 {
@@ -349,7 +401,7 @@ static CWShare *cwShare = nil;
     [tencentShare setTencentOpenID:nil];
 }
 
-#pragma mark - CWShare Sina Authorize Delegate Method
+#pragma mark - Sina Authorize Delegate Method
 
 - (void)sinaShareAuthorizeFail
 {
@@ -361,7 +413,7 @@ static CWShare *cwShare = nil;
     [delegate loginFinishForShareType:CWShareTypeSina withData:userInfo];
 }
 
-#pragma mark - CWShare Tencent Authorize Delegate Method
+#pragma mark - Tencent Authorize Delegate Method
 
 - (void)tencentShareAuthorizeFail
 {
@@ -373,67 +425,51 @@ static CWShare *cwShare = nil;
     [delegate loginFinishForShareType:CWShareTypeTencent withData:userInfo];
 }
 
-#pragma mark - CWShare Sina Share Delegate Method
+#pragma mark - Sina Share Delegate Method
 
 - (void)sinaShareContentFail
 {
-    [delegate shareContentFailForShareType:CWShareTypeSina];
+    [delegate shareFailForShareType:CWShareTypeSina];
 }
 
 - (void)sinaShareContentFinish
 {
-    [delegate shareContentFinishForShareType:CWShareTypeSina];
+    [delegate shareFinishForShareType:CWShareTypeSina];
 }
 
 - (void)sinaShareContentAndImageFail
 {
-    [delegate shareContentAndImageFailForShareType:CWShareTypeSina];
+    [delegate shareFailForShareType:CWShareTypeSina];
 }
 
 - (void)sinaShareContentAndImageFinish
 {
-    [delegate shareContentAndImageFinishForShareType:CWShareTypeSina];
+    [delegate shareFinishForShareType:CWShareTypeSina];
 }
 
-#pragma mark - CWShare Tencent Share Delegate Method
+#pragma mark - Tencent Share Delegate Method
 
 - (void)tencentShareContentFail
 {
-    [delegate shareContentFailForShareType:CWShareTypeTencent];
+    [delegate shareFailForShareType:CWShareTypeTencent];
 }
 
 - (void)tencentShareContentFinish
 {
-    [delegate shareContentFinishForShareType:CWShareTypeTencent];
+    [delegate shareFinishForShareType:CWShareTypeTencent];
 }
 
 - (void)tencentShareContentAndImageFail
 {
-    [delegate shareContentAndImageFailForShareType:CWShareTypeTencent];
+    [delegate shareFailForShareType:CWShareTypeTencent];
 }
 
 - (void)tencentShareContentAndImageFinish
 {
-    [delegate shareContentAndImageFinishForShareType:CWShareTypeTencent];
+    [delegate shareFinishForShareType:CWShareTypeTencent];
 }
 
-#pragma mark - parentViewController Setter And Getter Method
-
-- (void)setParentViewController:(UIViewController *)_parentViewController
-{
-    sinaShare.parentViewController = _parentViewController;
-    tencentShare.parentViewController = _parentViewController;
-}
-
-- (UIViewController *)parentViewController
-{
-    return parentViewController;
-}
-
-- (BOOL)shareHandleOpenURL:(NSURL *)url
-{
-    return [sinaShare handleOpenURL:url];
-}
+#pragma mark - Wechat Share Method
 
 - (void)wechatSessionShareWithTitle:(NSString *)theTitle
 {
@@ -453,6 +489,49 @@ static CWShare *cwShare = nil;
 - (void)wechatTimelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage  withWebUrl:(NSString *)theUrl
 {
     [cwShare.wechatShare timelineShareWithTitle:theTitle withContent:theContent withImage:theImage withWebUrl:theUrl];
+}
+
+#pragma mark - parentViewController Setter And Getter Method
+
+- (void)setParentViewController:(UIViewController *)_parentViewController
+{
+    sinaShare.parentViewController = _parentViewController;
+    tencentShare.parentViewController = _parentViewController;
+}
+
+- (UIViewController *)parentViewController
+{
+    return parentViewController;
+}
+
+#pragma mark - Sina App Delegate
+
+- (BOOL)shareHandleOpenURL:(NSURL *)url
+{
+    return [sinaShare handleOpenURL:url];
+}
+
+#pragma mark - QQ App Delegate
+
+- (void)onResp:(QQBaseResp *)resp
+{
+    switch (resp.type)
+    {
+        case ESENDMESSAGETOQQRESPTYPE:
+        {
+            SendMessageToQQResp* sendResp = (SendMessageToQQResp*)resp;
+            if ([sendResp.result isEqualToString:@"0"]) {
+                [delegate shareFinishForShareType:CWShareTypeQQ];
+            } else {
+                [delegate shareFailForShareType:CWShareTypeQQ];
+            }
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 @end

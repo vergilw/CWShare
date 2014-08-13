@@ -12,6 +12,7 @@
 #import "CWShareDelegate.h"
 #import "CWShareWeChat.h"
 #import "CWShareConfig.h"
+#import <TencentOpenAPI/TencentOpenSDK.h>
 
 @interface CWShare : NSObject <CWShareSinaDelegate,CWShareTencentDelegate,UIActionSheetDelegate>
 
@@ -39,8 +40,15 @@
 - (void)tencentShareToWeiBoWithContent:(NSString *)theContent;
 //分享内容和图片到腾讯微博
 - (void)tencentShareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage;
-//分享内容到QQ空间(QQ空间的分享属于网页资源，所以需要传的参数比较多)
-- (void)tencentShareToQQZoneWithDescription:(NSString *)theDesc withTitle:(NSString *)theTitle Content:(NSString *)theContent contentUrl:(NSString *)contentUrl withSynchronizeWeibo:(BOOL)theBool;
+
+//分享文字到QQ
+- (void)tencentShareToQQWithContent:(NSString *)theContent;
+//分享纯图片到QQ
+- (void)tencentShareToQQWithImage:(UIImage *)theImage;
+//分享新闻到QQ
+- (void)tencentShareToQQWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withTargetUrl:(NSString *)theUrl;
+//分享内容到QQ空间
+- (void)tencentShareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl;
 
 //清空新浪微博授权登录信息
 - (void)clearSinaAuthorizeInfo;

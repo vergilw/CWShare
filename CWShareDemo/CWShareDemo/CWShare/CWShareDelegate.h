@@ -11,6 +11,7 @@
 typedef enum {
     CWShareTypeSina,            //新浪微博分享
     CWShareTypeTencent,         //腾讯微博分享
+    CWShareTypeQQ,              //腾讯QQ分享
     CWShareTypeWechatSession,   //微信好友分享
     CWShareTypeWechatTimeline,  //微信朋友圈分享
     CWShareTypeMessage,         //短信分享
@@ -25,16 +26,22 @@ typedef enum {
 //登录授权失败
 - (void)loginFailForShareType:(CWShareType)shareType;
 
-//分享内容成功
-- (void)shareContentFinishForShareType:(CWShareType)shareType;
-//分享内容失败
-- (void)shareContentFailForShareType:(CWShareType)shareType;
-
-//分享图片和内容成功
-- (void)shareContentAndImageFinishForShareType:(CWShareType)shareType;
-//分享图片和内容失败
-- (void)shareContentAndImageFailForShareType:(CWShareType)shareType;
+//分享成功
+- (void)shareFinishForShareType:(CWShareType)shareType;
+//分享失败
+- (void)shareFailForShareType:(CWShareType)shareType;
 
 - (void)shareMenuDidSelect:(CWShareType)shareType;
+
+
+//以下方法弃用
+- (void)shareContentFinishForShareType:(CWShareType)shareType
+__deprecated_msg("用`shareFinishForShareType:`代替");
+- (void)shareContentFailForShareType:(CWShareType)shareType
+__deprecated_msg("用`shareFailForShareType:`代替");
+- (void)shareContentAndImageFinishForShareType:(CWShareType)shareType
+__deprecated_msg("用`shareFinishForShareType:`代替");
+- (void)shareContentAndImageFailForShareType:(CWShareType)shareType
+__deprecated_msg("用`shareFailForShareType:`代替");
 
 @end

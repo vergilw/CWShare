@@ -11,7 +11,7 @@
 #define SINA_APP_SECRET             @"1290a49dd0a4f6f3de2b50e66a482b34"
 #define SINA_REDIRECT_URL           @"https://api.weibo.com/oauth2/default.html"
 
-//腾讯QQ配置 V2.2版本 2014.03更新
+//腾讯QQ配置 V2.3版本 2014.08更新
 #define TENCENT_APP_KEY             @"100450909"
 #define TENCENT_APP_SECRET          @"45ed0f6524d87210dc11e450bc27499d"
 
