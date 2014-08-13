@@ -59,9 +59,9 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-        [[CWShare shareObject] shareHandleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
-        [QQApiInterface handleOpenURL:url delegate:[CWShare shareObject]];
+        [[[CWShare shareObject] sinaShare] handleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
+        [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
         [TencentOAuth HandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
         [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];

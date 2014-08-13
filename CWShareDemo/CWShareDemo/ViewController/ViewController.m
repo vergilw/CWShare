@@ -204,6 +204,10 @@
         NSLog(@"腾讯QQ分享失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯QQ分享失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
+    } else if (shareType == CWShareTypeQQZone) {
+        NSLog(@"腾讯QQ空间分享失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯QQ空间分享失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
     } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
         NSLog(@"微信分享失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信分享失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
@@ -224,6 +228,10 @@
     } else if (shareType == CWShareTypeQQ) {
         NSLog(@"腾讯QQ分享成功");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯QQ分享成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareType == CWShareTypeQQZone) {
+        NSLog(@"腾讯QQ空间分享成功");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"腾讯QQ空间分享成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     } else if (shareType==CWShareTypeWechatSession || shareType==CWShareTypeWechatTimeline) {
         NSLog(@"微信分享成功");

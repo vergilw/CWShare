@@ -97,23 +97,23 @@
     {
         if (resp.errCode == 0) {
             if (self.cwShareWechatType == 0) {
-                [[[CWShare shareObject] delegate] shareContentFinishForShareType:CWShareTypeWechatSession];
+                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatSession];
             } else if (self.cwShareWechatType == 1) {
-                [[[CWShare shareObject] delegate] shareContentAndImageFinishForShareType:CWShareTypeWechatSession];
+                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatSession];
             } else if (self.cwShareWechatType == 2) {
-                [[[CWShare shareObject] delegate] shareContentFinishForShareType:CWShareTypeWechatTimeline];
+                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatTimeline];
             } else if (self.cwShareWechatType == 3) {
-                [[[CWShare shareObject] delegate] shareContentAndImageFinishForShareType:CWShareTypeWechatTimeline];
+                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatTimeline];
             }
         } else {
             if (self.cwShareWechatType == 0) {
-                [[[CWShare shareObject] delegate] shareContentFailForShareType:CWShareTypeWechatSession];
+                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatSession];
             } else if (self.cwShareWechatType == 1) {
-                [[[CWShare shareObject] delegate] shareContentAndImageFailForShareType:CWShareTypeWechatSession];
+                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatSession];
             } else if (self.cwShareWechatType == 2) {
-                [[[CWShare shareObject] delegate] shareContentFailForShareType:CWShareTypeWechatTimeline];
+                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatTimeline];
             } else if (self.cwShareWechatType == 3) {
-                [[[CWShare shareObject] delegate] shareContentAndImageFailForShareType:CWShareTypeWechatTimeline];
+                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatTimeline];
             }
         }
         

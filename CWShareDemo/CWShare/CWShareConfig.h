@@ -15,8 +15,5 @@
 #define TENCENT_APP_KEY             @"100450909"
 #define TENCENT_APP_SECRET          @"45ed0f6524d87210dc11e450bc27499d"
 
-#define TENCENT_REDIRECT_URL        @"www.lolipop.cn/public"
-#define QQZONE_DISPLAY_NAME         [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]
-#define QQZONE_DISPLAY_APP_URL      @"http://itunes.apple.com/us/app/id647802558"
-
+//微信配置 V1.4.3版本 2014.08更新
 #define WeChatAppID                 @"wx07e8b9dae786b338"

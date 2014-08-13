@@ -451,22 +451,22 @@ static CWShare *cwShare = nil;
 
 - (void)tencentShareContentFail
 {
-    [delegate shareFailForShareType:CWShareTypeTencent];
+    [delegate shareFailForShareType:tencentShare.shareTencentType];
 }
 
 - (void)tencentShareContentFinish
 {
-    [delegate shareFinishForShareType:CWShareTypeTencent];
+    [delegate shareFinishForShareType:tencentShare.shareTencentType];
 }
 
 - (void)tencentShareContentAndImageFail
 {
-    [delegate shareFailForShareType:CWShareTypeTencent];
+    [delegate shareFailForShareType:tencentShare.shareTencentType];
 }
 
 - (void)tencentShareContentAndImageFinish
 {
-    [delegate shareFinishForShareType:CWShareTypeTencent];
+    [delegate shareFinishForShareType:tencentShare.shareTencentType];
 }
 
 #pragma mark - Wechat Share Method
@@ -502,36 +502,6 @@ static CWShare *cwShare = nil;
 - (UIViewController *)parentViewController
 {
     return parentViewController;
-}
-
-#pragma mark - Sina App Delegate
-
-- (BOOL)shareHandleOpenURL:(NSURL *)url
-{
-    return [sinaShare handleOpenURL:url];
-}
-
-#pragma mark - QQ App Delegate
-
-- (void)onResp:(QQBaseResp *)resp
-{
-    switch (resp.type)
-    {
-        case ESENDMESSAGETOQQRESPTYPE:
-        {
-            SendMessageToQQResp* sendResp = (SendMessageToQQResp*)resp;
-            if ([sendResp.result isEqualToString:@"0"]) {
-                [delegate shareFinishForShareType:CWShareTypeQQ];
-            } else {
-                [delegate shareFailForShareType:CWShareTypeQQ];
-            }
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
 }
 
 @end

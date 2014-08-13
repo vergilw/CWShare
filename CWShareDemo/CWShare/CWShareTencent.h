@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperationManager.h"
-#import "CWShareTencentAuthorize.h"
 #import "CWShareTencentDelegate.h"
-#import <TencentOpenAPI/TencentOAuth.h>
+#import <TencentOpenAPI/TencentOpenSDK.h>
+#import "CWShareDelegate.h"
 
 typedef void(^TencentAuthorizeBlock)(void);
 
-@interface CWShareTencent : NSObject <CWShareTencentAuthorizeDelegate,TencentSessionDelegate>
+@interface CWShareTencent : NSObject <TencentSessionDelegate,QQApiInterfaceDelegate>
 
 @property (nonatomic, copy) NSString *tencentAccessToken;
 @property (nonatomic, strong) NSDate *tencentTokenExpireDate;
@@ -25,6 +25,7 @@ typedef void(^TencentAuthorizeBlock)(void);
 @property (nonatomic, strong) TencentAuthorizeBlock authorizeFinishBlock;
 @property (nonatomic, strong) TencentAuthorizeBlock authorizeFailBlock;
 @property (nonatomic, strong) TencentOAuth *tencentOAuth;
+@property (assign) CWShareType shareTencentType;
 
 - (void)shareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl;
 

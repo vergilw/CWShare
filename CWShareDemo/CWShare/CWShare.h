@@ -25,6 +25,7 @@
 //获取共享对象
 + (id)shareObject;
 
+//显示一键分享菜单
 - (void)showShareMenu;
 
 //开始新浪微博授权登录
@@ -50,12 +51,6 @@
 //分享内容到QQ空间
 - (void)tencentShareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl;
 
-//清空新浪微博授权登录信息
-- (void)clearSinaAuthorizeInfo;
-
-//清空腾讯QQ授权登录信息
-- (void)clearTencentAuthorizeInfo;
-
 //分享文字到微信好友
 - (void)wechatSessionShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信好友
@@ -65,7 +60,11 @@
 //分享新闻到微信朋友圈
 - (void)wechatTimelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl;
 
-//UIApplication Delegate
-- (BOOL)shareHandleOpenURL:(NSURL *)url;
+
+//清空新浪微博授权登录信息
+- (void)clearSinaAuthorizeInfo;
+
+//清空腾讯QQ授权登录信息
+- (void)clearTencentAuthorizeInfo;
 
 @end

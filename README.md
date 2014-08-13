@@ -5,6 +5,7 @@ CWShare 1.5
 - 更新QQ到官方2.3版本。
 - 由于QQ官方关闭了接口，去掉了QQ的Oauth授权方式。
 - 增加了分享到手机QQ方式。
+- 修复了一些错误。
 
 1.4版本更新（2014-07-29）
 - 增加了微信分享。
@@ -39,7 +40,7 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 使用第三方登录授权后自动获取用户个人信息，用来填充用户个人资料。
 
 ### 使用注意:
-由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey，否则授权不通过。
+由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权(SSO授权除外)，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey，否则授权不通过。
 
 ### 如何使用:
 CWShare里使用了第三方库AFNetworking。
@@ -70,12 +71,21 @@ QQ的URL Schemes填写tencent"your app key"。
 配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法：
 ```objective-c
 
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{   
+    …
+
+    [WXApi registerApp:WeChatAppID];
+    
+    return YES;
+}
+
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-        [[CWShare shareObject] shareHandleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"]) {
-        [QQApiInterface handleOpenURL:url delegate:[CWShare shareObject]];
+        [[[CWShare shareObject] sinaShare] handleOpenURL:url];
+    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
+        [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
         [TencentOAuth HandleOpenURL:url];
     } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
         [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
@@ -138,4 +148,4 @@ QQ的URL Schemes填写tencent"your app key"。
 
 ### 联系作者
 QQ 1749520
-如果你有任何问题可以联系作者。
+如果你有任何问题可以联系作者，欢迎提出意见。

@@ -12,6 +12,10 @@
 #import "CWShareTools.h"
 #import <TencentOpenAPI/TencentOpenSDK.h>
 
+@interface CWShareTencent ()
+
+@end
+
 @implementation CWShareTencent
 
 @synthesize tencentAccessToken,tencentTokenExpireDate,
@@ -36,6 +40,8 @@ authorizeFailBlock,tencentOAuth;
 
 - (void)shareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl
 {
+    self.shareTencentType = CWShareTypeQQZone;
+    
     QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theDesc previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
     SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
     [QQApiInterface SendReqToQZone:msgReq];
@@ -43,6 +49,8 @@ authorizeFailBlock,tencentOAuth;
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent
 {
+    self.shareTencentType = CWShareTypeTencent;
+    
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
         weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
@@ -57,11 +65,11 @@ authorizeFailBlock,tencentOAuth;
                     weakSelf.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
                     weakSelf.tencentOpenID = [CWShareStorage getTencentUserID];
                 }
-                NSLog(@"tencent shareContent errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
+                NSLog(@"tencentWeiBo shareContent errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
                 [weakSelf.delegate tencentShareContentFail];
             }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"tencent shareContent %@", [error localizedDescription]);
+            NSLog(@"tencentWeiBo shareContent %@", [error localizedDescription]);
             [weakSelf.delegate tencentShareContentFail];
         }];
     };
@@ -74,15 +82,10 @@ authorizeFailBlock,tencentOAuth;
         if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
             [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
         } else {
-            if (parentViewController == nil) {
-                NSLog(@"CWShare没有设置parentViewController");
-            } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-                NSLog(@"CWShare代理应该属于UIViewController");
-            } else {
-                CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-                [tencentAuthorize setDelegate:self];
-                [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
-            }
+            NSLog(@"tencentWeiBo shareContent 没有安装QQ");
+            authorizeFailBlock();
+            [self setAuthorizeFinishBlock:nil];
+            [self setAuthorizeFailBlock:nil];
         }
         
     } else {
@@ -94,6 +97,8 @@ authorizeFailBlock,tencentOAuth;
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent withImage:(UIImage *)theImage
 {
+    self.shareTencentType = CWShareTypeTencent;
+    
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
         weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
@@ -110,11 +115,11 @@ authorizeFailBlock,tencentOAuth;
                     weakSelf.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
                     weakSelf.tencentOpenID = [CWShareStorage getTencentUserID];
                 }
-                NSLog(@"tencent shareContentAndImage errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
+                NSLog(@"tencentWeiBo shareContentAndImage errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
                 [weakSelf.delegate tencentShareContentAndImageFail];
             }
         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"tencent shareContentAndImage %@", [error localizedDescription]);
+            NSLog(@"tencentWeiBo shareContentAndImage %@", [error localizedDescription]);
             [weakSelf.delegate tencentShareContentAndImageFail];
         }];
     };
@@ -127,15 +132,10 @@ authorizeFailBlock,tencentOAuth;
         if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
             [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
         } else {
-            if (parentViewController == nil) {
-                NSLog(@"CWShare没有设置parentViewController");
-            } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-                NSLog(@"CWShare代理应该属于UIViewController");
-            } else {
-                CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-                [tencentAuthorize setDelegate:self];
-                [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
-            }
+            NSLog(@"tencentWeiBo shareContentAndImage 没有安装QQ");
+            authorizeFailBlock();
+            [self setAuthorizeFinishBlock:nil];
+            [self setAuthorizeFailBlock:nil];
         }
     } else {
         authorizeFinishBlock();
@@ -146,20 +146,36 @@ authorizeFailBlock,tencentOAuth;
 
 - (void)shareToQQWithContent:(NSString *)theContent
 {
-    QQApiTextObject *txtObj = [QQApiTextObject objectWithText:theContent];
-    SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:txtObj];
-    [QQApiInterface sendReq:msgReq];
+    self.shareTencentType = CWShareTypeQQ;
+    
+    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+        QQApiTextObject *txtObj = [QQApiTextObject objectWithText:theContent];
+        SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:txtObj];
+        [QQApiInterface sendReq:msgReq];
+    } else {
+        NSLog(@"tencentQQ shareContent 没有安装QQ");
+        [delegate tencentShareContentFail];
+    }
 }
 
 - (void)shareToQQWithImage:(UIImage *)theImage
 {
-    QQApiImageObject *imgObj = [QQApiImageObject objectWithData:UIImageJPEGRepresentation(theImage, 1.0) previewImageData:nil title:nil description:nil];
-    SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:imgObj];
-    [QQApiInterface sendReq:msgReq];
+    self.shareTencentType = CWShareTypeQQ;
+    
+    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+        QQApiImageObject *imgObj = [QQApiImageObject objectWithData:UIImageJPEGRepresentation(theImage, 1.0) previewImageData:nil title:nil description:nil];
+        SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:imgObj];
+        [QQApiInterface sendReq:msgReq];
+    } else {
+        NSLog(@"tencentQQ shareImage 没有安装QQ");
+        [delegate tencentShareContentFail];
+    }
 }
 
 - (void)shareToQQWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withTargetUrl:(NSString *)theUrl
 {
+    self.shareTencentType = CWShareTypeQQ;
+    
     QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theContent previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
     SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
     [QQApiInterface sendReq:msgReq];
@@ -172,42 +188,9 @@ authorizeFailBlock,tencentOAuth;
     if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
         [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
     } else {
-        NSLog(@"您的设备没有下载QQ");
+        NSLog(@"tencent authorize 没有安装QQ");
         [delegate tencentShareAuthorizeFail];
     }
-    /*
-    __weak typeof(self) weakSelf = self;
-    self.authorizeFinishBlock = ^(void) {
-        weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
-        weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-        [weakSelf.tencentRequest POST:@"https://openmobile.qq.com/user/get_simple_userinfo" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
-                [weakSelf.delegate tencentShareAuthorizeFinish:responseObject];
-            }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            NSLog(@"tencent shareContent get user info %@", [error localizedDescription]);
-            [weakSelf.delegate tencentShareAuthorizeFail];
-        }];
-    };
-
-    self.authorizeFailBlock = ^(void) {
-        [weakSelf.delegate tencentShareAuthorizeFail];
-    };
-    
-    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
-        [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
-    } else {
-        if (parentViewController == nil) {
-            NSLog(@"CWShare没有设置parentViewController");
-        } else if (![parentViewController isKindOfClass:[UIViewController class]]) {
-            NSLog(@"CWShare代理应该属于UIViewController");
-        } else {
-            CWShareTencentAuthorize *tencentAuthorize = [[CWShareTencentAuthorize alloc] init];
-            [tencentAuthorize setDelegate:self];
-            [parentViewController.navigationController pushViewController:tencentAuthorize animated:YES];
-        }
-    }
-     */
 }
 
 - (BOOL)isAuthorizeExpired
@@ -266,6 +249,40 @@ authorizeFailBlock,tencentOAuth;
 - (void)tencentDidNotNetWork
 {
     [self tencentAuthorizeFail];
+}
+
+#pragma mark - QQ App Delegate
+
+- (void)onResp:(QQBaseResp *)resp
+{
+    switch (resp.type)
+    {
+        case ESENDMESSAGETOQQRESPTYPE:
+        {
+            SendMessageToQQResp* sendResp = (SendMessageToQQResp*)resp;
+            if ([sendResp.result isEqualToString:@"0"]) {
+                [delegate tencentShareContentFinish];
+            } else {
+                NSLog(@"%@", sendResp.errorDescription);
+                [delegate tencentShareContentFail];
+            }
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+- (void)onReq:(QQBaseReq *)req
+{
+    
+}
+
+- (void)isOnlineResponse:(NSDictionary *)response
+{
+    
 }
 
 @end

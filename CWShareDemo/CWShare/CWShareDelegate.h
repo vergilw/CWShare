@@ -11,7 +11,8 @@
 typedef enum {
     CWShareTypeSina,            //新浪微博分享
     CWShareTypeTencent,         //腾讯微博分享
-    CWShareTypeQQ,              //腾讯QQ分享
+    CWShareTypeQQ,              //QQ好友分享
+    CWShareTypeQQZone,          //QQ空间分享
     CWShareTypeWechatSession,   //微信好友分享
     CWShareTypeWechatTimeline,  //微信朋友圈分享
     CWShareTypeMessage,         //短信分享
