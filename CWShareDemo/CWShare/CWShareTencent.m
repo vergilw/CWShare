@@ -185,6 +185,33 @@ authorizeFailBlock,tencentOAuth;
 
 - (void)startAuthorize
 {
+    __weak typeof(self) weakSelf = self;
+    self.authorizeFinishBlock = ^(void) {
+        weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
+        weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/user/get_user_info" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
+                [weakSelf.delegate tencentShareAuthorizeFinish:responseObject];
+            } else {
+                if ([[responseObject objectForKey:@"errcode"] integerValue] == 36) {
+                    [CWShareStorage clearTencentStoreInfo];
+                    weakSelf.tencentAccessToken = [CWShareStorage getTencentAccessToken];
+                    weakSelf.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
+                    weakSelf.tencentOpenID = [CWShareStorage getTencentUserID];
+                }
+                NSLog(@"tencent login errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
+                [weakSelf.delegate tencentShareAuthorizeFail];
+            }
+        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            NSLog(@"tencent login %@", [error localizedDescription]);
+            [weakSelf.delegate tencentShareAuthorizeFail];
+        }];
+    };
+    
+    self.authorizeFailBlock = ^(void) {
+        [weakSelf.delegate tencentShareAuthorizeFail];
+    };
+    
     if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
         [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
     } else {
@@ -249,6 +276,11 @@ authorizeFailBlock,tencentOAuth;
 - (void)tencentDidNotNetWork
 {
     [self tencentAuthorizeFail];
+}
+
+- (NSArray *)getAuthorizedPermissions:(NSArray *)permissions withExtraParams:(NSDictionary *)extraParams
+{
+    return nil;
 }
 
 #pragma mark - QQ App Delegate
