@@ -1,6 +1,11 @@
-CWShare 1.5
+CWShare 1.6
 =======
 ### 更新说明
+1.6版本更新（2015-01-14）
+- 替换微博为官方SDK。
+- 替换所有库以支持64位。
+- 修改了使用CWShare的步骤。
+
 1.5版本更新（2014-08-13）
 - 更新QQ到官方2.3版本。
 - 由于QQ官方关闭了接口，去掉了QQ的Oauth授权方式。
@@ -40,7 +45,7 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 使用第三方登录授权后自动获取用户个人信息，用来填充用户个人资料。
 
 ### 使用注意:
-由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权(SSO授权除外)，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey，否则授权不通过。
+由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey（同理URL Schemes也要相应修改），否则测试流程会出错。
 
 ### 如何使用:
 CWShare里使用了第三方库AFNetworking。
@@ -58,23 +63,27 @@ CWShare里使用了第三方库AFNetworking。
 - libsqlite3.dylib
 - libiconv.dylib
 
+引用新浪微博的SDK需要添加如下framework:
+- ImageIO.framework
+
 另外CWShare文件里含有如下文件，别漏掉。
 - TencentOpenAPI.framework（QQ自己的私有库）
 - libWeChatSDK.a (微信自己的私有库)
 
 由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types：
-新浪的URL Schemes填写sinaweibosso."your app key"。
+新浪的URL Schemes填写wb”your app key"。
 QQ的URL Schemes填写tencent"your app key"。
 微信的URL Schemes填写weixin”your app key”
 其他信息可以任意填写。可以参考Demo里的配置设置。
 
-配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法：
+配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法，以便保证回调正确：
 ```objective-c
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {   
     …
 
+    [WeiboSDK registerApp:SINA_APP_KEY];
     [WXApi registerApp:WeChatAppID];
     
     return YES;
@@ -82,14 +91,8 @@ QQ的URL Schemes填写tencent"your app key"。
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-        [[[CWShare shareObject] sinaShare] handleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
-        [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
-        [TencentOAuth HandleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
-        [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
-    }
+    [CWShare handleOpenUrl:url sourceApp:sourceApplication];
+
     return YES;
 }
 
@@ -115,7 +118,6 @@ QQ的URL Schemes填写tencent"your app key"。
 - (IBAction)sinaShareContent:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] sinaShareWithContent:@"test cwshare"];
 }
 

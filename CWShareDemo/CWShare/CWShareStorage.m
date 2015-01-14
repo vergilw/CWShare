@@ -16,6 +16,10 @@
 #define CW_TENCENT_ACCESS_TOKEN_EXPIRED_DATE @"CWShareTencentAccessTokenExpiredDate"
 #define CW_TENCENT_USER_ID @"CWShareTencentUserID"
 
+#define CW_WECHAT_ACCESS_TOKEN @"CWShareWechatAccessToken"
+#define CW_WECHAT_ACCESS_TOKEN_EXPIRED_DATE @"CWShareWechatAccessTokenExpiredDate"
+#define CW_WECHAT_USER_ID @"CWShareWechatUserID"
+
 @implementation CWShareStorage
 
 + (void)clearSinaStoreInfo
@@ -111,6 +115,54 @@
 {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject:userID forKey:CW_TENCENT_USER_ID];
+    [userDefaults synchronize];
+}
+
++ (void)clearWechatStoreInfo
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:CW_WECHAT_ACCESS_TOKEN];
+    [userDefaults removeObjectForKey:CW_WECHAT_ACCESS_TOKEN_EXPIRED_DATE];
+    [userDefaults removeObjectForKey:CW_WECHAT_USER_ID];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getWechatAccessToken
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return [userDefaults objectForKey:CW_WECHAT_ACCESS_TOKEN];
+}
+
++ (void)setWechatAccessToken:(NSString *)theAccessToken
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:theAccessToken forKey:CW_WECHAT_ACCESS_TOKEN];
+    [userDefaults synchronize];
+}
+
++ (NSDate *)getWechatExpiredDate
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return [userDefaults objectForKey:CW_WECHAT_ACCESS_TOKEN_EXPIRED_DATE];
+}
+
++ (void)setWechatExpiredDate:(NSDate *)theDate
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:theDate forKey:CW_WECHAT_ACCESS_TOKEN_EXPIRED_DATE];
+    [userDefaults synchronize];
+}
+
++ (NSString *)getWechatUserID
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    return [userDefaults objectForKey:CW_WECHAT_USER_ID];
+}
+
++ (void)setWechatUserID:(NSString *)userID
+{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:userID forKey:CW_WECHAT_USER_ID];
     [userDefaults synchronize];
 }
 

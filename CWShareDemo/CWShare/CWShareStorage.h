@@ -36,4 +36,17 @@
 + (NSString *)getTencentUserID;
 + (void)setTencentUserID:(NSString *)userID;
 
+
+//微信信息存储
++ (void)clearWechatStoreInfo;
+
++ (NSString *)getWechatAccessToken;
++ (void)setWechatAccessToken:(NSString *)theAccessToken;
+
++ (NSDate *)getWechatExpiredDate;
++ (void)setWechatExpiredDate:(NSDate *)theDate;
+
++ (NSString *)getWechatUserID;
++ (void)setWechatUserID:(NSString *)userID;
+
 @end

@@ -11,8 +11,34 @@
 
 @implementation CWShareWeChat
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
+- (void)startAuthorize
+{
+    if (![WXApi isWXAppInstalled]) {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装微信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else {
+        
+        SendAuthReq* req =[[SendAuthReq alloc ] init ];
+        req.scope = @"snsapi_userinfo" ;
+        req.state = @"123" ;
+
+        [WXApi sendReq:req];
+    }
+}
+
 - (void)sessionShareWithTitle:(NSString *)theTitle
 {
+    self.shareWechatType = CWShareTypeWechatSession;
+    
     if (![WXApi isWXAppInstalled]) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装微信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
@@ -28,6 +54,8 @@
 
 - (void)sessionShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl
 {
+    self.shareWechatType = CWShareTypeWechatSession;
+    
     if (![WXApi isWXAppInstalled]) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装微信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
@@ -52,6 +80,8 @@
 
 - (void)timelineShareWithTitle:(NSString *)theTitle
 {
+    self.shareWechatType = CWShareTypeWechatTimeline;
+    
     if (![WXApi isWXAppInstalled]) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装微信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
@@ -67,6 +97,8 @@
 
 - (void)timelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl
 {
+    self.shareWechatType = CWShareTypeWechatTimeline;
+    
     if (![WXApi isWXAppInstalled]) {
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装微信" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
@@ -93,28 +125,32 @@
 
 - (void)onResp:(BaseResp *)resp
 {
-    if([resp isKindOfClass:[SendMessageToWXResp class]])
-    {
+    if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
         if (resp.errCode == 0) {
-            if (self.cwShareWechatType == 0) {
-                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatSession];
-            } else if (self.cwShareWechatType == 1) {
-                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatSession];
-            } else if (self.cwShareWechatType == 2) {
-                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatTimeline];
-            } else if (self.cwShareWechatType == 3) {
-                [[[CWShare shareObject] delegate] shareFinishForShareType:CWShareTypeWechatTimeline];
-            }
+            [self.delegate wechatShareFinish];
         } else {
-            if (self.cwShareWechatType == 0) {
-                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatSession];
-            } else if (self.cwShareWechatType == 1) {
-                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatSession];
-            } else if (self.cwShareWechatType == 2) {
-                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatTimeline];
-            } else if (self.cwShareWechatType == 3) {
-                [[[CWShare shareObject] delegate] shareFailForShareType:CWShareTypeWechatTimeline];
-            }
+            [self.delegate wechatShareFail];
+        }
+        
+    } else if ([resp isKindOfClass:[SendAuthResp class]]) {
+        SendAuthResp *authResp = (SendAuthResp *)resp;
+        
+        if (authResp.code != nil) {
+            self.wechatRequest = [AFHTTPRequestOperationManager manager];
+            self.wechatRequest.responseSerializer.acceptableContentTypes = [self.wechatRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+            [self.wechatRequest POST:@"https://api.weixin.qq.com/sns/oauth2/access_token" parameters:@{@"appid":WeChatAppID, @"secret":WechatAppSecret, @"code":authResp.code, @"grant_type":@"authorization_code"} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                self.wechatAccessToken = [responseObject objectForKey:@"access_token"];
+                self.wechatTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[[responseObject objectForKey:@"expires_in"] doubleValue]];
+                self.wechatOpenID = [responseObject objectForKey:@"openid"];
+                
+                [self.delegate wechatShareAuthorizeFinish:responseObject];
+                
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                NSLog(@"wechat login %@", [error localizedDescription]);
+                [self.delegate wechatShareAuthorizeFail];
+            }];
+        } else {
+            [self.delegate wechatShareAuthorizeFail];
         }
         
     }

@@ -50,14 +50,12 @@
 - (IBAction)sinaShareContent:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] sinaShareWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
 }
 
 - (IBAction)sinaShareContentAndImage:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     [[CWShare shareObject] sinaShareWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage];
 }
@@ -82,21 +80,18 @@
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] tencentShareToQQZoneWithTitle:[NSString stringWithFormat:@"%d share title", arc4random()] withDescription:[NSString stringWithFormat:@"%d share description", arc4random()] withImage:uploadImage targetUrl:@"http://www.11186.com"];
 }
 
 - (IBAction)tencentShareContentToWeiBo:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
 }
 
 - (IBAction)tencentShareContentAndImageToWeiBo:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     [[CWShare shareObject] tencentShareToWeiBoWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage];
 }
@@ -104,14 +99,12 @@
 - (IBAction)tencentShareContentToQQ:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] tencentShareToQQWithContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()]];
 }
 
 - (IBAction)tencentShareImageToQQ:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     [[CWShare shareObject] tencentShareToQQWithImage:uploadImage];
 }
@@ -121,7 +114,6 @@
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] tencentShareToQQWithTitle:[NSString stringWithFormat:@"%d share title", arc4random()] withContent:[NSString stringWithFormat:@"%d share description", arc4random()] withImage:uploadImage withTargetUrl:@"http://www.11186.com"];
     
 }
@@ -157,35 +149,51 @@
 - (IBAction)shareMenuAction:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] showShareMenu];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        UIAlertController *alertViewCtrl = [[CWShare shareObject] shareMenuView];
+        [self presentViewController:alertViewCtrl animated:YES completion:nil];
+    } else {
+        UIActionSheet *actionSheet = [[CWShare shareObject] shareMenuView];
+        [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
+    }
 }
 
 #pragma mark - CWShare Delegate
 
-- (void)loginFailForShareType:(CWShareType)shareType
+- (void)loginFailForShareType:(CWShareLoginType)shareLoginType
 {
-    if (shareType == CWShareTypeSina) {
+    if (shareLoginType == CWShareTypeSina) {
         NSLog(@"新浪授权失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
-    } else if (shareType == CWShareTypeTencent) {
+    } else if (shareLoginType == CWShareTypeTencent) {
         NSLog(@"QQ授权失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareLoginType == CWShareLoginTypeWechat) {
+        NSLog(@"微信授权失败");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }
 
-- (void)loginFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo
+- (void)loginFinishForShareType:(CWShareLoginType)shareLoginType withData:(NSDictionary *)userInfo
 {
-    if (shareType == CWShareTypeSina) {
+    if (shareLoginType == CWShareTypeSina) {
         NSLog(@"新浪授权成功");
         NSLog(@"%@", userInfo);
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
-    } else if (shareType == CWShareTypeTencent) {
+    } else if (shareLoginType == CWShareTypeTencent) {
         NSLog(@"QQ授权成功");
         NSLog(@"%@", userInfo);
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+    } else if (shareLoginType == CWShareLoginTypeWechat) {
+        NSLog(@"微信授权成功");
+        NSLog(@"%@", userInfo);
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
     }
 }

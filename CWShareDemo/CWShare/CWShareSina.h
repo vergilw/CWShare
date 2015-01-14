@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CWShareSinaAuthorize.h"
 #import "AFHTTPRequestOperationManager.h"
 #import "CWShareSinaDelegate.h"
+#import "WeiboSDK.h"
 
 typedef void(^SinaAuthorizeBlock)(void);
 
-@interface CWShareSina : NSObject <CWShareSinaAuthorizeDelegate>
+@interface CWShareSina : NSObject <WeiboSDKDelegate>
 
 @property (nonatomic, copy) NSString *sinaAccessToken;
 @property (nonatomic, strong) NSDate *sinaTokenExpireDate;
@@ -24,7 +24,6 @@ typedef void(^SinaAuthorizeBlock)(void);
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, strong) SinaAuthorizeBlock authorizeFinishBlock;
 @property (nonatomic, strong) SinaAuthorizeBlock authorizeFailBlock;
-@property (assign) BOOL isSSOAuth;
 
 - (void)shareWithContent:(NSString *)theContent;
 
@@ -33,7 +32,5 @@ typedef void(^SinaAuthorizeBlock)(void);
 - (void)startAuthorize;
 
 - (BOOL)isAuthorizeExpired;
-
-- (BOOL)handleOpenURL:(NSURL *)url;
 
 @end

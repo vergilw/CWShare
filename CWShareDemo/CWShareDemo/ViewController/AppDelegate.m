@@ -25,6 +25,7 @@
     [self.window makeKeyAndVisible];
     
     [WXApi registerApp:WeChatAppID];
+    [WeiboSDK registerApp:SINA_APP_KEY];
     
     return YES;
 }
@@ -58,14 +59,8 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-        [[[CWShare shareObject] sinaShare] handleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
-        [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
-        [TencentOAuth HandleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
-        [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
-    }
+    [CWShare handleOpenUrl:url sourceApp:sourceApplication];
+    
     return YES;
 }
 

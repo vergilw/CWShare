@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "WXApi.h"
+#import "AFHTTPRequestOperationManager.h"
+#import "CWShareDelegate.h"
+#import "CWShareWeChatDelegate.h"
 
 typedef enum {
     CWShareWechatSessionContent = 0,
@@ -18,8 +21,15 @@ typedef enum {
 
 @interface CWShareWeChat : NSObject <WXApiDelegate>
 
-@property (assign) CWShareWechatType cwShareWechatType;
+@property (nonatomic, copy) NSString *wechatAccessToken;
+@property (nonatomic, strong) NSDate *wechatTokenExpireDate;
+@property (nonatomic, copy) NSString *wechatOpenID;
+@property (weak) id<CWShareWeChatDelegate> delegate;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *wechatRequest;
+@property (assign, nonatomic) CWShareType shareWechatType;
 
+//开始授权登录
+- (void)startAuthorize;
 //分享文字到微信好友
 - (void)sessionShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信好友

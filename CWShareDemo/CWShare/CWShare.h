@@ -8,25 +8,27 @@
 
 #import <Foundation/Foundation.h>
 #import "CWShareSina.h"
-#import "CWShareTencent.h"
+#import "CWShareQQ.h"
 #import "CWShareDelegate.h"
 #import "CWShareWeChat.h"
 #import "CWShareConfig.h"
-#import <TencentOpenAPI/TencentOpenSDK.h>
 
-@interface CWShare : NSObject <CWShareSinaDelegate,CWShareTencentDelegate,UIActionSheetDelegate>
+@interface CWShare : NSObject <CWShareSinaDelegate,CWShareQQDelegate,CWShareWeChatDelegate,UIActionSheetDelegate>
 
 @property (nonatomic, strong) CWShareSina *sinaShare;
-@property (nonatomic, strong) CWShareTencent *tencentShare;
+@property (nonatomic, strong) CWShareQQ *tencentShare;
 @property (weak) id<CWShareDelegate> delegate;
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, strong) CWShareWeChat *wechatShare;
 
 //获取共享对象
-+ (id)shareObject;
++ (CWShare *)shareObject;
 
-//显示一键分享菜单
-- (void)showShareMenu;
+//获取一键分享菜单
+- (id)shareMenuView;
+
+//处理第三方回调
++ (void)handleOpenUrl:(NSURL *)url sourceApp:(NSString *)sourceApplication;
 
 //开始新浪微博授权登录
 - (void)startSinaAuthorizeLogin;
@@ -51,6 +53,8 @@
 //分享内容到QQ空间
 - (void)tencentShareToQQZoneWithTitle:(NSString *)theTitle withDescription:(NSString *)theDesc withImage:(UIImage *)theImage targetUrl:(NSString *)theUrl;
 
+//开始微信授权登录
+- (void)startWechatAuthorizeLogin;
 //分享文字到微信好友
 - (void)wechatSessionShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信好友

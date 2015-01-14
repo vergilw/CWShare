@@ -16,16 +16,24 @@ typedef enum {
     CWShareTypeWechatSession,   //微信好友分享
     CWShareTypeWechatTimeline,  //微信朋友圈分享
     CWShareTypeMessage,         //短信分享
-    CWShareTypeMail             //邮件分享
+    CWShareTypeMail,            //邮件分享
+    CWShareTypeDtCode           //二维码
 } CWShareType;
+
+typedef enum {
+    CWShareLoginTypeSina,       //新浪微博登录
+    CWShareLoginTypeTencent,    //腾讯微博登录
+    CWShareLoginTypeQQ,         //QQ登录
+    CWShareLoginTypeWechat      //微信登录
+} CWShareLoginType;
 
 @protocol CWShareDelegate <NSObject>
 
 @optional
 //登录授权成功
-- (void)loginFinishForShareType:(CWShareType)shareType withData:(NSDictionary *)userInfo;
+- (void)loginFinishForShareType:(CWShareLoginType)shareLoginType withData:(NSDictionary *)userInfo;
 //登录授权失败
-- (void)loginFailForShareType:(CWShareType)shareType;
+- (void)loginFailForShareType:(CWShareLoginType)shareLoginType;
 
 //分享成功
 - (void)shareFinishForShareType:(CWShareType)shareType;
