@@ -26,10 +26,14 @@ typedef enum {
 @property (nonatomic, copy) NSString *wechatOpenID;
 @property (weak) id<CWShareWeChatDelegate> delegate;
 @property (nonatomic, strong) AFHTTPRequestOperationManager *wechatRequest;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *wechatInfoRequest;
 @property (assign, nonatomic) CWShareType shareWechatType;
 
 //开始授权登录
 - (void)startAuthorize;
+
+- (void)clearAuthorizeInfo;
+
 //分享文字到微信好友
 - (void)sessionShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信好友
@@ -37,6 +41,6 @@ typedef enum {
 //分享文字到微信朋友圈
 - (void)timelineShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信朋友圈
-- (void)timelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl;
+- (void)timelineShareWithTitle:(NSString *)theTitle withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl;
 
 @end

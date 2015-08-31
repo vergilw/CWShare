@@ -53,7 +53,7 @@ static CWShare *cwShare = nil;
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
         UIActionSheet *actionSheet = nil;
-        actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:nil];
+        actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:nil];
         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
             [actionSheet setTintColor:[UIColor colorWithRed:204/255.0 green:31/255.0 blue:36/255.0 alpha:1.0]];
         }
@@ -67,12 +67,12 @@ static CWShare *cwShare = nil;
         }
         [titleLabel setTextAlignment:NSTextAlignmentCenter];
         [titleLabel setFont:[UIFont systemFontOfSize:18]];
-        [titleLabel setText:@"邀请方式"];
+        [titleLabel setText:@"分享方式"];
         [actionSheet addSubview:titleLabel];
         
         UIButton *wechatSessionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [wechatSessionButton setFrame:CGRectMake(22, 60, 60, 60)];
-        [wechatSessionButton setImage:[UIImage imageNamed:@"ic_share_weix"] forState:UIControlStateNormal];
+        [wechatSessionButton setImage:[UIImage imageNamed:@"cwshare_wechat"] forState:UIControlStateNormal];
         [wechatSessionButton setTag:kButtonTag_WechatSession];
         [wechatSessionButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:wechatSessionButton];
@@ -91,7 +91,7 @@ static CWShare *cwShare = nil;
         
         UIButton *wechatTimelineButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [wechatTimelineButton setFrame:CGRectMake(94, 60, 60, 60)];
-        [wechatTimelineButton setImage:[UIImage imageNamed:@"ic_share_pyq"] forState:UIControlStateNormal];
+        [wechatTimelineButton setImage:[UIImage imageNamed:@"cwshare_timeline"] forState:UIControlStateNormal];
         [wechatTimelineButton setTag:kButtonTag_WechatTimeline];
         [wechatTimelineButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:wechatTimelineButton];
@@ -110,7 +110,7 @@ static CWShare *cwShare = nil;
         
         UIButton *sinaButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [sinaButton setFrame:CGRectMake(166, 60, 60, 60)];
-        [sinaButton setImage:[UIImage imageNamed:@"ic_share_weibo"] forState:UIControlStateNormal];
+        [sinaButton setImage:[UIImage imageNamed:@"cwshare_sina"] forState:UIControlStateNormal];
         [sinaButton setTag:kButtonTag_Sina];
         [sinaButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:sinaButton];
@@ -129,7 +129,7 @@ static CWShare *cwShare = nil;
         
         UIButton *tencentButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [tencentButton setFrame:CGRectMake(238, 60, 60, 60)];
-        [tencentButton setImage:[UIImage imageNamed:@"ic_share_qq"] forState:UIControlStateNormal];
+        [tencentButton setImage:[UIImage imageNamed:@"cwshare_qq"] forState:UIControlStateNormal];
         [tencentButton setTag:kButtonTag_Tencent];
         [tencentButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:tencentButton];
@@ -146,9 +146,10 @@ static CWShare *cwShare = nil;
         [tencentLabel setText:@"QQ"];
         [actionSheet addSubview:tencentLabel];
         
+        /*
         UIButton *shortMsgButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [shortMsgButton setFrame:CGRectMake(22, 170, 60, 60)];
-        [shortMsgButton setImage:[UIImage imageNamed:@"ic_share_messages"] forState:UIControlStateNormal];
+        [shortMsgButton setImage:[UIImage imageNamed:@"cwshare_messages"] forState:UIControlStateNormal];
         [shortMsgButton setTag:kButtonTag_Message];
         [shortMsgButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:shortMsgButton];
@@ -167,7 +168,7 @@ static CWShare *cwShare = nil;
         
         UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [mailButton setFrame:CGRectMake(94, 170, 60, 60)];
-        [mailButton setImage:[UIImage imageNamed:@"ic_share_mail"] forState:UIControlStateNormal];
+        [mailButton setImage:[UIImage imageNamed:@"cwshare_mail"] forState:UIControlStateNormal];
         [mailButton setTag:kButtonTag_Mail];
         [mailButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:mailButton];
@@ -186,7 +187,7 @@ static CWShare *cwShare = nil;
         
         UIButton *tdCodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [tdCodeButton setFrame:CGRectMake(166, 170, 60, 60)];
-        [tdCodeButton setImage:[UIImage imageNamed:@"ic_share_dcode"] forState:UIControlStateNormal];
+        [tdCodeButton setImage:[UIImage imageNamed:@"cwshare_dcode"] forState:UIControlStateNormal];
         [tdCodeButton setTag:kButtonTag_tdCode];
         [tdCodeButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:tdCodeButton];
@@ -202,12 +203,12 @@ static CWShare *cwShare = nil;
         [tdCodeLabel setFont:[UIFont systemFontOfSize:14]];
         [tdCodeLabel setText:@"二维码"];
         [actionSheet addSubview:tdCodeLabel];
-        
+        */
         return actionSheet;
     } else {
         CGFloat widthSpace = (screenWidth-240-14-14-8-8)/3;
         
-        UIAlertController *searchActionSheet = [UIAlertController alertControllerWithTitle:@"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+        UIAlertController *searchActionSheet = [UIAlertController alertControllerWithTitle:@"\n\n\n\n\n\n\n\n" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
         
         [searchActionSheet.view setTintColor:[UIColor colorWithRed:204/255.0 green:31/255.0 blue:36/255.0 alpha:1.0]];
         [searchActionSheet.view.layer setMasksToBounds:YES];
@@ -216,19 +217,19 @@ static CWShare *cwShare = nil;
         
         [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1.0]];
         
-        UIView *actionSheet = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth-16, 240)];
+        UIView *actionSheet = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth-16, 150)];
         
         UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, screenWidth-16, 21)];
         [titleLabel setBackgroundColor:[UIColor clearColor]];
         [titleLabel setTextColor:[UIColor darkGrayColor]];
         [titleLabel setTextAlignment:NSTextAlignmentCenter];
         [titleLabel setFont:[UIFont systemFontOfSize:18]];
-        [titleLabel setText:@"邀请方式"];
+        [titleLabel setText:@"分享方式"];
         [actionSheet addSubview:titleLabel];
         
         UIButton *wechatSessionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [wechatSessionButton setFrame:CGRectMake(14, 60, 60, 60)];
-        [wechatSessionButton setImage:[UIImage imageNamed:@"ic_share_weix"] forState:UIControlStateNormal];
+        [wechatSessionButton setImage:[UIImage imageNamed:@"cwshare_wechat"] forState:UIControlStateNormal];
         [wechatSessionButton setTag:kButtonTag_WechatSession];
         [wechatSessionButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:wechatSessionButton];
@@ -243,7 +244,7 @@ static CWShare *cwShare = nil;
         
         UIButton *wechatTimelineButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [wechatTimelineButton setFrame:CGRectMake(14+60+widthSpace, 60, 60, 60)];
-        [wechatTimelineButton setImage:[UIImage imageNamed:@"ic_share_pyq"] forState:UIControlStateNormal];
+        [wechatTimelineButton setImage:[UIImage imageNamed:@"cwshare_timeline"] forState:UIControlStateNormal];
         [wechatTimelineButton setTag:kButtonTag_WechatTimeline];
         [wechatTimelineButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:wechatTimelineButton];
@@ -258,7 +259,7 @@ static CWShare *cwShare = nil;
         
         UIButton *sinaButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [sinaButton setFrame:CGRectMake(14+60*2+widthSpace*2, 60, 60, 60)];
-        [sinaButton setImage:[UIImage imageNamed:@"ic_share_weibo"] forState:UIControlStateNormal];
+        [sinaButton setImage:[UIImage imageNamed:@"cwshare_sina"] forState:UIControlStateNormal];
         [sinaButton setTag:kButtonTag_Sina];
         [sinaButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:sinaButton];
@@ -273,7 +274,7 @@ static CWShare *cwShare = nil;
         
         UIButton *tencentButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [tencentButton setFrame:CGRectMake(14+60*3+widthSpace*3, 60, 60, 60)];
-        [tencentButton setImage:[UIImage imageNamed:@"ic_share_qq"] forState:UIControlStateNormal];
+        [tencentButton setImage:[UIImage imageNamed:@"cwshare_qq"] forState:UIControlStateNormal];
         [tencentButton setTag:kButtonTag_Tencent];
         [tencentButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:tencentButton];
@@ -286,9 +287,10 @@ static CWShare *cwShare = nil;
         [tencentLabel setText:@"QQ"];
         [actionSheet addSubview:tencentLabel];
         
+        /*
         UIButton *shortMsgButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [shortMsgButton setFrame:CGRectMake(14, 170, 60, 60)];
-        [shortMsgButton setImage:[UIImage imageNamed:@"ic_share_messages"] forState:UIControlStateNormal];
+        [shortMsgButton setImage:[UIImage imageNamed:@"cwshare_messages"] forState:UIControlStateNormal];
         [shortMsgButton setTag:kButtonTag_Message];
         [shortMsgButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:shortMsgButton];
@@ -303,7 +305,7 @@ static CWShare *cwShare = nil;
         
         UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [mailButton setFrame:CGRectMake(14+60+widthSpace, 170, 60, 60)];
-        [mailButton setImage:[UIImage imageNamed:@"ic_share_mail"] forState:UIControlStateNormal];
+        [mailButton setImage:[UIImage imageNamed:@"cwshare_mail"] forState:UIControlStateNormal];
         [mailButton setTag:kButtonTag_Mail];
         [mailButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:mailButton];
@@ -318,7 +320,7 @@ static CWShare *cwShare = nil;
         
         UIButton *tdCodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [tdCodeButton setFrame:CGRectMake(14+60*2+widthSpace*2, 170, 60, 60)];
-        [tdCodeButton setImage:[UIImage imageNamed:@"ic_share_dcode"] forState:UIControlStateNormal];
+        [tdCodeButton setImage:[UIImage imageNamed:@"cwshare_dcode"] forState:UIControlStateNormal];
         [tdCodeButton setTag:kButtonTag_tdCode];
         [tdCodeButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
         [actionSheet addSubview:tdCodeButton];
@@ -330,7 +332,7 @@ static CWShare *cwShare = nil;
         [tdCodeLabel setFont:[UIFont systemFontOfSize:14]];
         [tdCodeLabel setText:@"二维码"];
         [actionSheet addSubview:tdCodeLabel];
-        
+        */
         [searchActionSheet.view addSubview:actionSheet];
         
         self.alertViewCtrl = searchActionSheet;
@@ -474,18 +476,17 @@ static CWShare *cwShare = nil;
 
 - (void)clearSinaAuthorizeInfo
 {
-    [CWShareStorage clearSinaStoreInfo];
-    [sinaShare setSinaAccessToken:nil];
-    [sinaShare setSinaTokenExpireDate:nil];
-    [sinaShare setSinaUID:nil];
+    [sinaShare clearAuthorizeInfo];
 }
 
 - (void)clearTencentAuthorizeInfo
 {
-    [CWShareStorage clearTencentStoreInfo];
-    [tencentShare setTencentAccessToken:nil];
-    [tencentShare setTencentTokenExpireDate:nil];
-    [tencentShare setTencentOpenID:nil];
+    [tencentShare clearAuthorizeInfo];
+}
+
+- (void)clearWechatAuthorizeInfo
+{
+    [wechatShare clearAuthorizeInfo];
 }
 
 #pragma mark - Sina Authorize Delegate Method
@@ -504,7 +505,7 @@ static CWShare *cwShare = nil;
 
 - (void)tencentShareAuthorizeFail
 {
-    [delegate loginFailForShareType:CWShareLoginTypeTencent];
+    [delegate loginFailForShareType:CWShareLoginTypeQQ];
 }
 
 - (void)tencentShareAuthorizeFinish:(NSDictionary *)userInfo
@@ -578,9 +579,9 @@ static CWShare *cwShare = nil;
     [cwShare.wechatShare timelineShareWithTitle:theTitle];
 }
 
-- (void)wechatTimelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage  withWebUrl:(NSString *)theUrl
+- (void)wechatTimelineShareWithTitle:(NSString *)theTitle withImage:(UIImage *)theImage  withWebUrl:(NSString *)theUrl
 {
-    [cwShare.wechatShare timelineShareWithTitle:theTitle withContent:theContent withImage:theImage withWebUrl:theUrl];
+    [cwShare.wechatShare timelineShareWithTitle:theTitle withImage:theImage withWebUrl:theUrl];
 }
 
 #pragma mark - Wechat Delegate

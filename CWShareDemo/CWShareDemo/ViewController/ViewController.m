@@ -35,7 +35,6 @@
 - (IBAction)sinaLoginAction:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] startSinaAuthorizeLogin];
 }
 
@@ -63,7 +62,6 @@
 - (IBAction)tencentLoginAction:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] setParentViewController:self];
     [[CWShare shareObject] startTencentAuthorizeLogin];
 }
 
@@ -118,6 +116,20 @@
     
 }
 
+- (IBAction)wechatLoginAction:(id)sender
+{
+    [[CWShare shareObject] setDelegate:self];
+    [[CWShare shareObject] startWechatAuthorizeLogin];
+}
+
+- (IBAction)wechatLogoutAction:(id)sender
+{
+    NSLog(@"微信退出成功");
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"微信退出成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+    [alertView show];
+    [[CWShare shareObject] clearWechatAuthorizeInfo];
+}
+
 - (IBAction)wechatShareContentToSession:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
@@ -143,7 +155,7 @@
     UIImage *uploadImage = [UIImage imageNamed:@"blackArrow@2x.png"];
     
     [[CWShare shareObject] setDelegate:self];
-    [[CWShare shareObject] wechatTimelineShareWithTitle:[NSString stringWithFormat:@"%d share title", arc4random()] withContent:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage withWebUrl:@"www.11186.com"];
+    [[CWShare shareObject] wechatTimelineShareWithTitle:[NSString stringWithFormat:@"%d it's a debug test from my app, you can ignore this message.", arc4random()] withImage:uploadImage withWebUrl:@"www.11186.com"];
 }
 
 - (IBAction)shareMenuAction:(id)sender
@@ -167,7 +179,7 @@
         NSLog(@"新浪授权失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
-    } else if (shareLoginType == CWShareTypeTencent) {
+    } else if (shareLoginType == CWShareTypeQQ) {
         NSLog(@"QQ授权失败");
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权失败" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
@@ -185,7 +197,7 @@
         NSLog(@"%@", userInfo);
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"新浪授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
         [alertView show];
-    } else if (shareLoginType == CWShareTypeTencent) {
+    } else if (shareLoginType == CWShareTypeQQ) {
         NSLog(@"QQ授权成功");
         NSLog(@"%@", userInfo);
         UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"QQ授权成功" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];

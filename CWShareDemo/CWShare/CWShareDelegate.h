@@ -53,4 +53,8 @@ __deprecated_msg("用`shareFinishForShareType:`代替");
 - (void)shareContentAndImageFailForShareType:(CWShareType)shareType
 __deprecated_msg("用`shareFailForShareType:`代替");
 
+//以下方法弃用
+- (void)wechatTimelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl
+__deprecated_msg("用`wechatSessionShareWithTitle:withImage:withWebUrl`代替");
+
 @end

@@ -13,7 +13,7 @@
 
 typedef void(^SinaAuthorizeBlock)(void);
 
-@interface CWShareSina : NSObject <WeiboSDKDelegate>
+@interface CWShareSina : NSObject <WeiboSDKDelegate,WBHttpRequestDelegate>
 
 @property (nonatomic, copy) NSString *sinaAccessToken;
 @property (nonatomic, strong) NSDate *sinaTokenExpireDate;
@@ -32,5 +32,7 @@ typedef void(^SinaAuthorizeBlock)(void);
 - (void)startAuthorize;
 
 - (BOOL)isAuthorizeExpired;
+
+- (void)clearAuthorizeInfo;
 
 @end

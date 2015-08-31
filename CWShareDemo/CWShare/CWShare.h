@@ -18,7 +18,7 @@
 @property (nonatomic, strong) CWShareSina *sinaShare;
 @property (nonatomic, strong) CWShareQQ *tencentShare;
 @property (weak) id<CWShareDelegate> delegate;
-@property (weak) UIViewController *parentViewController;
+@property (weak) UIViewController *parentViewController; //该属性已经弃用
 @property (nonatomic, strong) CWShareWeChat *wechatShare;
 
 //获取共享对象
@@ -62,7 +62,7 @@
 //分享文字到微信朋友圈
 - (void)wechatTimelineShareWithTitle:(NSString *)theTitle;
 //分享新闻到微信朋友圈
-- (void)wechatTimelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl;
+- (void)wechatTimelineShareWithTitle:(NSString *)theTitle withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl;
 
 
 //清空新浪微博授权登录信息
@@ -70,5 +70,8 @@
 
 //清空腾讯QQ授权登录信息
 - (void)clearTencentAuthorizeInfo;
+
+//清空微信授权登录信息
+- (void)clearWechatAuthorizeInfo;
 
 @end

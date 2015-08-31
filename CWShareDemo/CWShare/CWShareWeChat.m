@@ -8,6 +8,7 @@
 
 #import "CWShareWeChat.h"
 #import "CWShare.h"
+#import "CWShareStorage.h"
 
 @implementation CWShareWeChat
 
@@ -33,6 +34,14 @@
 
         [WXApi sendReq:req];
     }
+}
+
+- (void)clearAuthorizeInfo
+{
+    [CWShareStorage clearWechatStoreInfo];
+    [self setWechatAccessToken:nil];
+    [self setWechatTokenExpireDate:nil];
+    [self setWechatOpenID:nil];
 }
 
 - (void)sessionShareWithTitle:(NSString *)theTitle
@@ -95,7 +104,7 @@
     }
 }
 
-- (void)timelineShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl
+- (void)timelineShareWithTitle:(NSString *)theTitle withImage:(UIImage *)theImage withWebUrl:(NSString *)theUrl
 {
     self.shareWechatType = CWShareTypeWechatTimeline;
     
@@ -105,7 +114,7 @@
     } else {
         WXMediaMessage *message = [WXMediaMessage message];
         [message setTitle:theTitle];
-        [message setDescription:theContent];
+//        [message setDescription:theContent];
         [message setThumbImage:theImage];
         
         WXWebpageObject *webPage = [WXWebpageObject object];
@@ -143,8 +152,17 @@
                 self.wechatTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[[responseObject objectForKey:@"expires_in"] doubleValue]];
                 self.wechatOpenID = [responseObject objectForKey:@"openid"];
                 
-                [self.delegate wechatShareAuthorizeFinish:responseObject];
-                
+                self.wechatInfoRequest = [AFHTTPRequestOperationManager manager];
+                self.wechatInfoRequest.responseSerializer.acceptableContentTypes = [self.wechatRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
+                [self.wechatInfoRequest POST:@"https://api.weixin.qq.com/sns/userinfo" parameters:@{@"access_token":self.wechatAccessToken, @"openid":self.wechatOpenID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    [self.delegate wechatShareAuthorizeFinish:responseObject];
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    NSLog(@"wechat get user info %@", [error localizedDescription]);
+                    [self.delegate wechatShareAuthorizeFail];
+                }];
+
             } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                 NSLog(@"wechat login %@", [error localizedDescription]);
                 [self.delegate wechatShareAuthorizeFail];
@@ -153,6 +171,11 @@
             [self.delegate wechatShareAuthorizeFail];
         }
         
+    } else if ([resp isKindOfClass:[PayResp class]]) {
+        PayResp *payResp = (PayResp *)resp;
+        if (payResp.errCode == WXSuccess) {
+            NSLog(@"wechat pay success %@", payResp.returnKey);
+        }
     }
 }
 

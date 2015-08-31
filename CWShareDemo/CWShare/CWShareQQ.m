@@ -78,10 +78,11 @@ authorizeFailBlock,tencentOAuth;
     };
     
     if ([self isAuthorizeExpired]) {
-        if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+        if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
             [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
         } else {
-            NSLog(@"tencentWeiBo shareContent 没有安装QQ");
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
             authorizeFailBlock();
             [self setAuthorizeFinishBlock:nil];
             [self setAuthorizeFailBlock:nil];
@@ -128,10 +129,11 @@ authorizeFailBlock,tencentOAuth;
     };
     
     if ([self isAuthorizeExpired]) {
-        if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+        if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
             [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
         } else {
-            NSLog(@"tencentWeiBo shareContentAndImage 没有安装QQ");
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+            [alertView show];
             authorizeFailBlock();
             [self setAuthorizeFinishBlock:nil];
             [self setAuthorizeFailBlock:nil];
@@ -147,12 +149,13 @@ authorizeFailBlock,tencentOAuth;
 {
     self.shareTencentType = CWShareTypeQQ;
     
-    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+    if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
         QQApiTextObject *txtObj = [QQApiTextObject objectWithText:theContent];
         SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:txtObj];
         [QQApiInterface sendReq:msgReq];
     } else {
-        NSLog(@"tencentQQ shareContent 没有安装QQ");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
         [delegate tencentShareContentFail];
     }
 }
@@ -161,12 +164,13 @@ authorizeFailBlock,tencentOAuth;
 {
     self.shareTencentType = CWShareTypeQQ;
     
-    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+    if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
         QQApiImageObject *imgObj = [QQApiImageObject objectWithData:UIImageJPEGRepresentation(theImage, 1.0) previewImageData:nil title:nil description:nil];
         SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:imgObj];
         [QQApiInterface sendReq:msgReq];
     } else {
-        NSLog(@"tencentQQ shareImage 没有安装QQ");
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
         [delegate tencentShareContentFail];
     }
 }
@@ -175,9 +179,15 @@ authorizeFailBlock,tencentOAuth;
 {
     self.shareTencentType = CWShareTypeQQ;
     
-    QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theContent previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
-    SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
-    [QQApiInterface sendReq:msgReq];
+    if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
+        QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theContent previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
+        SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
+        [QQApiInterface sendReq:msgReq];
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+        [delegate tencentShareContentFail];
+    }
 }
 
 #pragma mark - Authorize Method
@@ -211,7 +221,7 @@ authorizeFailBlock,tencentOAuth;
         [weakSelf.delegate tencentShareAuthorizeFail];
     };
     
-    if ([QQApi isQQInstalled] && [QQApi isQQSupportApi]) {
+    if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
         [tencentOAuth authorize:[NSArray arrayWithObjects:@"get_simple_userinfo",@"add_share",@"add_t",@"add_pic_t",@"get_fanslist", nil] inSafari:NO];
     } else {
         NSLog(@"tencent authorize 没有安装QQ");
@@ -226,6 +236,16 @@ authorizeFailBlock,tencentOAuth;
     } else {
         return YES;
     }
+}
+
+- (void)clearAuthorizeInfo
+{
+    [CWShareStorage clearTencentStoreInfo];
+    [self setTencentAccessToken:nil];
+    [self setTencentTokenExpireDate:nil];
+    [self setTencentOpenID:nil];
+    
+    [tencentOAuth logout:self];
 }
 
 #pragma mark - CWShareQQAuthorize Delegate

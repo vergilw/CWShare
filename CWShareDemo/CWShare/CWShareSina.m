@@ -121,6 +121,16 @@ authorizeFailBlock;
     }
 }
 
+- (void)clearAuthorizeInfo
+{
+    [CWShareStorage clearSinaStoreInfo];
+    [self setSinaAccessToken:nil];
+    [self setSinaTokenExpireDate:nil];
+    [self setSinaUID:nil];
+    
+    [WeiboSDK logOutWithToken:self.sinaAccessToken delegate:self withTag:nil];
+}
+
 #pragma mark - CWShareSinaAuthorize Delegate
 
 - (void)sinaAuthorizeFinish:(NSString *)accessToken withExpireTime:(NSString *)expireTime withUID:(NSString *)theUID

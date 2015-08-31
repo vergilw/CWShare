@@ -44,4 +44,6 @@ typedef void(^TencentAuthorizeBlock)(void);
 
 - (BOOL)isAuthorizeExpired;
 
+- (void)clearAuthorizeInfo;
+
 @end

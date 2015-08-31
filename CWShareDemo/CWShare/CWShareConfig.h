@@ -6,13 +6,13 @@
 //
 //
 
-//新浪微博配置 2015.01更新
-#define SINA_APP_KEY                @"2247700604"
-#define SINA_REDIRECT_URL           @"https://api.weibo.com/oauth2/default.html"
+//新浪微博配置 （第三方包：V3.1.1 2015年8月更新）
+#define SINA_APP_KEY                @"2565381442"
+#define SINA_REDIRECT_URL           @"http://m.shenghuofan.com"
 
-//腾讯QQ配置 V2.3版本 2015.01更新
-#define TENCENT_APP_KEY             @"1103554167"
+//腾讯QQ配置 （第三方包：V2.9版本 2015年4月更新）
+#define TENCENT_APP_KEY             @"101151679"
 
-//微信配置 V1.4.3版本 2014.08更新
-#define WeChatAppID                 @"wxf69ad5617352c9c1"
-#define WechatAppSecret             @"223751f62c5ee7252c2ed0ce6b4cc99b"
+//微信配置 （第三方包：V1.5版本 2015年5月更新）
+#define WeChatAppID                 @"wx28bc85e3cfcfb3af"
+#define WechatAppSecret             @"b18854e5c901b1f9d033efb96aab024a"

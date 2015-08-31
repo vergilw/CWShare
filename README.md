@@ -1,6 +1,10 @@
-CWShare 1.6
+CWShare 1.7
 =======
 ### 更新说明
+1.7版本更新（2015-08-31）
+- 替换所有SDK为最新版本
+- 修复了一些错误。
+
 1.6版本更新（2015-01-14）
 - 替换微博为官方SDK。
 - 替换所有库以支持64位。
@@ -45,7 +49,7 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 使用第三方登录授权后自动获取用户个人信息，用来填充用户个人资料。
 
 ### 使用注意:
-由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey（同理URL Schemes也要相应修改），否则测试流程会出错。
+由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey（同理URL Schemes也要相应修改），否则测试流程会出错。测试需要在真机上测试，因为需要跳转到第三方平台App授权，所以需要修改项目的证书配置。
 
 ### 如何使用:
 CWShare里使用了第三方库AFNetworking。
@@ -64,6 +68,7 @@ CWShare里使用了第三方库AFNetworking。
 - libiconv.dylib
 
 引用新浪微博的SDK需要添加如下framework:
+- CoreText.framework
 - ImageIO.framework
 
 另外CWShare文件里含有如下文件，别漏掉。
