@@ -4,6 +4,7 @@ CWShare 1.8
 1.8版本更新（2015-09-18）
 - 因为新浪微博SDK的问题，临时发了一个版本，修复iOS9下的错误
 - iOS9由于判断是否安装第三方方法被禁用，需要在plist里加入如下代码，将各平台App加入白名单
+```objective-c
 <key>LSApplicationQueriesSchemes</key>
 <array>
 <string>mqq</string>
@@ -11,6 +12,7 @@ CWShare 1.8
 <string>sinaweibo</string>
 <string>sinaweibohd</string>
 </array>
+```
 
 1.7版本更新（2015-08-31）
 - 替换所有SDK为最新版本
