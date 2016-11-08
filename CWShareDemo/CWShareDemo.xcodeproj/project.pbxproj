@@ -49,8 +49,8 @@
 		6B26B4501DD1712800B52BF4 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B26B44A1DD1712800B52BF4 /* AFURLSessionManager.m */; };
 		6B26B4531DD174BF00B52BF4 /* CWShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B26B4521DD174BF00B52BF4 /* CWShareView.m */; };
 		6B26B4551DD1788A00B52BF4 /* CWShare.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B26B4541DD1788A00B52BF4 /* CWShare.xcassets */; };
-		6B26B4581DD17AD200B52BF4 /* screenshot1.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B26B4561DD17AD200B52BF4 /* screenshot1.png */; };
-		6B26B4591DD17AD200B52BF4 /* screenshot2.png in Resources */ = {isa = PBXBuildFile; fileRef = 6B26B4571DD17AD200B52BF4 /* screenshot2.png */; };
+		6B26B45C1DD17F6F00B52BF4 /* screenshot1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 6B26B45A1DD17F6F00B52BF4 /* screenshot1.jpeg */; };
+		6B26B45D1DD17F6F00B52BF4 /* screenshot2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 6B26B45B1DD17F6F00B52BF4 /* screenshot2.jpeg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -133,8 +133,8 @@
 		6B26B4511DD174BF00B52BF4 /* CWShareView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareView.h; sourceTree = "<group>"; };
 		6B26B4521DD174BF00B52BF4 /* CWShareView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareView.m; sourceTree = "<group>"; };
 		6B26B4541DD1788A00B52BF4 /* CWShare.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = CWShare.xcassets; sourceTree = "<group>"; };
-		6B26B4561DD17AD200B52BF4 /* screenshot1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot1.png; sourceTree = "<group>"; };
-		6B26B4571DD17AD200B52BF4 /* screenshot2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = screenshot2.png; sourceTree = "<group>"; };
+		6B26B45A1DD17F6F00B52BF4 /* screenshot1.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = screenshot1.jpeg; sourceTree = "<group>"; };
+		6B26B45B1DD17F6F00B52BF4 /* screenshot2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = screenshot2.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,8 +222,8 @@
 		322C82A915DE21B200093AF9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				6B26B4561DD17AD200B52BF4 /* screenshot1.png */,
-				6B26B4571DD17AD200B52BF4 /* screenshot2.png */,
+				6B26B45A1DD17F6F00B52BF4 /* screenshot1.jpeg */,
+				6B26B45B1DD17F6F00B52BF4 /* screenshot2.jpeg */,
 				32D1F2AA172A2D5800A877F8 /* Default-568h@2x.png */,
 				32D7A1401624282300AA5940 /* blackArrow@2x.png */,
 				322C82AA15DE21B200093AF9 /* CWShareDemo-Info.plist */,
@@ -401,12 +401,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6B26B4551DD1788A00B52BF4 /* CWShare.xcassets in Resources */,
-				6B26B4581DD17AD200B52BF4 /* screenshot1.png in Resources */,
 				322C82AD15DE21B200093AF9 /* InfoPlist.strings in Resources */,
-				6B26B4591DD17AD200B52BF4 /* screenshot2.png in Resources */,
 				322C82B915DE21B200093AF9 /* ViewController.xib in Resources */,
+				6B26B45C1DD17F6F00B52BF4 /* screenshot1.jpeg in Resources */,
 				32D7A1411624282300AA5940 /* blackArrow@2x.png in Resources */,
 				32D1F2AB172A2D5800A877F8 /* Default-568h@2x.png in Resources */,
+				6B26B45D1DD17F6F00B52BF4 /* screenshot2.jpeg in Resources */,
 				5196151F1B94055F00693D46 /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
 				5156EFD41BAC10D6003671D3 /* WeiboSDK.bundle in Resources */,
 			);

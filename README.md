@@ -1,7 +1,7 @@
 CWShare 1.8
 =======
 
-![](https://github.com/ChrisWang115/CWShare/blob/master/CWShareDemo/CWShareDemo/screenshot1.jepg)![](https://github.com/ChrisWang115/CWShare/blob/master/CWShareDemo/CWShareDemo/screenshot2.jepg)
+![](http://admin.imdota.com/screenshot1.jpeg)![](http://admin.imdota.com/screenshot2.jpeg)
 
 ### 更新说明
 1.8版本更新（2015-09-18）
