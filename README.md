@@ -1,9 +1,7 @@
 CWShare 1.8
 =======
 
-![(logo)](https://github.com/ChrisWang115/CWShare/CWShareDemo/CWShareDemo/screenshot1.png)
-
-![(logo)](https://github.com/ChrisWang115/CWShare/CWShareDemo/CWShareDemo/screenshot1.png)
+![](https://github.com/ChrisWang115/CWShare/blob/master/CWShareDemo/CWShareDemo/screenshot1.jpg)![](https://github.com/ChrisWang115/CWShare/blob/master/CWShareDemo/CWShareDemo/screenshot2.jpg)
 
 ### 更新说明
 1.8版本更新（2015-09-18）
