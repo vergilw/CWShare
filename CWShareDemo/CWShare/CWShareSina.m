@@ -79,8 +79,8 @@ authorizeFailBlock;
 {
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
-        weakSelf.sinaGetRequest = [AFHTTPRequestOperationManager manager];
-        [weakSelf.sinaGetRequest GET:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", weakSelf.sinaUID, weakSelf.sinaAccessToken] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        weakSelf.sinaGetRequest = [AFHTTPSessionManager manager];
+        [weakSelf.sinaGetRequest GET:[NSString stringWithFormat:@"https://api.weibo.com/2/users/show.json?uid=%@&access_token=%@", weakSelf.sinaUID, weakSelf.sinaAccessToken] parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"error"] length] == 0) {
                 [weakSelf.delegate sinaShareAuthorizeFinish:responseObject];
             } else {
@@ -93,7 +93,7 @@ authorizeFailBlock;
                 NSLog(@"sina authorize get user info error_code:%@,error:%@", [responseObject objectForKey:@"error_code"], [responseObject objectForKey:@"error"]);
                 [weakSelf.delegate sinaShareAuthorizeFail];
             }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"sina authorize get user info 没有网络连接");
             [weakSelf.delegate sinaShareAuthorizeFail];
         }];

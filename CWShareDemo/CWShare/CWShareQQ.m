@@ -41,9 +41,15 @@ authorizeFailBlock,tencentOAuth;
 {
     self.shareTencentType = CWShareTypeQQZone;
     
-    QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theDesc previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
-    SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
-    [QQApiInterface SendReqToQZone:msgReq];
+    if ([QQApiInterface isQQInstalled] && [QQApiInterface isQQSupportApi]) {
+        QQApiNewsObject *newsObj = [QQApiNewsObject objectWithURL:[NSURL URLWithString:theUrl] title:theTitle description:theDesc previewImageData:UIImageJPEGRepresentation(theImage, 1.0)];
+        SendMessageToQQReq *msgReq = [SendMessageToQQReq reqWithContent:newsObj];
+        [QQApiInterface SendReqToQZone:msgReq];
+    } else {
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"您没有安装QQ" message:nil delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil];
+        [alertView show];
+        [delegate tencentShareContentFail];
+    }
 }
 
 - (void)shareToWeiBoWithContent:(NSString *)theContent
@@ -52,9 +58,9 @@ authorizeFailBlock,tencentOAuth;
     
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
-        weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
+        weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"application/x-javascript"];
-        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_t" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_t" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
                 [weakSelf.delegate tencentShareContentFinish];
             } else {
@@ -67,7 +73,7 @@ authorizeFailBlock,tencentOAuth;
                 NSLog(@"tencentWeiBo shareContent errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
                 [weakSelf.delegate tencentShareContentFail];
             }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"tencentWeiBo shareContent %@", [error localizedDescription]);
             [weakSelf.delegate tencentShareContentFail];
         }];
@@ -101,11 +107,11 @@ authorizeFailBlock,tencentOAuth;
     
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
-        weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
+        weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"application/x-javascript"];
         [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_pic_t" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
             [formData appendPartWithFormData:UIImageJPEGRepresentation(theImage, 1) name:@"pic"];
-        } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
                 [weakSelf.delegate tencentShareContentAndImageFinish];
             } else {
@@ -118,7 +124,7 @@ authorizeFailBlock,tencentOAuth;
                 NSLog(@"tencentWeiBo shareContentAndImage errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
                 [weakSelf.delegate tencentShareContentAndImageFail];
             }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"tencentWeiBo shareContentAndImage %@", [error localizedDescription]);
             [weakSelf.delegate tencentShareContentAndImageFail];
         }];
@@ -196,9 +202,9 @@ authorizeFailBlock,tencentOAuth;
 {
     __weak typeof(self) weakSelf = self;
     self.authorizeFinishBlock = ^(void) {
-        weakSelf.tencentRequest = [AFHTTPRequestOperationManager manager];
+        weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-        [weakSelf.tencentRequest POST:@"https://graph.qq.com/user/get_user_info" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/user/get_user_info" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
                 [weakSelf.delegate tencentShareAuthorizeFinish:responseObject];
             } else {
@@ -211,7 +217,7 @@ authorizeFailBlock,tencentOAuth;
                 NSLog(@"tencent login errcode:%@,error:%@", [responseObject objectForKey:@"errcode"], [responseObject objectForKey:@"msg"]);
                 [weakSelf.delegate tencentShareAuthorizeFail];
             }
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
             NSLog(@"tencent login %@", [error localizedDescription]);
             [weakSelf.delegate tencentShareAuthorizeFail];
         }];

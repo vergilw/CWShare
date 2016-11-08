@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "WXApi.h"
-#import "AFHTTPRequestOperationManager.h"
+#import "AFNetworking.h"
 #import "CWShareDelegate.h"
 #import "CWShareWeChatDelegate.h"
 
@@ -25,8 +25,8 @@ typedef enum {
 @property (nonatomic, strong) NSDate *wechatTokenExpireDate;
 @property (nonatomic, copy) NSString *wechatOpenID;
 @property (weak) id<CWShareWeChatDelegate> delegate;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *wechatRequest;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *wechatInfoRequest;
+@property (nonatomic, strong) AFHTTPSessionManager *wechatRequest;
+@property (nonatomic, strong) AFHTTPSessionManager *wechatInfoRequest;
 @property (assign, nonatomic) CWShareType shareWechatType;
 
 //开始授权登录

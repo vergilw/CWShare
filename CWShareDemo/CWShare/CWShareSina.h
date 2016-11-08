@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "AFHTTPRequestOperationManager.h"
+#import "AFNetworking.h"
 #import "CWShareSinaDelegate.h"
 #import "WeiboSDK.h"
 
@@ -19,8 +19,8 @@ typedef void(^SinaAuthorizeBlock)(void);
 @property (nonatomic, strong) NSDate *sinaTokenExpireDate;
 @property (nonatomic, copy) NSString *sinaUID;
 @property (weak) id<CWShareSinaDelegate> delegate;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *sinaGetRequest;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *sinaPostRequest;
+@property (nonatomic, strong) AFHTTPSessionManager *sinaGetRequest;
+@property (nonatomic, strong) AFHTTPSessionManager *sinaPostRequest;
 @property (weak) UIViewController *parentViewController;
 @property (nonatomic, strong) SinaAuthorizeBlock authorizeFinishBlock;
 @property (nonatomic, strong) SinaAuthorizeBlock authorizeFailBlock;

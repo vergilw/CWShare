@@ -161,14 +161,10 @@
 - (IBAction)shareMenuAction:(id)sender
 {
     [[CWShare shareObject] setDelegate:self];
-    
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-        UIAlertController *alertViewCtrl = [[CWShare shareObject] shareMenuView];
-        [self presentViewController:alertViewCtrl animated:YES completion:nil];
-    } else {
-        UIActionSheet *actionSheet = [[CWShare shareObject] shareMenuView];
-        [actionSheet showInView:[[UIApplication sharedApplication] keyWindow]];
-    }
+    CWActionItemOptions actionItemOptions = CWActionItemFavoriteNormal|CWActionItemCopyURL|CWActionItemBackIndex|CWActionItemReport|CWActionItemDelete|CWActionItemHide|CWActionItemRecommend;
+    [[CWShare shareObject] showHorizontalMenuOnView:self.navigationController.view withActionOptions:actionItemOptions selectBlock:^(CWMenuItem menuItem) {
+        //do someting...
+    }];
 }
 
 #pragma mark - CWShare Delegate

@@ -10,14 +10,6 @@
 #import "CWShareStorage.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kButtonTag_Sina 3
-#define kButtonTag_WechatSession 4
-#define kButtonTag_WechatTimeline 5
-#define kButtonTag_Tencent 6
-#define kButtonTag_Message 7
-#define kButtonTag_Mail 8
-#define kButtonTag_tdCode 9
-
 static CWShare *cwShare = nil;
 
 @interface CWShare ()
@@ -47,339 +39,34 @@ static CWShare *cwShare = nil;
     return cwShare;
 }
 
-- (id)shareMenuView
+- (void)showShareMenuOnView:(UIView *)theView
 {
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
-        UIActionSheet *actionSheet = nil;
-        actionSheet = [[UIActionSheet alloc] initWithTitle:@"\n\n\n\n\n\n\n\n" delegate:nil cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:nil];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [actionSheet setTintColor:[UIColor colorWithRed:204/255.0 green:31/255.0 blue:36/255.0 alpha:1.0]];
-        }
-        
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, screenWidth, 21)];
-        [titleLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [titleLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [titleLabel setTextColor:[UIColor whiteColor]];
-        }
-        [titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [titleLabel setFont:[UIFont systemFontOfSize:18]];
-        [titleLabel setText:@"分享方式"];
-        [actionSheet addSubview:titleLabel];
-        
-        UIButton *wechatSessionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [wechatSessionButton setFrame:CGRectMake(22, 60, 60, 60)];
-        [wechatSessionButton setImage:[UIImage imageNamed:@"cwshare_wechat"] forState:UIControlStateNormal];
-        [wechatSessionButton setTag:kButtonTag_WechatSession];
-        [wechatSessionButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:wechatSessionButton];
-        
-        UILabel *wechatSessionLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 123, 60, 16)];
-        [wechatSessionLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [wechatSessionLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [wechatSessionLabel setTextColor:[UIColor whiteColor]];
-        }
-        [wechatSessionLabel setTextAlignment:NSTextAlignmentCenter];
-        [wechatSessionLabel setFont:[UIFont systemFontOfSize:14]];
-        [wechatSessionLabel setText:@"微信好友"];
-        [actionSheet addSubview:wechatSessionLabel];
-        
-        UIButton *wechatTimelineButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [wechatTimelineButton setFrame:CGRectMake(94, 60, 60, 60)];
-        [wechatTimelineButton setImage:[UIImage imageNamed:@"cwshare_timeline"] forState:UIControlStateNormal];
-        [wechatTimelineButton setTag:kButtonTag_WechatTimeline];
-        [wechatTimelineButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:wechatTimelineButton];
-        
-        UILabel *wechatTimelineLabel = [[UILabel alloc] initWithFrame:CGRectMake(94, 123, 60, 16)];
-        [wechatTimelineLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [wechatTimelineLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [wechatTimelineLabel setTextColor:[UIColor whiteColor]];
-        }
-        [wechatTimelineLabel setTextAlignment:NSTextAlignmentCenter];
-        [wechatTimelineLabel setFont:[UIFont systemFontOfSize:14]];
-        [wechatTimelineLabel setText:@"朋友圈"];
-        [actionSheet addSubview:wechatTimelineLabel];
-        
-        UIButton *sinaButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [sinaButton setFrame:CGRectMake(166, 60, 60, 60)];
-        [sinaButton setImage:[UIImage imageNamed:@"cwshare_sina"] forState:UIControlStateNormal];
-        [sinaButton setTag:kButtonTag_Sina];
-        [sinaButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:sinaButton];
-        
-        UILabel *sinaLabel = [[UILabel alloc] initWithFrame:CGRectMake(166, 123, 60, 16)];
-        [sinaLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [sinaLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [sinaLabel setTextColor:[UIColor whiteColor]];
-        }
-        [sinaLabel setTextAlignment:NSTextAlignmentCenter];
-        [sinaLabel setFont:[UIFont systemFontOfSize:14]];
-        [sinaLabel setText:@"新浪微博"];
-        [actionSheet addSubview:sinaLabel];
-        
-        UIButton *tencentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tencentButton setFrame:CGRectMake(238, 60, 60, 60)];
-        [tencentButton setImage:[UIImage imageNamed:@"cwshare_qq"] forState:UIControlStateNormal];
-        [tencentButton setTag:kButtonTag_Tencent];
-        [tencentButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:tencentButton];
-        
-        UILabel *tencentLabel = [[UILabel alloc] initWithFrame:CGRectMake(238, 123, 60, 16)];
-        [tencentLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [tencentLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [tencentLabel setTextColor:[UIColor whiteColor]];
-        }
-        [tencentLabel setTextAlignment:NSTextAlignmentCenter];
-        [tencentLabel setFont:[UIFont systemFontOfSize:14]];
-        [tencentLabel setText:@"QQ"];
-        [actionSheet addSubview:tencentLabel];
-        
-        /*
-        UIButton *shortMsgButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [shortMsgButton setFrame:CGRectMake(22, 170, 60, 60)];
-        [shortMsgButton setImage:[UIImage imageNamed:@"cwshare_messages"] forState:UIControlStateNormal];
-        [shortMsgButton setTag:kButtonTag_Message];
-        [shortMsgButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:shortMsgButton];
-        
-        UILabel *shortMsgLabel = [[UILabel alloc] initWithFrame:CGRectMake(22, 233, 60, 16)];
-        [shortMsgLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [shortMsgLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [shortMsgLabel setTextColor:[UIColor whiteColor]];
-        }
-        [shortMsgLabel setTextAlignment:NSTextAlignmentCenter];
-        [shortMsgLabel setFont:[UIFont systemFontOfSize:14]];
-        [shortMsgLabel setText:@"短信"];
-        [actionSheet addSubview:shortMsgLabel];
-        
-        UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [mailButton setFrame:CGRectMake(94, 170, 60, 60)];
-        [mailButton setImage:[UIImage imageNamed:@"cwshare_mail"] forState:UIControlStateNormal];
-        [mailButton setTag:kButtonTag_Mail];
-        [mailButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:mailButton];
-        
-        UILabel *mailLabel = [[UILabel alloc] initWithFrame:CGRectMake(94, 233, 60, 16)];
-        [mailLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [mailLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [mailLabel setTextColor:[UIColor whiteColor]];
-        }
-        [mailLabel setTextAlignment:NSTextAlignmentCenter];
-        [mailLabel setFont:[UIFont systemFontOfSize:14]];
-        [mailLabel setText:@"邮件"];
-        [actionSheet addSubview:mailLabel];
-        
-        UIButton *tdCodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tdCodeButton setFrame:CGRectMake(166, 170, 60, 60)];
-        [tdCodeButton setImage:[UIImage imageNamed:@"cwshare_dcode"] forState:UIControlStateNormal];
-        [tdCodeButton setTag:kButtonTag_tdCode];
-        [tdCodeButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:tdCodeButton];
-        
-        UILabel *tdCodeLabel = [[UILabel alloc] initWithFrame:CGRectMake(166, 233, 60, 16)];
-        [tdCodeLabel setBackgroundColor:[UIColor clearColor]];
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-            [tdCodeLabel setTextColor:[UIColor darkGrayColor]];
-        } else {
-            [tdCodeLabel setTextColor:[UIColor whiteColor]];
-        }
-        [tdCodeLabel setTextAlignment:NSTextAlignmentCenter];
-        [tdCodeLabel setFont:[UIFont systemFontOfSize:14]];
-        [tdCodeLabel setText:@"二维码"];
-        [actionSheet addSubview:tdCodeLabel];
-        */
-        return actionSheet;
-    } else {
-        CGFloat widthSpace = (screenWidth-240-14-14-8-8)/3;
-        
-        UIAlertController *searchActionSheet = [UIAlertController alertControllerWithTitle:@"\n\n\n\n\n\n\n\n" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        
-        [searchActionSheet.view setTintColor:[UIColor colorWithRed:204/255.0 green:31/255.0 blue:36/255.0 alpha:1.0]];
-        [searchActionSheet.view.layer setMasksToBounds:YES];
-        [searchActionSheet.view.layer setCornerRadius:4];
-        [searchActionSheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-        
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor colorWithRed:250/255.0 green:250/255.0 blue:250/255.0 alpha:1.0]];
-        
-        UIView *actionSheet = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth-16, 150)];
-        
-        UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, screenWidth-16, 21)];
-        [titleLabel setBackgroundColor:[UIColor clearColor]];
-        [titleLabel setTextColor:[UIColor darkGrayColor]];
-        [titleLabel setTextAlignment:NSTextAlignmentCenter];
-        [titleLabel setFont:[UIFont systemFontOfSize:18]];
-        [titleLabel setText:@"分享方式"];
-        [actionSheet addSubview:titleLabel];
-        
-        UIButton *wechatSessionButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [wechatSessionButton setFrame:CGRectMake(14, 60, 60, 60)];
-        [wechatSessionButton setImage:[UIImage imageNamed:@"cwshare_wechat"] forState:UIControlStateNormal];
-        [wechatSessionButton setTag:kButtonTag_WechatSession];
-        [wechatSessionButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:wechatSessionButton];
-        
-        UILabel *wechatSessionLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 123, 60, 16)];
-        [wechatSessionLabel setBackgroundColor:[UIColor clearColor]];
-        [wechatSessionLabel setTextColor:[UIColor darkGrayColor]];
-        [wechatSessionLabel setTextAlignment:NSTextAlignmentCenter];
-        [wechatSessionLabel setFont:[UIFont systemFontOfSize:14]];
-        [wechatSessionLabel setText:@"微信好友"];
-        [actionSheet addSubview:wechatSessionLabel];
-        
-        UIButton *wechatTimelineButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [wechatTimelineButton setFrame:CGRectMake(14+60+widthSpace, 60, 60, 60)];
-        [wechatTimelineButton setImage:[UIImage imageNamed:@"cwshare_timeline"] forState:UIControlStateNormal];
-        [wechatTimelineButton setTag:kButtonTag_WechatTimeline];
-        [wechatTimelineButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:wechatTimelineButton];
-        
-        UILabel *wechatTimelineLabel = [[UILabel alloc] initWithFrame:CGRectMake(14+60+widthSpace, 123, 60, 16)];
-        [wechatTimelineLabel setBackgroundColor:[UIColor clearColor]];
-        [wechatTimelineLabel setTextColor:[UIColor darkGrayColor]];
-        [wechatTimelineLabel setTextAlignment:NSTextAlignmentCenter];
-        [wechatTimelineLabel setFont:[UIFont systemFontOfSize:14]];
-        [wechatTimelineLabel setText:@"朋友圈"];
-        [actionSheet addSubview:wechatTimelineLabel];
-        
-        UIButton *sinaButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [sinaButton setFrame:CGRectMake(14+60*2+widthSpace*2, 60, 60, 60)];
-        [sinaButton setImage:[UIImage imageNamed:@"cwshare_sina"] forState:UIControlStateNormal];
-        [sinaButton setTag:kButtonTag_Sina];
-        [sinaButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:sinaButton];
-        
-        UILabel *sinaLabel = [[UILabel alloc] initWithFrame:CGRectMake(14+60*2+widthSpace*2, 123, 60, 16)];
-        [sinaLabel setBackgroundColor:[UIColor clearColor]];
-        [sinaLabel setTextColor:[UIColor darkGrayColor]];
-        [sinaLabel setTextAlignment:NSTextAlignmentCenter];
-        [sinaLabel setFont:[UIFont systemFontOfSize:14]];
-        [sinaLabel setText:@"新浪微博"];
-        [actionSheet addSubview:sinaLabel];
-        
-        UIButton *tencentButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tencentButton setFrame:CGRectMake(14+60*3+widthSpace*3, 60, 60, 60)];
-        [tencentButton setImage:[UIImage imageNamed:@"cwshare_qq"] forState:UIControlStateNormal];
-        [tencentButton setTag:kButtonTag_Tencent];
-        [tencentButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:tencentButton];
-        
-        UILabel *tencentLabel = [[UILabel alloc] initWithFrame:CGRectMake(14+60*3+widthSpace*3, 123, 60, 16)];
-        [tencentLabel setBackgroundColor:[UIColor clearColor]];
-        [tencentLabel setTextColor:[UIColor darkGrayColor]];
-        [tencentLabel setTextAlignment:NSTextAlignmentCenter];
-        [tencentLabel setFont:[UIFont systemFontOfSize:14]];
-        [tencentLabel setText:@"QQ"];
-        [actionSheet addSubview:tencentLabel];
-        
-        /*
-        UIButton *shortMsgButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [shortMsgButton setFrame:CGRectMake(14, 170, 60, 60)];
-        [shortMsgButton setImage:[UIImage imageNamed:@"cwshare_messages"] forState:UIControlStateNormal];
-        [shortMsgButton setTag:kButtonTag_Message];
-        [shortMsgButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:shortMsgButton];
-        
-        UILabel *shortMsgLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 233, 60, 16)];
-        [shortMsgLabel setBackgroundColor:[UIColor clearColor]];
-        [shortMsgLabel setTextColor:[UIColor darkGrayColor]];
-        [shortMsgLabel setTextAlignment:NSTextAlignmentCenter];
-        [shortMsgLabel setFont:[UIFont systemFontOfSize:14]];
-        [shortMsgLabel setText:@"短信"];
-        [actionSheet addSubview:shortMsgLabel];
-        
-        UIButton *mailButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [mailButton setFrame:CGRectMake(14+60+widthSpace, 170, 60, 60)];
-        [mailButton setImage:[UIImage imageNamed:@"cwshare_mail"] forState:UIControlStateNormal];
-        [mailButton setTag:kButtonTag_Mail];
-        [mailButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:mailButton];
-        
-        UILabel *mailLabel = [[UILabel alloc] initWithFrame:CGRectMake(14+60+widthSpace, 233, 60, 16)];
-        [mailLabel setBackgroundColor:[UIColor clearColor]];
-        [mailLabel setTextColor:[UIColor darkGrayColor]];
-        [mailLabel setTextAlignment:NSTextAlignmentCenter];
-        [mailLabel setFont:[UIFont systemFontOfSize:14]];
-        [mailLabel setText:@"邮件"];
-        [actionSheet addSubview:mailLabel];
-        
-        UIButton *tdCodeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [tdCodeButton setFrame:CGRectMake(14+60*2+widthSpace*2, 170, 60, 60)];
-        [tdCodeButton setImage:[UIImage imageNamed:@"cwshare_dcode"] forState:UIControlStateNormal];
-        [tdCodeButton setTag:kButtonTag_tdCode];
-        [tdCodeButton addTarget:self action:@selector(shareButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionSheet addSubview:tdCodeButton];
-        
-        UILabel *tdCodeLabel = [[UILabel alloc] initWithFrame:CGRectMake(14+60*2+widthSpace*2, 233, 60, 16)];
-        [tdCodeLabel setBackgroundColor:[UIColor clearColor]];
-        [tdCodeLabel setTextColor:[UIColor darkGrayColor]];
-        [tdCodeLabel setTextAlignment:NSTextAlignmentCenter];
-        [tdCodeLabel setFont:[UIFont systemFontOfSize:14]];
-        [tdCodeLabel setText:@"二维码"];
-        [actionSheet addSubview:tdCodeLabel];
-        */
-        [searchActionSheet.view addSubview:actionSheet];
-        
-        self.alertViewCtrl = searchActionSheet;
-        
-        return searchActionSheet;
-    }
+    CWShareView *shareView = [[CWShareView alloc] init];
+    [shareView showWithType:nil onView:theView actionBlock:^(CWShareType shareType) {
+        [delegate shareMenuDidSelect:shareType];
+    }];
 }
 
-+ (void)handleOpenUrl:(NSURL *)url sourceApp:(NSString *)sourceApplication
-{
-    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
-//        [[[CWShare shareObject] sinaShare] handleOpenURL:url];
-        [WeiboSDK handleOpenURL:url delegate:[[CWShare shareObject] sinaShare]];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
-        [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
-        [TencentOAuth HandleOpenURL:url];
-    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
-        [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
-    }
+- (void)showHorizontalMenuOnView:(UIView *)theView withActionOptions:(CWActionItemOptions)actionOptions selectBlock:(void (^)(CWMenuItem))menuItemBlock {
+    
+    CWShareView *shareView = [[CWShareView alloc] init];
+    [shareView showHorizontalShareMenu:CWShareItemSina|CWShareItemQQZone|CWShareItemQQ|CWShareItemWechatSession|CWShareItemWechatTimeline andActionMenu:actionOptions onView:theView menuBlock:menuItemBlock];
 }
 
-#pragma mark - UIControl Event Method
-
-- (IBAction)shareButtonAction:(UIButton *)sender
++ (void)handleOpenUrl:(NSURL *)url
 {
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-        [self.alertViewCtrl dismissViewControllerAnimated:YES completion:nil];
-    } else {
-        UIActionSheet *actionSheet = (UIActionSheet *)sender.superview;
-        [actionSheet dismissWithClickedButtonIndex:0 animated:YES];
-    }
+    [WeiboSDK handleOpenURL:url delegate:[[CWShare shareObject] sinaShare]];
+    [QQApiInterface handleOpenURL:url delegate:[[CWShare shareObject] tencentShare]];
+    [TencentOAuth HandleOpenURL:url];
+    [WXApi handleOpenURL:url delegate:[[CWShare shareObject] wechatShare]];
     
-    if (sender.tag == kButtonTag_Sina) {
-        [delegate shareMenuDidSelect:CWShareTypeSina];
-    } else if (sender.tag == kButtonTag_WechatSession) {
-        [delegate shareMenuDidSelect:CWShareTypeWechatSession];
-    } else if (sender.tag == kButtonTag_WechatTimeline) {
-        [delegate shareMenuDidSelect:CWShareTypeWechatTimeline];
-    } else if (sender.tag == kButtonTag_Tencent) {
-        [delegate shareMenuDidSelect:CWShareTypeQQ];
-    } else if (sender.tag == kButtonTag_Message) {
-        [delegate shareMenuDidSelect:CWShareTypeMessage];
-    } else if (sender.tag == kButtonTag_Mail) {
-        [delegate shareMenuDidSelect:CWShareTypeMail];
-    } else if (sender.tag == kButtonTag_tdCode) {
-        [delegate shareMenuDidSelect:CWShareTypeDtCode];
-    }
+//    if ([sourceApplication isEqualToString:@"com.sina.weibo"]) {
+//
+//    } else if ([sourceApplication isEqualToString:@"com.tencent.mqq"] || [sourceApplication isEqualToString:@"com.apple.mobilesafari"]) {
+//        
+//    } else if ([sourceApplication isEqualToString:@"com.tencent.xin"]) {
+//        
+//    }
 }
 
 #pragma mark - Sina Operate Method
@@ -407,6 +94,18 @@ static CWShare *cwShare = nil;
     } else {
         NSLog(@"sina shareContentAndImage 分享图片不可为空");
     }
+}
+
+#pragma mark - Override Copy
+
+- (void)copyUrlToPasteboard:(NSString *)urlString {
+    [self copy:urlString];
+}
+
+- (void)copy:(id)sender {
+    NSString *urlString = (NSString *)sender;
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    [pasteboard setString:urlString];
 }
 
 #pragma mark - Tencent Operate Method
@@ -493,7 +192,9 @@ static CWShare *cwShare = nil;
 
 - (void)sinaShareAuthorizeFail
 {
-    [delegate loginFailForShareType:CWShareLoginTypeSina];
+    if ([delegate respondsToSelector:@selector(loginFailForShareType:)]) {
+        [delegate loginFailForShareType:CWShareLoginTypeSina];
+    }
 }
 
 - (void)sinaShareAuthorizeFinish:(NSDictionary *)userInfo

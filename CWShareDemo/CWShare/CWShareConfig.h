@@ -10,9 +10,9 @@
 #define SINA_APP_KEY                @"2565381442"
 #define SINA_REDIRECT_URL           @"http://m.shenghuofan.com"
 
-//腾讯QQ配置 （第三方包：V2.9版本 2015年4月更新）
+//腾讯QQ配置 （第三方包：V2.9.5版本 2016年2月更新）
 #define TENCENT_APP_KEY             @"101151679"
 
-//微信配置 （第三方包：V1.6版本 2015年9月更新）
+//微信配置 （第三方包：V1.7.2版本 2016年2月更新）
 #define WeChatAppID                 @"wx28bc85e3cfcfb3af"
-#define WechatAppSecret             @"b18854e5c901b1f9d033efb96aab024a"
+#define WechatAppSecret             @"0831ea7cf3ecebe78acca5b02e19c55a"

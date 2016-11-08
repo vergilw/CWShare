@@ -145,25 +145,22 @@
         SendAuthResp *authResp = (SendAuthResp *)resp;
         
         if (authResp.code != nil) {
-            self.wechatRequest = [AFHTTPRequestOperationManager manager];
+            self.wechatRequest = [AFHTTPSessionManager manager];
             self.wechatRequest.responseSerializer.acceptableContentTypes = [self.wechatRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-            [self.wechatRequest POST:@"https://api.weixin.qq.com/sns/oauth2/access_token" parameters:@{@"appid":WeChatAppID, @"secret":WechatAppSecret, @"code":authResp.code, @"grant_type":@"authorization_code"} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+            [self.wechatRequest POST:@"https://api.weixin.qq.com/sns/oauth2/access_token" parameters:@{@"appid":WeChatAppID, @"secret":WechatAppSecret, @"code":authResp.code, @"grant_type":@"authorization_code"} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 self.wechatAccessToken = [responseObject objectForKey:@"access_token"];
                 self.wechatTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[[responseObject objectForKey:@"expires_in"] doubleValue]];
                 self.wechatOpenID = [responseObject objectForKey:@"openid"];
                 
-                self.wechatInfoRequest = [AFHTTPRequestOperationManager manager];
+                self.wechatInfoRequest = [AFHTTPSessionManager manager];
                 self.wechatInfoRequest.responseSerializer.acceptableContentTypes = [self.wechatRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-                [self.wechatInfoRequest POST:@"https://api.weixin.qq.com/sns/userinfo" parameters:@{@"access_token":self.wechatAccessToken, @"openid":self.wechatOpenID} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                    
+                [self.wechatInfoRequest POST:@"https://api.weixin.qq.com/sns/userinfo" parameters:@{@"access_token":self.wechatAccessToken, @"openid":self.wechatOpenID} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                     [self.delegate wechatShareAuthorizeFinish:responseObject];
-                    
-                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                     NSLog(@"wechat get user info %@", [error localizedDescription]);
                     [self.delegate wechatShareAuthorizeFail];
                 }];
-
-            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"wechat login %@", [error localizedDescription]);
                 [self.delegate wechatShareAuthorizeFail];
             }];

@@ -1,5 +1,10 @@
 CWShare 1.8
 =======
+
+![(logo)](https://github.com/ChrisWang115/CWShare/CWShareDemo/CWShareDemo/screenshot1.png)
+
+![(logo)](https://github.com/ChrisWang115/CWShare/CWShareDemo/CWShareDemo/screenshot1.png)
+
 ### 更新说明
 1.8版本更新（2015-09-18）
 - 因为新浪微博SDK的问题，临时发了一个版本，修复iOS9下的错误
