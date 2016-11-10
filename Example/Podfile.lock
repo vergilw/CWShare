@@ -1,0 +1,16 @@
+PODS:
+  - CWShare (0.1.0)
+
+DEPENDENCIES:
+  - CWShare (from `../`)
+
+EXTERNAL SOURCES:
+  CWShare:
+    :path: ../
+
+SPEC CHECKSUMS:
+  CWShare: b47037373fd4caa6648588e2f7d3cb8a1dbda0cd
+
+PODFILE CHECKSUM: 35e4267ac6a8cd16b286c5e4468269f99808e798
+
+COCOAPODS: 1.0.1
