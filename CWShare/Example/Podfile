@@ -1,6 +1,0 @@
-use_frameworks!
-target 'CWShare_Tests' do
-  pod 'CWShare', :path => '../'
-  
-  
-end
