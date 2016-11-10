@@ -28,25 +28,19 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/ChrisWang115/CWShare.git', :tag => s.version }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '6.0'
+  s.ios.deployment_target = '7.0'
 
-  s.source_files = 'CWShare/Classes/*.{h,m}', 'CWShare/Vendor/qq/TencentOpenAPI.framework/Header/*.h', 'CWShare/Vendor/wechat/*.h', 'CWShare/Vendor/weibo/*.{h,m}'
+  s.source_files = 'CWShare/Classes/*.{h,m}'
   
   s.resource_bundles = {
-      'CWShare' => ['CWShare/Assets/*.xcassets', 'CWShare/Vendor/weibo/*.bundle']
+      'CWShare' => ['CWShare/Assets/*.xcassets']
   }
 
-  s.public_header_files = 'CWShare/Classes/CWShare.h', 'CWShare/Vendor/qq/TencentOpenAPI.framework/Header/*.h', 'CWShare/Vendor/wechat/*.h', 'CWShare/Vendor/weibo/*.h'
-  s.frameworks = 'UIKit', 'SystemConfiguration'
+  s.public_header_files = 'CWShare/Classes/CWShare.h'
+  s.frameworks = 'UIKit', 'Foundation', 'QuartzCore'
   s.dependency 'AFNetworking', '~> 3.0'
-  #s.dependency 'WeiboSDK'
-  #s.dependency 'Tencent_SDK'
-  #s.dependency 'WeChat_SDK'
-  
-  #vendor dependency (include tencent framework)
-  s.frameworks   = 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
-  s.libraries = 'sqlite3', 'z', 'c++'
-  
-  #weibo and wechat
-  s.vendored_libraries  = 'CWShare/Vendor/weibo/libWeiboSDK.a', 'CWShare/Vendor/wechat/libWeChatSDK.a'
+  s.dependency 'WeiboSDK'
+  s.dependency 'Tencent_SDK'
+  s.dependency 'WeChat_SDK'
+
 end
