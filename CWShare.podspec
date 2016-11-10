@@ -39,7 +39,15 @@ Pod::Spec.new do |s|
   s.public_header_files = 'CWShare/Classes/CWShare.h'
   s.frameworks = 'UIKit', 'SystemConfiguration'
   s.dependency 'AFNetworking', '~> 3.0'
-  s.dependency 'WeiboSDK'
-  s.dependency 'Tencent_SDK'
-  s.dependency 'WeChat_SDK'
+  #s.dependency 'WeiboSDK'
+  #s.dependency 'Tencent_SDK'
+  #s.dependency 'WeChat_SDK'
+  
+  #vendor dependency (include tencent framework)
+  s.frameworks   = 'ImageIO', 'SystemConfiguration', 'CoreText', 'QuartzCore', 'Security', 'UIKit', 'Foundation', 'CoreGraphics','CoreTelephony'
+  s.libraries = 'sqlite3', 'z', 'c++'
+  
+  #weibo and wechat
+  s.vendored_libraries  = 'CWShare/Vendor/weibo/libWeiboSDK.a', 'CWShare/Vendor/wechat/libWeChatSDK.a'
+
 end

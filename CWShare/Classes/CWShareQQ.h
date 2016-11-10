@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
 #import "CWShareQQDelegate.h"
-#import <TencentOpenAPI/TencentOAuth.h>
-#import <TencentOpenAPI/QQApiInterface.h>
+#import "CWShare/Vendor/qq/TencentOpenAPI/TencentOAuth.h"
+#import "CWShare/Vendor/qq/TencentOpenAPI/QQApiInterface.h"
 #import "CWShareDelegate.h"
 
 typedef void(^TencentAuthorizeBlock)(void);

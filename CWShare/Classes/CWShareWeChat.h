@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WXApi.h"
+#import "CWShare/Vendor/wechat/WXApi.h"
 #import "AFNetworking.h"
 #import "CWShareDelegate.h"
 #import "CWShareWeChatDelegate.h"
