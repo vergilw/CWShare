@@ -8,7 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		003FB75D44055204EEF5E2C66C183F2E /* Pods-CWShare_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C1173A3AC9EC831F2CE32B3C3B071872 /* Pods-CWShare_Tests-dummy.m */; };
-		202E3063BF43A737CCE346B88B51355F /* ReplaceMe.m in Sources */ = {isa = PBXBuildFile; fileRef = B3EA3069079D7C8437036C466A471057 /* ReplaceMe.m */; };
+		32B1B9B71DD4383D00E7A16C /* CWShare.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A41DD4383D00E7A16C /* CWShare.h */; };
+		32B1B9B81DD4383D00E7A16C /* CWShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9A51DD4383D00E7A16C /* CWShare.m */; };
+		32B1B9B91DD4383D00E7A16C /* CWShareConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */; };
+		32B1B9BA1DD4383D00E7A16C /* CWShareDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */; };
+		32B1B9BB1DD4383D00E7A16C /* CWShareQQ.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */; };
+		32B1B9BC1DD4383D00E7A16C /* CWShareQQ.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */; };
+		32B1B9BD1DD4383D00E7A16C /* CWShareQQDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9AA1DD4383D00E7A16C /* CWShareQQDelegate.h */; };
+		32B1B9BE1DD4383D00E7A16C /* CWShareSina.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9AB1DD4383D00E7A16C /* CWShareSina.h */; };
+		32B1B9BF1DD4383D00E7A16C /* CWShareSina.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9AC1DD4383D00E7A16C /* CWShareSina.m */; };
+		32B1B9C01DD4383D00E7A16C /* CWShareSinaDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9AD1DD4383D00E7A16C /* CWShareSinaDelegate.h */; };
+		32B1B9C11DD4383D00E7A16C /* CWShareStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9AE1DD4383D00E7A16C /* CWShareStorage.h */; };
+		32B1B9C21DD4383D00E7A16C /* CWShareStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9AF1DD4383D00E7A16C /* CWShareStorage.m */; };
+		32B1B9C31DD4383D00E7A16C /* CWShareTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9B01DD4383D00E7A16C /* CWShareTools.h */; };
+		32B1B9C41DD4383D00E7A16C /* CWShareTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9B11DD4383D00E7A16C /* CWShareTools.m */; };
+		32B1B9C51DD4383D00E7A16C /* CWShareView.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9B21DD4383D00E7A16C /* CWShareView.h */; };
+		32B1B9C61DD4383D00E7A16C /* CWShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9B31DD4383D00E7A16C /* CWShareView.m */; };
+		32B1B9C71DD4383D00E7A16C /* CWShareWeChat.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9B41DD4383D00E7A16C /* CWShareWeChat.h */; };
+		32B1B9C81DD4383D00E7A16C /* CWShareWeChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9B51DD4383D00E7A16C /* CWShareWeChat.m */; };
+		32B1B9C91DD4383D00E7A16C /* CWShareWeChatDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9B61DD4383D00E7A16C /* CWShareWeChatDelegate.h */; };
 		9A002262826F53B98FD2A2FCF74BC17D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		BDF2645AEE52B3AE86A4D17569D28BF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEC22C73C1608DFA5D5D78BDCB218219 /* Foundation.framework */; };
 		E17D8244CB4D8AC600A0E346838985E7 /* CWShare-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D2227D5B785729DC09D3FD867D891A97 /* CWShare-dummy.m */; };
@@ -34,11 +52,30 @@
 		228FB25DE03F859EB309BAF243254896 /* CWShare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CWShare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		239C139216BA87E8460A510063A9E3F6 /* Pods-CWShare_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-CWShare_Tests.modulemap"; sourceTree = "<group>"; };
 		2A01DF0019C20B88FB6CA4A5A0C99ADC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32B1B9A41DD4383D00E7A16C /* CWShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShare.h; sourceTree = "<group>"; };
+		32B1B9A51DD4383D00E7A16C /* CWShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShare.m; sourceTree = "<group>"; };
+		32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareConfig.h; sourceTree = "<group>"; };
+		32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareDelegate.h; sourceTree = "<group>"; };
+		32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareQQ.h; sourceTree = "<group>"; };
+		32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareQQ.m; sourceTree = "<group>"; };
+		32B1B9AA1DD4383D00E7A16C /* CWShareQQDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareQQDelegate.h; sourceTree = "<group>"; };
+		32B1B9AB1DD4383D00E7A16C /* CWShareSina.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareSina.h; sourceTree = "<group>"; };
+		32B1B9AC1DD4383D00E7A16C /* CWShareSina.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareSina.m; sourceTree = "<group>"; };
+		32B1B9AD1DD4383D00E7A16C /* CWShareSinaDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareSinaDelegate.h; sourceTree = "<group>"; };
+		32B1B9AE1DD4383D00E7A16C /* CWShareStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareStorage.h; sourceTree = "<group>"; };
+		32B1B9AF1DD4383D00E7A16C /* CWShareStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareStorage.m; sourceTree = "<group>"; };
+		32B1B9B01DD4383D00E7A16C /* CWShareTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareTools.h; sourceTree = "<group>"; };
+		32B1B9B11DD4383D00E7A16C /* CWShareTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareTools.m; sourceTree = "<group>"; };
+		32B1B9B21DD4383D00E7A16C /* CWShareView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareView.h; sourceTree = "<group>"; };
+		32B1B9B31DD4383D00E7A16C /* CWShareView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareView.m; sourceTree = "<group>"; };
+		32B1B9B41DD4383D00E7A16C /* CWShareWeChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareWeChat.h; sourceTree = "<group>"; };
+		32B1B9B51DD4383D00E7A16C /* CWShareWeChat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareWeChat.m; sourceTree = "<group>"; };
+		32B1B9B61DD4383D00E7A16C /* CWShareWeChatDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareWeChatDelegate.h; sourceTree = "<group>"; };
+		32B1B9CC1DD4384C00E7A16C /* CWShare.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = CWShare.xcassets; sourceTree = "<group>"; };
 		55177D8E30F5279F4B9B2BC5F83DD66F /* Pods-CWShare_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CWShare_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		5626CB8BEC149A003C208B27749E549B /* CWShare-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CWShare-umbrella.h"; sourceTree = "<group>"; };
 		6F979F86E764004A8F8884F074C7DC49 /* Pods-CWShare_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CWShare_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		B3EA3069079D7C8437036C466A471057 /* ReplaceMe.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = ReplaceMe.m; sourceTree = "<group>"; };
 		B86B1B97B36E1B6276B379A6260D337D /* Pods-CWShare_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-CWShare_Tests-umbrella.h"; sourceTree = "<group>"; };
 		BA53FAFE88A4C18630439D7C5B087791 /* Pods-CWShare_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-CWShare_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		C00B54939D4CA3B86B923DC88EA3FED2 /* CWShare.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CWShare.xcconfig; sourceTree = "<group>"; };
@@ -73,9 +110,18 @@
 		13DFAFC9CC41B668971431B4832522FD /* CWShare */ = {
 			isa = PBXGroup;
 			children = (
+				32B1B9CA1DD4384C00E7A16C /* Assets */,
 				8B3B62044B0A2AB4322C0E1E57714AB5 /* Classes */,
 			);
 			path = CWShare;
+			sourceTree = "<group>";
+		};
+		32B1B9CA1DD4384C00E7A16C /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				32B1B9CC1DD4384C00E7A16C /* CWShare.xcassets */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		37905777B8DE6C4C2DB2662D6F8A3261 /* Support Files */ = {
@@ -149,7 +195,25 @@
 		8B3B62044B0A2AB4322C0E1E57714AB5 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B3EA3069079D7C8437036C466A471057 /* ReplaceMe.m */,
+				32B1B9A41DD4383D00E7A16C /* CWShare.h */,
+				32B1B9A51DD4383D00E7A16C /* CWShare.m */,
+				32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */,
+				32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */,
+				32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */,
+				32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */,
+				32B1B9AA1DD4383D00E7A16C /* CWShareQQDelegate.h */,
+				32B1B9AB1DD4383D00E7A16C /* CWShareSina.h */,
+				32B1B9AC1DD4383D00E7A16C /* CWShareSina.m */,
+				32B1B9AD1DD4383D00E7A16C /* CWShareSinaDelegate.h */,
+				32B1B9AE1DD4383D00E7A16C /* CWShareStorage.h */,
+				32B1B9AF1DD4383D00E7A16C /* CWShareStorage.m */,
+				32B1B9B01DD4383D00E7A16C /* CWShareTools.h */,
+				32B1B9B11DD4383D00E7A16C /* CWShareTools.m */,
+				32B1B9B21DD4383D00E7A16C /* CWShareView.h */,
+				32B1B9B31DD4383D00E7A16C /* CWShareView.m */,
+				32B1B9B41DD4383D00E7A16C /* CWShareWeChat.h */,
+				32B1B9B51DD4383D00E7A16C /* CWShareWeChat.m */,
+				32B1B9B61DD4383D00E7A16C /* CWShareWeChatDelegate.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -195,7 +259,19 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32B1B9B91DD4383D00E7A16C /* CWShareConfig.h in Headers */,
+				32B1B9BD1DD4383D00E7A16C /* CWShareQQDelegate.h in Headers */,
+				32B1B9C31DD4383D00E7A16C /* CWShareTools.h in Headers */,
+				32B1B9B71DD4383D00E7A16C /* CWShare.h in Headers */,
+				32B1B9C11DD4383D00E7A16C /* CWShareStorage.h in Headers */,
+				32B1B9C91DD4383D00E7A16C /* CWShareWeChatDelegate.h in Headers */,
+				32B1B9BE1DD4383D00E7A16C /* CWShareSina.h in Headers */,
+				32B1B9BB1DD4383D00E7A16C /* CWShareQQ.h in Headers */,
 				FF697057CBB8BE1A573634CC143E3897 /* CWShare-umbrella.h in Headers */,
+				32B1B9C01DD4383D00E7A16C /* CWShareSinaDelegate.h in Headers */,
+				32B1B9C51DD4383D00E7A16C /* CWShareView.h in Headers */,
+				32B1B9C71DD4383D00E7A16C /* CWShareWeChat.h in Headers */,
+				32B1B9BA1DD4383D00E7A16C /* CWShareDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,8 +353,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32B1B9BF1DD4383D00E7A16C /* CWShareSina.m in Sources */,
+				32B1B9C41DD4383D00E7A16C /* CWShareTools.m in Sources */,
+				32B1B9C61DD4383D00E7A16C /* CWShareView.m in Sources */,
+				32B1B9C81DD4383D00E7A16C /* CWShareWeChat.m in Sources */,
 				E17D8244CB4D8AC600A0E346838985E7 /* CWShare-dummy.m in Sources */,
-				202E3063BF43A737CCE346B88B51355F /* ReplaceMe.m in Sources */,
+				32B1B9C21DD4383D00E7A16C /* CWShareStorage.m in Sources */,
+				32B1B9BC1DD4383D00E7A16C /* CWShareQQ.m in Sources */,
+				32B1B9B81DD4383D00E7A16C /* CWShare.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
