@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "AFNetworking.h"
 #import "CWShareSinaDelegate.h"
-#import "CWShare/Vendor/weibo/WeiboSDK.h"
+#import "WeiboSDK.h"
 
 typedef void(^SinaAuthorizeBlock)(void);
 

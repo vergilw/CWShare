@@ -30,10 +30,10 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '6.0'
 
-  s.source_files = 'CWShare/Classes/*.{h,m}'
+  s.source_files = 'CWShare/Classes/*.{h,m}', 'CWShare/Vendor/qq/TencentOpenAPI.framework/Header/*.h', 'CWShare/Vendor/wechat/*.h', 'CWShare/Vendor/weibo/*.{h,m}'
   
   s.resource_bundles = {
-      'CWShare' => ['CWShare/Assets/*.xcassets']
+      'CWShare' => ['CWShare/Assets/*.xcassets', 'CWShare/Vendor/weibo/*.bundle']
   }
 
   s.public_header_files = 'CWShare/Classes/CWShare.h'
@@ -49,5 +49,4 @@ Pod::Spec.new do |s|
   
   #weibo and wechat
   s.vendored_libraries  = 'CWShare/Vendor/weibo/libWeiboSDK.a', 'CWShare/Vendor/wechat/libWeChatSDK.a'
-
 end
