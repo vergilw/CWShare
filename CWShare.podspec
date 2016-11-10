@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
       'CWShare' => ['CWShare/Assets/*.xcassets', 'CWShare/Vendor/weibo/*.bundle']
   }
 
-  s.public_header_files = 'CWShare/Classes/CWShare.h'
+  s.public_header_files = 'CWShare/Classes/CWShare.h', 'CWShare/Vendor/qq/TencentOpenAPI.framework/Header/*.h', 'CWShare/Vendor/wechat/*.h', 'CWShare/Vendor/weibo/*.h'
   s.frameworks = 'UIKit', 'SystemConfiguration'
   s.dependency 'AFNetworking', '~> 3.0'
   #s.dependency 'WeiboSDK'
