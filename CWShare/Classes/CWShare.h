@@ -1,6 +1,5 @@
 //
 //  CWShare.h
-//  CWShareDemo
 //
 //  Created by Wang Jun on 12-8-18.
 //
@@ -9,21 +8,54 @@
 #import <Foundation/Foundation.h>
 #import "CWShareSina.h"
 #import "CWShareQQ.h"
-#import "CWShareDelegate.h"
 #import "CWShareWeChat.h"
-#import "CWShareConfig.h"
+#import "CWShareDelegate.h"
 #import "CWShareView.h"
 
-@interface CWShare : NSObject <CWShareSinaDelegate,CWShareQQDelegate,CWShareWeChatDelegate,UIActionSheetDelegate>
+/*
+ 新浪微博依赖Pod WeiboSDK
+ 腾讯QQ依赖Pod Tencent_SDK
+ 微信依赖Pod WeChat_SDK
+ */
 
-@property (nonatomic, strong) CWShareSina *sinaShare;
-@property (nonatomic, strong) CWShareQQ *tencentShare;
-@property (weak) id<CWShareDelegate> delegate;
-@property (weak) UIViewController *parentViewController;
-@property (nonatomic, strong) CWShareWeChat *wechatShare;
+NS_ASSUME_NONNULL_BEGIN
+
+@interface CWShare : NSObject <CWShareSinaDelegate,CWShareQQDelegate,CWShareWeChatDelegate>
+
+@property (nonatomic, strong, readonly) CWShareSina *sinaShare;
+@property (nonatomic, strong, readonly) CWShareQQ *tencentShare;
+@property (nonatomic, strong, readonly) CWShareWeChat *wechatShare;
+@property (weak, nonatomic) id<CWShareDelegate> delegate;
+@property (weak, nonatomic) UIViewController *parentViewController;
 
 //获取共享对象
 + (CWShare *)shareObject;
+
+/*!
+ * @method
+ * @brief 注册新浪微博配置信息
+ * @discussion
+ * @param appKey 新浪微博AppKey
+ * @param URLString 回调地址
+ */
+- (void)registerSinaAppKey:(NSString *)appKey redirectURL:(NSString *)URLString;
+
+/*!
+ * @method
+ * @brief 注册腾讯QQ配置信息
+ * @discussion
+ * @param appKey 腾讯QQ AppKey
+ */
+- (void)registerTencentAppKey:(NSString *)appKey;
+
+/*!
+ * @method
+ * @brief 注册微信配置信息
+ * @discussion
+ * @param appKey 微信AppID
+ * @param appSecret 微信AppSecret
+ */
+- (void)registerWechatAppID:(NSString *)appID appSecret:(NSString *)appSecret;
 
 //获取一键分享菜单
 - (void)showShareMenuOnView:(UIView *)theView;
@@ -33,12 +65,20 @@
  * @brief 显示水平的菜单视图
  * @discussion
  * @param theView 需要显示在哪个视图上
- * @param actionOptions 需要显示的功能Item
- * @param menuItemBlock 处理点击事件
+ * @param actionOptions 需要显示的功能Item,枚举类型
+ * @param menuItemBlock 根据不同的枚举类型，处理事件
  */
 - (void)showHorizontalMenuOnView:(UIView *)theView withActionOptions:(CWActionItemOptions)actionOptions selectBlock:(void(^)(CWMenuItem menuItem))menuItemBlock;
 
-//处理第三方回调
+/**
+ * @method
+ * @brief 通过第三方App启动本App回调方法，请在AppDelegate系统方法里调用此方法
+ * @discussion
+ * @param url 第三方App URLScheme 参数
+ * @warning 注意iOS9的新方法
+ * @see -application:openURL:options:
+ * @see -application:openURL:sourceApplication:annotation:
+ */
 + (void)handleOpenUrl:(NSURL *)url;
 
 //开始新浪微博授权登录
@@ -86,5 +126,7 @@
 
 //清空微信授权登录信息
 - (void)clearWechatAuthorizeInfo;
+
+NS_ASSUME_NONNULL_END
 
 @end

@@ -17,9 +17,10 @@ typedef void(^TencentAuthorizeBlock)(void);
 
 @interface CWShareQQ : NSObject <TencentSessionDelegate, QQApiInterfaceDelegate>
 
-@property (nonatomic, copy) NSString *tencentAccessToken;
+@property (nonatomic, strong) NSString *tencentAccessToken;
 @property (nonatomic, strong) NSDate *tencentTokenExpireDate;
-@property (nonatomic, copy) NSString *tencentOpenID;
+@property (nonatomic, strong) NSString *tencentOpenID;
+@property (nonatomic, strong) NSString *tencentAppKey;
 @property (weak) id<CWShareQQDelegate> delegate;
 @property (nonatomic, strong) AFHTTPSessionManager *tencentRequest;
 @property (weak) UIViewController *parentViewController;

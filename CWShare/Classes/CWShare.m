@@ -10,11 +10,24 @@
 #import "CWShareStorage.h"
 #import <QuartzCore/QuartzCore.h>
 
-static CWShare *cwShare = nil;
+static CWShare *shareInstance = nil;
 
 @interface CWShare ()
 
-@property (strong, nonatomic) UIAlertController *alertViewCtrl;
+@property (nonatomic, strong, readwrite) CWShareSina *sinaShare;
+@property (nonatomic, strong, readwrite) CWShareQQ *tencentShare;
+@property (nonatomic, strong, readwrite) CWShareWeChat *wechatShare;
+
+//新浪微博配置
+@property (nonatomic, strong) NSString *sinaAppKey;
+@property (nonatomic, strong) NSString *sinaRedirectURL;
+
+//腾讯QQ配置
+@property (nonatomic, strong) NSString *tencentAppKey;
+
+//微信配置
+@property (nonatomic, strong) NSString *wechatAppID;
+@property (nonatomic, strong) NSString *wechatAppSecret;
 
 @end
 
@@ -24,19 +37,59 @@ static CWShare *cwShare = nil;
 
 + (CWShare *)shareObject
 {
-    if (!cwShare) {
-        cwShare = [[CWShare alloc] init];
-        cwShare.sinaShare = [[CWShareSina alloc] init];
-        [cwShare.sinaShare setDelegate:cwShare];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        shareInstance = [[CWShare alloc] init];
+        shareInstance.sinaShare = [[CWShareSina alloc] init];
+        [shareInstance.sinaShare setDelegate:shareInstance];
         
-        cwShare.tencentShare = [[CWShareQQ alloc] init];
-        [cwShare.tencentShare setDelegate:cwShare];
+        shareInstance.tencentShare = [[CWShareQQ alloc] init];
+        [shareInstance.tencentShare setDelegate:shareInstance];
         
-        cwShare.wechatShare = [[CWShareWeChat alloc] init];
-        [cwShare.wechatShare setDelegate:cwShare];
-        
-    }
-    return cwShare;
+        shareInstance.wechatShare = [[CWShareWeChat alloc] init];
+        [shareInstance.wechatShare setDelegate:shareInstance];
+    });
+
+    return shareInstance;
+}
+
+/*!
+ * @method
+ * @brief 注册新浪微博配置信息
+ * @discussion
+ * @param appKey 新浪微博AppKey
+ * @param URLString 回调地址
+ */
+- (void)registerSinaAppKey:(NSString *)appKey redirectURL:(NSString *)URLString {
+    NSAssert([URLString hasPrefix:@"http://"], @"请输入完整包含http开头的回调URL路径");
+    self.sinaAppKey = appKey;
+    self.sinaRedirectURL = URLString;
+    
+    [WeiboSDK registerApp:self.sinaAppKey];
+}
+
+/*!
+ * @method
+ * @brief 注册腾讯QQ配置信息
+ * @discussion
+ * @param appKey 腾讯QQ AppKey
+ */
+- (void)registerTencentAppKey:(NSString *)appKey {
+    self.tencentAppKey = appKey;
+}
+
+/*!
+ * @method
+ * @brief 注册微信配置信息
+ * @discussion
+ * @param appKey 微信AppID
+ * @param appSecret 微信AppSecret
+ */
+- (void)registerWechatAppID:(NSString *)appID appSecret:(NSString *)appSecret {
+    self.wechatAppID = appID;
+    self.wechatAppSecret = appSecret;
+    
+    [WXApi registerApp:self.wechatAppID];
 }
 
 - (void)showShareMenuOnView:(UIView *)theView
@@ -262,27 +315,27 @@ static CWShare *cwShare = nil;
 
 - (void)startWechatAuthorizeLogin
 {
-    [cwShare.wechatShare startAuthorize];
+    [shareInstance.wechatShare startAuthorize];
 }
 
 - (void)wechatSessionShareWithTitle:(NSString *)theTitle
 {
-    [cwShare.wechatShare sessionShareWithTitle:theTitle];
+    [shareInstance.wechatShare sessionShareWithTitle:theTitle];
 }
 
 - (void)wechatSessionShareWithTitle:(NSString *)theTitle withContent:(NSString *)theContent withImage:(UIImage *)theImage  withWebUrl:(NSString *)theUrl
 {
-    [cwShare.wechatShare sessionShareWithTitle:theTitle withContent:theContent withImage:theImage withWebUrl:theUrl];
+    [shareInstance.wechatShare sessionShareWithTitle:theTitle withContent:theContent withImage:theImage withWebUrl:theUrl];
 }
 
 - (void)wechatTimelineShareWithTitle:(NSString *)theTitle
 {
-    [cwShare.wechatShare timelineShareWithTitle:theTitle];
+    [shareInstance.wechatShare timelineShareWithTitle:theTitle];
 }
 
 - (void)wechatTimelineShareWithTitle:(NSString *)theTitle withImage:(UIImage *)theImage  withWebUrl:(NSString *)theUrl
 {
-    [cwShare.wechatShare timelineShareWithTitle:theTitle withImage:theImage withWebUrl:theUrl];
+    [shareInstance.wechatShare timelineShareWithTitle:theTitle withImage:theImage withWebUrl:theUrl];
 }
 
 #pragma mark - Wechat Delegate

@@ -147,7 +147,7 @@
         if (authResp.code != nil) {
             self.wechatRequest = [AFHTTPSessionManager manager];
             self.wechatRequest.responseSerializer.acceptableContentTypes = [self.wechatRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/plain"];
-            [self.wechatRequest POST:@"https://api.weixin.qq.com/sns/oauth2/access_token" parameters:@{@"appid":WeChatAppID, @"secret":WechatAppSecret, @"code":authResp.code, @"grant_type":@"authorization_code"} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            [self.wechatRequest POST:@"https://api.weixin.qq.com/sns/oauth2/access_token" parameters:@{@"appid":self.wechatAppID, @"secret":self.wechatAppSecret, @"code":authResp.code, @"grant_type":@"authorization_code"} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 self.wechatAccessToken = [responseObject objectForKey:@"access_token"];
                 self.wechatTokenExpireDate = [NSDate dateWithTimeIntervalSinceNow:[[responseObject objectForKey:@"expires_in"] doubleValue]];
                 self.wechatOpenID = [responseObject objectForKey:@"openid"];

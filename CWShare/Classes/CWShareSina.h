@@ -15,9 +15,11 @@ typedef void(^SinaAuthorizeBlock)(void);
 
 @interface CWShareSina : NSObject <WeiboSDKDelegate,WBHttpRequestDelegate>
 
-@property (nonatomic, copy) NSString *sinaAccessToken;
+@property (nonatomic, strong) NSString *sinaAccessToken;
 @property (nonatomic, strong) NSDate *sinaTokenExpireDate;
-@property (nonatomic, copy) NSString *sinaUID;
+@property (nonatomic, strong) NSString *sinaUID;
+@property (nonatomic, strong) NSString *sinaAppKey;
+@property (nonatomic, strong) NSString *sinaRedirectURL;
 @property (weak) id<CWShareSinaDelegate> delegate;
 @property (nonatomic, strong) AFHTTPSessionManager *sinaGetRequest;
 @property (nonatomic, strong) AFHTTPSessionManager *sinaPostRequest;

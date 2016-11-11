@@ -1,9 +1,12 @@
-CWShare 1.8
+CWShare 1.9.0
 =======
 
-![](http://admin.imdota.com/screenshot1.jpeg)![](http://admin.imdota.com/screenshot2.jpeg)
+![](http://admin.imdota.com/screenshot2.jpeg) ![](http://admin.imdota.com/screenshot1.jpeg)
 
 ### 更新说明
+1.9版本更新（2016-11-10）
+- 项目添加到cocoapods里，自动获取最新版本第三方库
+
 1.8版本更新（2015-09-18）
 - 因为新浪微博SDK的问题，临时发了一个版本，修复iOS9下的错误
 - iOS9由于判断是否安装第三方方法被禁用，需要在plist里加入如下代码，将各平台App加入白名单
@@ -14,6 +17,8 @@ CWShare 1.8
 <string>weixin</string>
 <string>sinaweibo</string>
 <string>sinaweibohd</string>
+<string>weibosdk</string>
+<string>weibosdk2.5</string>
 </array>
 ```
 
@@ -63,56 +68,47 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 ### 谁适合使用它
 仅使用第三方登录和简单分享，降低用户注册账号的门槛。
 使用第三方登录授权后自动获取用户个人信息，用来填充用户个人资料。
+代码开源，可以自定义修改视图。
 
 ### 使用注意:
-由于Demo里的分享AppKey都是刚申请的测试应用，不支持测试账号以外的其他账号授权，所以在测试Demo的时候，请将CWShareConfig文件里的配置信息更换为自己的AppKey（同理URL Schemes也要相应修改），否则测试流程会出错。测试需要在真机上测试，因为需要跳转到第三方平台App授权，所以需要修改项目的证书配置。
+由于Demo里的分享AppKey都是刚申请的测试应用，**不支持测试账号以外的其他账号授权**，所以在测试Demo的时候，**请使用自己的AppKey**（同理URL Schemes也要相应修改），否则测试流程会出错。测试需要在真机上测试，因为需要跳转到第三方平台App授权，所以需要修改项目的证书配置。
 
 ### 如何使用:
-CWShare里使用了第三方库AFNetworking。
-在Demo里大家可以将这个第三方库一起拷贝到自己的项目里，当然引用这个第三方库需要在项目里添加相应的Frameworks。
-你需要添加如下framwork:
-- SystemConfiguration.framework
-- MobileCoreServices.framework
-- QuartzCore.framework
-- libz.dylib
- 
-由于腾讯SSO授权不公开API接口，所以项目中为了引用QQ的私有库文件，还需要添加如下framework:
-- CoreTelephony.framework
-- Security.framework
-- libstdc++.dylib
-- libsqlite3.dylib
-- libiconv.dylib
+CWShare已经发布到Cocoapods，直接编辑你项目的`Podfile`文件，加入如下Pod。
+```ruby
+...
+pod 'CWShare'
+...
+end
+```
 
-引用新浪微博的SDK需要添加如下framework:
-- CoreText.framework
-- ImageIO.framework
-
-另外CWShare文件里含有如下文件，别漏掉。
-- TencentOpenAPI.framework（QQ自己的私有库）
-- libWeChatSDK.a (微信自己的私有库)
-
-由于增加了SSO授权方式，所以需要相应的修改项目配置文件。选中项目的TARGETS，选择Info选项，找到最下面的URL Types，添加新的URL Types：
-新浪的URL Schemes填写wb”your app key"。
-QQ的URL Schemes填写tencent"your app key"。
-微信的URL Schemes填写weixin”your app key”
-其他信息可以任意填写。可以参考Demo里的配置设置。
+由于使用SSO授权方式，所以需要相应的修改项目配置文件。选中项目的`TARGETS`，选择`Info`选项，找到最下面的`URL Types`，分别添加：新浪微博、腾讯QQ、微信。具体可以参考Demo里的配置设置。
 
 配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法，以便保证回调正确：
 ```objective-c
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{   
-    …
-
-    [WeiboSDK registerApp:SINA_APP_KEY];
-    [WXApi registerApp:WeChatAppID];
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {   
+    ...
+    //微信注册
+    [[CWShare shareObject] registerWechatAppID:WeChatAppID appSecret:WeChatAppSecret];
+    //微博注册
+    [[CWShare shareObject] registerSinaAppKey:SinaAppKey redirectURL:SinaRedirectURL];
+    //腾讯QQ注册
+    [[CWShare shareObject] registerTencentAppKey:TencentAppKey];
     
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    [CWShare handleOpenUrl:url sourceApp:sourceApplication];
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    ...
+    [CWShare handleOpenUrl:url];
+
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
+    ...
+    [CWShare handleOpenUrl:url];
 
     return YES;
 }

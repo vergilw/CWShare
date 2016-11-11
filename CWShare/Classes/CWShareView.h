@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CWShareConfig.h"
 #import "CWShareDelegate.h"
 
 typedef NS_OPTIONS(NSInteger, CWShareItemOptions) {

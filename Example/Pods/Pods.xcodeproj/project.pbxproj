@@ -10,7 +10,6 @@
 		003FB75D44055204EEF5E2C66C183F2E /* Pods-CWShare_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C1173A3AC9EC831F2CE32B3C3B071872 /* Pods-CWShare_Tests-dummy.m */; };
 		32B1B9B71DD4383D00E7A16C /* CWShare.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A41DD4383D00E7A16C /* CWShare.h */; };
 		32B1B9B81DD4383D00E7A16C /* CWShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9A51DD4383D00E7A16C /* CWShare.m */; };
-		32B1B9B91DD4383D00E7A16C /* CWShareConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */; };
 		32B1B9BA1DD4383D00E7A16C /* CWShareDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */; };
 		32B1B9BB1DD4383D00E7A16C /* CWShareQQ.h in Headers */ = {isa = PBXBuildFile; fileRef = 32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */; };
 		32B1B9BC1DD4383D00E7A16C /* CWShareQQ.m in Sources */ = {isa = PBXBuildFile; fileRef = 32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */; };
@@ -54,7 +53,6 @@
 		2A01DF0019C20B88FB6CA4A5A0C99ADC /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32B1B9A41DD4383D00E7A16C /* CWShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShare.h; sourceTree = "<group>"; };
 		32B1B9A51DD4383D00E7A16C /* CWShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShare.m; sourceTree = "<group>"; };
-		32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareConfig.h; sourceTree = "<group>"; };
 		32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareDelegate.h; sourceTree = "<group>"; };
 		32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CWShareQQ.h; sourceTree = "<group>"; };
 		32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CWShareQQ.m; sourceTree = "<group>"; };
@@ -197,7 +195,6 @@
 			children = (
 				32B1B9A41DD4383D00E7A16C /* CWShare.h */,
 				32B1B9A51DD4383D00E7A16C /* CWShare.m */,
-				32B1B9A61DD4383D00E7A16C /* CWShareConfig.h */,
 				32B1B9A71DD4383D00E7A16C /* CWShareDelegate.h */,
 				32B1B9A81DD4383D00E7A16C /* CWShareQQ.h */,
 				32B1B9A91DD4383D00E7A16C /* CWShareQQ.m */,
@@ -259,7 +256,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32B1B9B91DD4383D00E7A16C /* CWShareConfig.h in Headers */,
 				32B1B9BD1DD4383D00E7A16C /* CWShareQQDelegate.h in Headers */,
 				32B1B9C31DD4383D00E7A16C /* CWShareTools.h in Headers */,
 				32B1B9B71DD4383D00E7A16C /* CWShare.h in Headers */,

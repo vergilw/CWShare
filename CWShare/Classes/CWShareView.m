@@ -423,7 +423,7 @@
     [itemView addSubview:itemBtn];
     
     UIImageView *itemImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, UI_ITEM_WIDTH, UI_ITEM_WIDTH)];
-    [itemImgView setImage:[UIImage imageNamed:theImgStr]];
+    [itemImgView setImage:[self fetchImage:theImgStr]];
     [itemView addSubview:itemImgView];
     
     UILabel *itemLabel = [[UILabel alloc] initWithFrame:CGRectMake(-5, UI_ITEM_WIDTH+10, UI_ITEM_WIDTH+10, 15)];
@@ -473,6 +473,15 @@
     }
     
     [self removeFromSuperview];
+}
+
+- (UIImage*)fetchImage:(NSString *)name {
+    if ([UIImage respondsToSelector:@selector(imageNamed:inBundle:compatibleWithTraitCollection:)]) {
+        NSBundle *bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:@"CWShare" withExtension:@"bundle"]];
+        return [UIImage imageNamed:name inBundle:bundle compatibleWithTraitCollection:nil];
+    } else {
+        return [UIImage imageNamed:name];
+    }
 }
 
 @end

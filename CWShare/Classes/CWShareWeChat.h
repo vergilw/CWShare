@@ -24,6 +24,8 @@ typedef enum {
 @property (nonatomic, copy) NSString *wechatAccessToken;
 @property (nonatomic, strong) NSDate *wechatTokenExpireDate;
 @property (nonatomic, copy) NSString *wechatOpenID;
+@property (nonatomic, strong) NSString *wechatAppID;
+@property (nonatomic, strong) NSString *wechatAppSecret;
 @property (weak) id<CWShareWeChatDelegate> delegate;
 @property (nonatomic, strong) AFHTTPSessionManager *wechatRequest;
 @property (nonatomic, strong) AFHTTPSessionManager *wechatInfoRequest;

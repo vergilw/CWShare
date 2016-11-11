@@ -8,7 +8,6 @@
 
 #import "CWShareSina.h"
 #import "CWShareStorage.h"
-#import "CWShareConfig.h"
 #import "WeiboSDK.h"
 #import "WeiboUser.h"
 
@@ -36,7 +35,7 @@ authorizeFailBlock;
 - (void)shareWithContent:(NSString *)theContent
 {
     WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-    authRequest.redirectURI = SINA_REDIRECT_URL;
+    authRequest.redirectURI = self.sinaRedirectURL;
     authRequest.scope = @"all";
     
     WBMessageObject *message = [WBMessageObject message];
@@ -54,7 +53,7 @@ authorizeFailBlock;
 - (void)shareWithContent:(NSString *)theContent withImage:(UIImage *)theImage
 {
     WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-    authRequest.redirectURI = SINA_REDIRECT_URL;
+    authRequest.redirectURI = self.sinaRedirectURL;
     authRequest.scope = @"all";
     
     WBMessageObject *message = [WBMessageObject message];
@@ -103,7 +102,7 @@ authorizeFailBlock;
     };
     
     WBAuthorizeRequest *request = [WBAuthorizeRequest request];
-    request.redirectURI = SINA_REDIRECT_URL;
+    request.redirectURI = self.sinaRedirectURL;
     request.scope = @"all";
 //    request.userInfo = @{@"SSO_From": @"SendMessageToWeiboViewController",
 //                         @"Other_Info_1": [NSNumber numberWithInt:123],

@@ -8,7 +8,6 @@
 
 #import "CWShareQQ.h"
 #import "CWShareStorage.h"
-#import "CWShareConfig.h"
 #import "CWShareTools.h"
 
 @interface CWShareQQ ()
@@ -30,7 +29,7 @@ authorizeFailBlock,tencentOAuth;
         self.tencentTokenExpireDate = [CWShareStorage getTencentExpiredDate];
         self.tencentOpenID = [CWShareStorage getTencentUserID];
         
-        self.tencentOAuth = [[TencentOAuth alloc] initWithAppId:TENCENT_APP_KEY andDelegate:self];
+        self.tencentOAuth = [[TencentOAuth alloc] initWithAppId:self.tencentAppKey andDelegate:self];
     }
     return self;
 }
@@ -60,7 +59,7 @@ authorizeFailBlock,tencentOAuth;
     self.authorizeFinishBlock = ^(void) {
         weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"application/x-javascript"];
-        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_t" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_t" parameters:@{@"oauth_consumer_key":self.tencentAppKey, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
                 [weakSelf.delegate tencentShareContentFinish];
             } else {
@@ -109,7 +108,7 @@ authorizeFailBlock,tencentOAuth;
     self.authorizeFinishBlock = ^(void) {
         weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"application/x-javascript"];
-        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_pic_t" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/t/add_pic_t" parameters:@{@"oauth_consumer_key":self.tencentAppKey, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID, @"content":theContent} constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
             [formData appendPartWithFormData:UIImageJPEGRepresentation(theImage, 1) name:@"pic"];
         } progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
@@ -204,7 +203,7 @@ authorizeFailBlock,tencentOAuth;
     self.authorizeFinishBlock = ^(void) {
         weakSelf.tencentRequest = [AFHTTPSessionManager manager];
         weakSelf.tencentRequest.responseSerializer.acceptableContentTypes = [weakSelf.tencentRequest.responseSerializer.acceptableContentTypes setByAddingObject:@"text/html"];
-        [weakSelf.tencentRequest POST:@"https://graph.qq.com/user/get_user_info" parameters:@{@"oauth_consumer_key":TENCENT_APP_KEY, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [weakSelf.tencentRequest POST:@"https://graph.qq.com/user/get_user_info" parameters:@{@"oauth_consumer_key":self.tencentAppKey, @"access_token":weakSelf.tencentAccessToken, @"openid":weakSelf.tencentOpenID} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if ([[responseObject objectForKey:@"ret"] integerValue] == 0) {
                 [weakSelf.delegate tencentShareAuthorizeFinish:responseObject];
             } else {
