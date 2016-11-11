@@ -1,11 +1,14 @@
 CWShare 1.9.0
 =======
-
+```ruby
+pod 'CWShare'
+end
+```
 ![](http://admin.imdota.com/screenshot2.jpeg) ![](http://admin.imdota.com/screenshot1.jpeg)
 
 ### 更新说明
 1.9版本更新（2016-11-10）
-- 项目添加到cocoapods里，自动获取最新版本第三方库
+- 项目添加到Cocoapods里，自动获取其他平台库最新版本
 
 1.8版本更新（2015-09-18）
 - 因为新浪微博SDK的问题，临时发了一个版本，修复iOS9下的错误
@@ -68,21 +71,23 @@ CWShare是一个集成的国内分享平台的Object-C版本的SDK。
 ### 谁适合使用它
 仅使用第三方登录和简单分享，降低用户注册账号的门槛。
 使用第三方登录授权后自动获取用户个人信息，用来填充用户个人资料。
-代码开源，可以自定义修改视图。
+**代码开源，可以自定义修改弹框视图**。
 
 ### 使用注意:
 由于Demo里的分享AppKey都是刚申请的测试应用，**不支持测试账号以外的其他账号授权**，所以在测试Demo的时候，**请使用自己的AppKey**（同理URL Schemes也要相应修改），否则测试流程会出错。测试需要在真机上测试，因为需要跳转到第三方平台App授权，所以需要修改项目的证书配置。
 
 ### 如何使用:
-CWShare已经发布到Cocoapods，直接编辑你项目的`Podfile`文件，加入如下Pod。
+CWShare已经发布到Cocoapods，直接编辑你项目的`Podfile`文件，加入如下pod。
 ```ruby
+platform :ios, 'x.0'
+target 'project' do
 ...
 pod 'CWShare'
 ...
 end
 ```
 
-由于使用SSO授权方式，所以需要相应的修改项目配置文件。选中项目的`TARGETS`，选择`Info`选项，找到最下面的`URL Types`，分别添加：新浪微博、腾讯QQ、微信。具体可以参考Demo里的配置设置。
+由于使用SSO授权，使用URLScheme技术，所以项目配置文件需做如下配置。选中项目的`TARGETS`，选择`Info`选项，找到最下面的`URL Types`，分别添加：新浪微博、腾讯QQ、微信。具体可以参考Demo里的配置设置。
 
 配置SSO授权最后一步，在项目的AppDelegate.h文件里按如下方式填充方法，以便保证回调正确：
 ```objective-c
@@ -98,14 +103,14 @@ end
     
     return YES;
 }
-
+//NS_DEPRECATED_IOS(4_2, 9_0)
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     ...
     [CWShare handleOpenUrl:url];
 
     return YES;
 }
-
+//NS_AVAILABLE_IOS(9_0)
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options {
     ...
     [CWShare handleOpenUrl:url];
@@ -126,7 +131,7 @@ end
 
 @end
 ```
-在分享的时候你需要设置它的代理和父视图控制器，调用如下代码。
+在分享的时候你需要设置它的回调代理，调用如下代码。
 ```objective-c
 #import "ViewController.h"
 
