@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CWShare'
-  s.version          = '0.1.0'
+  s.version          = '1.9.0'
   s.summary          = '基于微信、微博、QQ的SDK的二次封装，简单，方便，一键分享。'
 
 # This description is used to generate tags and improve search results.
